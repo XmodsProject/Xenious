@@ -43,6 +43,10 @@
 
 				             [ Changelog ]
 
+				     0.0.1015.0 [Beta] (28/09/2016)
+				Moved all Xbox 360 code into a Dynamic Libary
+				called Xbox360.
+				
 				     0.0.1010.0 [Beta] (28/09/2016)
 				Added Support for Alternative Title IDs.
 				Added Support for Other Certificate Info.
