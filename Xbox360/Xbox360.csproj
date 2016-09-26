@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{49483A47-B2B2-40D9-8586-2251CE0C98D7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xbox360</RootNamespace>
+    <AssemblyName>Xbox360</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Crypto\rijndael.cs" />
+    <Compile Include="IO\IO.cs" />
+    <Compile Include="PE\ImageDosHeader.cs" />
+    <Compile Include="PE\ImageFileHeader.cs" />
+    <Compile Include="PE\ImageOptHeader.cs" />
+    <Compile Include="PE\ImageSectionHeader.cs" />
+    <Compile Include="PE\SectionImportData.cs" />
+    <Compile Include="PE\SectionRData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XDBF.cs" />
+    <Compile Include="XenonExecutable.cs" />
+    <Compile Include="XEX\XeApprovalType.cs" />
+    <Compile Include="XEX\XeBaseFileInfoHeader.cs" />
+    <Compile Include="XEX\XeCertificate.cs" />
+    <Compile Include="XEX\XeCompBaseFileBlock.cs" />
+    <Compile Include="XEX\XeCompBaseFileInfo.cs" />
+    <Compile Include="XEX\XeCompressionType.cs" />
+    <Compile Include="XEX\XeDeltaPatch.cs" />
+    <Compile Include="XEX\XeEncryptionType.cs" />
+    <Compile Include="XEX\XeExecutionInfo.cs" />
+    <Compile Include="XEX\XeExportsByName.cs" />
+    <Compile Include="XEX\XeHeaderKeys.cs" />
+    <Compile Include="XEX\XeImageFlags.cs" />
+    <Compile Include="XEX\XeImportLibary.cs" />
+    <Compile Include="XEX\XeImports.cs" />
+    <Compile Include="XEX\XeMediaFlags.cs" />
+    <Compile Include="XEX\XeModuleFlags.cs" />
+    <Compile Include="XEX\XeOptHeader.cs" />
+    <Compile Include="XEX\XeRatings.cs" />
+    <Compile Include="XEX\XeRawBaseFileBlock.cs" />
+    <Compile Include="XEX\XeRawBaseFileInfo.cs" />
+    <Compile Include="XEX\XeRegionFlags.cs" />
+    <Compile Include="XEX\XeResourceInfo.cs" />
+    <Compile Include="XEX\XeSection.cs" />
+    <Compile Include="XEX\XeSectionType.cs" />
+    <Compile Include="XEX\XeStaticLibary.cs" />
+    <Compile Include="XEX\XeSystemFlags.cs" />
+    <Compile Include="XEX\XeTLSInfo.cs" />
+    <Compile Include="XEX\XeVersion.cs" />
+    <Compile Include="XUIZ\XUIZHeader.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

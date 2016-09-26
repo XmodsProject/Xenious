@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8B933EFA-FF05-40CD-9C9F-03C052E8D160}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xenious</RootNamespace>
+    <AssemblyName>Xenious</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Xbox360">
+      <HintPath>..\Xbox360\bin\Release\Xbox360.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\XEXReportFile.cs" />
+    <Compile Include="Forms\Dialogs\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\AlternativeTitleIDs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\AlternativeTitleIDs.Designer.cs">
+      <DependentUpon>AlternativeTitleIDs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\Certificate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\Certificate.Designer.cs">
+      <DependentUpon>Certificate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ExecutionInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ExecutionInfo.Designer.cs">
+      <DependentUpon>ExecutionInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ImageFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ImageFlags.Designer.cs">
+      <DependentUpon>ImageFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\MediaFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\MediaFlags.Designer.cs">
+      <DependentUpon>MediaFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ModuleFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\ModuleFlags.Designer.cs">
+      <DependentUpon>ModuleFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\RatingsData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\RatingsData.Designer.cs">
+      <DependentUpon>RatingsData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\RegionFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\RegionFlags.Designer.cs">
+      <DependentUpon>RegionFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\SystemFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\SystemFlags.Designer.cs">
+      <DependentUpon>SystemFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Imports.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Imports.Designer.cs">
+      <DependentUpon>Imports.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\OptHeaders.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\OptHeaders.Designer.cs">
+      <DependentUpon>OptHeaders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Resources.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Resources.Designer.cs">
+      <DependentUpon>Resources.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Sections.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\Sections.Designer.cs">
+      <DependentUpon>Sections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\StaticLibs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Editor\StaticLibs.Designer.cs">
+      <DependentUpon>StaticLibs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\PE_Editor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\PE_Editor.Designer.cs">
+      <DependentUpon>PE_Editor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainEditor.Designer.cs">
+      <DependentUpon>MainEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Dialogs\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\AlternativeTitleIDs.resx">
+      <DependentUpon>AlternativeTitleIDs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\Certificate.resx">
+      <DependentUpon>Certificate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\ExecutionInfo.resx">
+      <DependentUpon>ExecutionInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\ImageFlags.resx">
+      <DependentUpon>ImageFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\MediaFlags.resx">
+      <DependentUpon>MediaFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\ModuleFlags.resx">
+      <DependentUpon>ModuleFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\RatingsData.resx">
+      <DependentUpon>RatingsData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\RegionFlags.resx">
+      <DependentUpon>RegionFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\SystemFlags.resx">
+      <DependentUpon>SystemFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Editor\Imports.resx">
+      <DependentUpon>Imports.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Editor\OptHeaders.resx">
+      <DependentUpon>OptHeaders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Editor\Resources.resx">
+      <DependentUpon>Resources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Editor\Sections.resx">
+      <DependentUpon>Sections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Editor\StaticLibs.resx">
+      <DependentUpon>StaticLibs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\PE_Editor.resx">
+      <DependentUpon>PE_Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainEditor.resx">
+      <DependentUpon>MainEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="about.png" />
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
