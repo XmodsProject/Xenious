@@ -325,7 +325,10 @@ namespace Xenious
         }
         private void MainEditor_Load(object sender, EventArgs e)
         {
-            __log("Xenious - The Xenon Executable Editor v0.1 - By [ Hect0r ] has started...");
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            __log(string.Format("Xenious - The Xenon Executable Editor [{0}] - By [ Hect0r ] has started...", fvi.FileVersion));
             disable_ui();
 
             // Check we have a cache directory.
