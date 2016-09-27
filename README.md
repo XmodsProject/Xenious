@@ -21,11 +21,13 @@
 				           [ * PLEASE NOTE * ]
 
 		This tool does not currently support encryption, decryption, compression,
-		decompression or delta.
+		decompression or delta, you can however still edit the files.
 
 		So each xex you run through this must have been passed through to xextool,
 		Which you can grab at (http://xorloser.com/)
 		Run with the command : xextool -c u -e u xex.xex
+		
+		This is only for full browsing, like pe sections, extracting resources.
 
 				       [ What can you do to help ]
 
