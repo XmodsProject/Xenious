@@ -21,11 +21,13 @@
 				           [ * PLEASE NOTE * ]
 
 		This tool does not currently support encryption, decryption, compression,
-		decompression or delta.
+		decompression or delta, you can however still edit the files.
 
 		So each xex you run through this must have been passed through to xextool,
 		Which you can grab at (http://xorloser.com/)
 		Run with the command : xextool -c u -e u xex.xex
+		
+		This is only for full browsing, like pe sections, extracting resources.
 
 				       [ What can you do to help ]
 
@@ -43,11 +45,19 @@
 
 				             [ Changelog ]
 
-				     0.0.1015.0 [Beta] (28/09/2016)
+			             0.0.1025.0 [Beta] (27/09/2016)
+				Added the ability to save encrypted/compressed
+				files edits.
+				
+				Fixed bug where resource would still extract
+				(encrypted), Now disabled when loading a encrypted
+				/ compressed executable.
+				
+				     0.0.1015.0 [Beta] (26/09/2016)
 				Moved all Xbox 360 code into a Dynamic Libary
 				called Xbox360.
 				
-				     0.0.1010.0 [Beta] (28/09/2016)
+				     0.0.1010.0 [Beta] (26/09/2016)
 				Added Support for Alternative Title IDs.
 				Added Support for Other Certificate Info.
 				Added Support for TLS Info.
