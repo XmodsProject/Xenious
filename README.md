@@ -45,6 +45,14 @@
 
 				             [ Changelog ]
 
+			             0.0.1175.0 [Beta] (27/09/2016)
+				Added the ability edit most of the optional
+				headers. 
+				
+				Few bug fixes in the Xbox 360 libary where
+				it wouldent load certain types of xex's with
+				single import libary kernals.
+				
 			             0.0.1050.0 [Beta] (27/09/2016)
 				Added update feature, will tell you whenever
 				there is a new version and downloads it.
