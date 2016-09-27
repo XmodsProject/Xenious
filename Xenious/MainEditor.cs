@@ -21,8 +21,9 @@ namespace Xenious
         XenonExecutable in_xex;
         bool rebuild_xex = false;
         string current_dir = Application.StartupPath;
-        bool is_xexp = false;
-
+        Forms.Dialogs.HexEditBox hebox;
+        Forms.Dialogs.TextEditBox tebox;
+        Forms.Dialogs.NumericEditBox nebox;
 
         public void __log(string msg)
         {
@@ -65,6 +66,46 @@ namespace Xenious
                         break;
                     case XeHeaderKeys.ALTERNATE_TITLE_IDS:
                         alternativeToolStripMenuItem.Enabled = true;
+                        break;
+                    case XeHeaderKeys.LAN_KEY:
+                        lanKeyToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.IMAGE_BASE_ADDRESS:
+                        imageBaseAddressToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.ORIGINAL_BASE_ADDRESS:
+                        originalBaseAddressToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.ENTRY_POINT:
+                        entryPointToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.TITLE_WORKSPACE_SIZE:
+                        titleWorkspaceSizeToolStripMenuItem.Enabled = true;
+                        break;
+                   // Disabled until I find the format.
+                   // case XeHeaderKeys.ENABLED_FOR_CALLCAP:
+                   //     callcapToolStripMenuItem.Enabled = true;
+                   //     break;
+                    case XeHeaderKeys.DEVICE_ID:
+                        deviceIDToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.BOUNDING_PATH:
+                        boundingPathToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.DEFAULT_STACK_SIZE:
+                        stackSizeToolStripMenuItem.Enabled = true;
+                        break;
+                    case XeHeaderKeys.DEFAULT_FILESYSTEM_CACHE_SIZE:
+                        filesystemCacheSizeToolStripMenuItem.Enabled = true;
+                        break;
+                    case XeHeaderKeys.DEFAULT_HEAP_SIZE:
+                        heapSizeToolStripMenuItem.Enabled = true;
+                        break;
+                    case XeHeaderKeys.XGD3_MEDIA_KEY:
+                        xGD3MediaIDToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.ORIGINAL_PE_NAME:
+                        originalPENameToolStripMenuItem.Enabled = true;
                         break;
                 }
             }
@@ -172,10 +213,18 @@ namespace Xenious
         public void init_xex(string file)
         {
             // Parse all xex meta info.
-            in_xex.parse_certificate();
-            in_xex.parse_sections();
-            in_xex.parse_optional_headers();
+            try
+            {
+                in_xex.parse_certificate();
+                in_xex.parse_sections();
 
+                int x = in_xex.parse_optional_headers();
+                // Debug - MessageBox.Show(x.ToString());
+            }
+            catch
+            {
+                throw new Exception("Unable to parse the xenon executable meta...");
+            }
             // Encryption and Compression Check.
             // Current unsupported so run it through 
             // xextool -e u -c u default.xex
@@ -199,7 +248,6 @@ namespace Xenious
                 (in_xex.module_flags & (uint)XeModuleFlags.MODULE_PATCH) == (uint)XeModuleFlags.MODULE_PATCH ||
                 (in_xex.module_flags & (uint)XeModuleFlags.PATCH_FULL) == (uint)XeModuleFlags.PATCH_FULL)
             {
-                is_xexp = true;
                 MessageBox.Show("Support for XEX Patches is coming soon, the file will now be closed...", "Nearly there !");
                 close_xex();
                 return;
@@ -624,6 +672,96 @@ namespace Xenious
                 in_xex.rebuild_xex(sfd.FileName, true);
                 __log("Rebuilt executable " + sfd.FileName + "...");
             }
+        }
+        private void xGD3MediaIDToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            hebox = new Forms.Dialogs.HexEditBox();
+            hebox.set_max_len(16);
+            hebox.set_value(in_xex.xgd3_media_id);
+            hebox.ShowDialog();
+            in_xex.xgd3_media_id = hebox.value;
+        }
+        private void lanKeyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            hebox = new Forms.Dialogs.HexEditBox();
+            hebox.set_max_len(16);
+            hebox.set_value(in_xex.lan_key);
+            hebox.ShowDialog();
+            in_xex.lan_key = hebox.value;
+        }
+        private void deviceIDToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            hebox = new Forms.Dialogs.HexEditBox();
+            hebox.set_max_len(16);
+            hebox.set_value(in_xex.device_id);
+            hebox.ShowDialog();
+            in_xex.device_id = hebox.value;
+        }
+        private void boundingPathToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            tebox = new Forms.Dialogs.TextEditBox();
+            tebox.set_value(in_xex.bound_path);
+            tebox.set_max_len(in_xex.bound_path.Length);
+            tebox.ShowDialog();
+            in_xex.bound_path = tebox.value;
+        }
+        private void originalPENameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tebox = new Forms.Dialogs.TextEditBox();
+            tebox.set_value(in_xex.orig_pe_name);
+            tebox.set_max_len(in_xex.orig_pe_name.Length);
+            tebox.ShowDialog();
+            in_xex.orig_pe_name = tebox.value;
+            treeView1.Nodes[0].Text = tebox.value;
+        }
+        private void imageBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.img_base_addr);
+            nebox.ShowDialog();
+            in_xex.img_base_addr = nebox.value;
+        }
+        private void originalBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.orig_base_addr);
+            nebox.ShowDialog();
+            in_xex.orig_base_addr = nebox.value;
+        }
+        private void entryPointToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.exe_entry_point);
+            nebox.ShowDialog();
+            in_xex.exe_entry_point = nebox.value;
+        }
+        private void titleWorkspaceSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.title_workspace_size);
+            nebox.ShowDialog();
+            in_xex.title_workspace_size = nebox.value;
+        }
+        private void stackSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.default_stack_size);
+            nebox.ShowDialog();
+            in_xex.default_stack_size = nebox.value;
+        }
+        private void filesystemCacheSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.default_fs_cache_size);
+            nebox.ShowDialog();
+            in_xex.default_fs_cache_size = nebox.value;
+        }
+        private void heapSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_value(in_xex.default_heap_size);
+            nebox.ShowDialog();
+            in_xex.default_heap_size = nebox.value;
         }
     }
 }

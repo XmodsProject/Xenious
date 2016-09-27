@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Xbox360.XEX;
 using Xbox360;
+using Xenious.Forms.Dialogs;
 
 namespace Xenious.Forms.Panels.Editor
 {
@@ -130,6 +131,25 @@ namespace Xenious.Forms.Panels.Editor
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem item = listView1.SelectedItems[0];
+
+            if(item.Tag.ToString() != "")
+            {
+                string[] args = item.Tag.ToString().Split(' ');
+
+                if(args[0] == "edit")
+                {
+                    switch(args[1])
+                    {
+                        case "xgd3_media_id":
+                            break;
+                    }
+                }
+            }
         }
     }
 }

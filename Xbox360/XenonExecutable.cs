@@ -83,80 +83,100 @@ namespace Xbox360
         {
             if (IO.Opened)
             {
-                magic = IO.read_string(4);
+                try {
+                    magic = IO.read_string(4);
 
-                if (is_xex)
-                {
-                    module_flags = IO.read_uint32(Endian.High);
-                    pe_data_offset = IO.read_uint32(Endian.High);
-                    reserved = IO.read_uint32(Endian.High);
-                    certificate_pos = IO.read_uint32(Endian.High);
-                    opt_header_count = IO.read_uint32(Endian.High);
-
-                    XeOptHeader bh;
-                    opt_headers = new List<XeOptHeader>();
-                    for (int i = 0; i < opt_header_count; i++)
+                    if (is_xex)
                     {
-                        bh = new XeOptHeader();
-                        bh.key = (XeHeaderKeys)IO.read_uint32(Endian.High);
-                        bh.data = IO.read_uint32(Endian.High);
+                        module_flags = IO.read_uint32(Endian.High);
+                        pe_data_offset = IO.read_uint32(Endian.High);
+                        reserved = IO.read_uint32(Endian.High);
+                        certificate_pos = IO.read_uint32(Endian.High);
+                        opt_header_count = IO.read_uint32(Endian.High);
 
-                        switch ((UInt32)bh.key & 0xFF)
+                        XeOptHeader bh;
+                        opt_headers = new List<XeOptHeader>();
+                        for (int i = 0; i < opt_header_count; i++)
                         {
-                            case 0x01:
-                                bh.len = 0;
-                                break;
-                            case 0xFF:
-                                bh.pos = bh.data;
-                                break;
-                            default:
-                                bh.len = ((UInt32)bh.key & 0xFF) * 4;
-                                bh.pos = bh.data;
-                                break;
-                        }
+                            bh = new XeOptHeader();
+                            bh.key = (XeHeaderKeys)IO.read_uint32(Endian.High);
+                            bh.data = IO.read_uint32(Endian.High);
 
-                        opt_headers.Add(bh);
+                            switch ((UInt32)bh.key & 0xFF)
+                            {
+                                case 0x01:
+                                    bh.len = 0;
+                                    break;
+                                case 0xFF:
+                                    bh.pos = bh.data;
+                                    break;
+                                default:
+                                    bh.len = ((UInt32)bh.key & 0xFF) * 4;
+                                    bh.pos = bh.data;
+                                    break;
+                            }
+
+                            opt_headers.Add(bh);
+                        }
                     }
+                }
+                catch(Exception exp)
+                {
+                    throw exp;
                 }
             }
         }
         public void parse_certificate()
         {
-            IO.position = certificate_pos;
-            cert = new XeCertificate();
-            cert.header_size = IO.read_uint32(Endian.High);
-            cert.image_size = IO.read_uint32(Endian.High);
-            cert.rsa_sig = IO.read_bytes(256);
-            cert.UnkLen = IO.read_uint32(Endian.High);
-            cert.image_flags = IO.read_uint32(Endian.High);
-            cert.load_address = IO.read_uint32(Endian.High);
-            cert.section_disgest = IO.read_bytes(20);
-            cert.import_table_count = IO.read_uint32(Endian.High);
-            cert.import_table_digest = IO.read_bytes(20);
-            cert.xgd2_media_id = IO.read_bytes(16);
-            cert.seed_key = IO.read_bytes(16);
-            cert.export_table_pos = IO.read_uint32(Endian.High);
-            cert.header_digest = IO.read_bytes(20);
-            cert.game_regions = IO.read_uint32(Endian.High);
-            cert.media_flags = IO.read_uint32(Endian.High);
+            try
+            {
+                IO.position = certificate_pos;
+                cert = new XeCertificate();
+                cert.header_size = IO.read_uint32(Endian.High);
+                cert.image_size = IO.read_uint32(Endian.High);
+                cert.rsa_sig = IO.read_bytes(256);
+                cert.UnkLen = IO.read_uint32(Endian.High);
+                cert.image_flags = IO.read_uint32(Endian.High);
+                cert.load_address = IO.read_uint32(Endian.High);
+                cert.section_disgest = IO.read_bytes(20);
+                cert.import_table_count = IO.read_uint32(Endian.High);
+                cert.import_table_digest = IO.read_bytes(20);
+                cert.xgd2_media_id = IO.read_bytes(16);
+                cert.seed_key = IO.read_bytes(16);
+                cert.export_table_pos = IO.read_uint32(Endian.High);
+                cert.header_digest = IO.read_bytes(20);
+                cert.game_regions = IO.read_uint32(Endian.High);
+                cert.media_flags = IO.read_uint32(Endian.High);
+            }
+            catch(Exception exp)
+            {
+                throw exp;
+            }
         }
         public void parse_sections()
         {
-            IO.position = certificate_pos + 0x180;
-            uint num = IO.read_uint32(Endian.High);
-            sections = new List<XeSection>();
-
-            for (uint i = 0; i < num; i++)
+            try
             {
-                XeSection sec = new XeSection();
-                if (pe_data_offset <= 0x90000000) { sec.page_size = 64 * 1024; }
-                else { sec.page_size = 4 * 1024; }
-                sec.value = IO.read_uint32(Endian.High);
-                sec.digest = IO.read_bytes(20);
-                sections.Add(sec);
+                IO.position = certificate_pos + 0x180;
+                uint num = IO.read_uint32(Endian.High);
+                sections = new List<XeSection>();
+
+                for (uint i = 0; i < num; i++)
+                {
+                    XeSection sec = new XeSection();
+                    if (pe_data_offset <= 0x90000000) { sec.page_size = 64 * 1024; }
+                    else { sec.page_size = 4 * 1024; }
+                    sec.value = IO.read_uint32(Endian.High);
+                    sec.digest = IO.read_bytes(20);
+                    sections.Add(sec);
+                }
+            }
+            catch(Exception exp)
+            {
+                throw exp;
             }
         }
-        public void parse_optional_headers()
+        public int parse_optional_headers()
         {
             uint len;
             unk_headers = new List<XeOptHeader>();
@@ -168,92 +188,124 @@ namespace Xbox360
                 {
                     case (uint)XeHeaderKeys.RESOURCE_INFO:
                         #region Resources
-                        IO.position = (opt_headers[i].pos);
-                        uint num = IO.read_uint32(Endian.High);
-                        num = (num - 4) / 16;
-
-                        XeResourceInfo res;
-                        for (int x = 0; x < num; x++)
+                        try
                         {
-                            res = new XeResourceInfo();
-                            res.name = IO.read_string(8);
-                            res.address = IO.read_uint32(Endian.High);
-                            res.size = IO.read_uint32(Endian.High);
-                            resources.Add(res);
+                            IO.position = (opt_headers[i].pos);
+                            uint num = IO.read_uint32(Endian.High);
+                            num = (num - 4) / 16;
+
+                            XeResourceInfo res;
+                            for (int x = 0; x < num; x++)
+                            {
+                                res = new XeResourceInfo();
+                                res.name = IO.read_string(8);
+                                res.address = IO.read_uint32(Endian.High);
+                                res.size = IO.read_uint32(Endian.High);
+                                resources.Add(res);
+                            }
+                        }
+                        catch
+                        {
+                            return -1;
                         }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.FILE_FORMAT_INFO:
                         #region BaseFileFormat
-                        IO.position = opt_headers[i].pos;
-                        base_file_info_h = new XeBaseFileInfoHeader();
-                        base_file_info_h.info_size = IO.read_int32(Endian.High);
-                        base_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
-                        base_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
-
-                        #region XeCompression
-                        switch (base_file_info_h.comp_type)
+                        try
                         {
-                            case XeCompressionType.Raw:
-                                int num3 = (base_file_info_h.info_size - 8) / 8;
-                                raw_file_info_h = new XeRawBaseFileInfo();
-                                raw_file_info_h.info_size = IO.read_int32(Endian.High);
-                                raw_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
-                                raw_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
-                                raw_file_info_h.block = new List<XeRawBaseFileBlock>();
+                            IO.position = opt_headers[i].pos;
+                            base_file_info_h = new XeBaseFileInfoHeader();
+                            base_file_info_h.info_size = IO.read_int32(Endian.High);
+                            base_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
+                            base_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
 
-                                for (int x = 0; x < num3; x++)
-                                {
-                                    XeRawBaseFileBlock b = new XeRawBaseFileBlock();
-                                    b.data_size = IO.read_int32(Endian.High);
-                                    b.zero_size = IO.read_int32(Endian.High);
-                                    raw_file_info_h.block.Add(b);
-                                }
-                                
-                                break;
-                            case XeCompressionType.Compressed:
-                                
-                                break;
-                            case XeCompressionType.DeltaCompressed:
-                                break;
+                            #region XeCompression
+                            switch (base_file_info_h.comp_type)
+                            {
+                                case XeCompressionType.Raw:
+                                    int num3 = (base_file_info_h.info_size - 8) / 8;
+                                    raw_file_info_h = new XeRawBaseFileInfo();
+                                    raw_file_info_h.info_size = IO.read_int32(Endian.High);
+                                    raw_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
+                                    raw_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
+                                    raw_file_info_h.block = new List<XeRawBaseFileBlock>();
+
+                                    for (int x = 0; x < num3; x++)
+                                    {
+                                        XeRawBaseFileBlock b = new XeRawBaseFileBlock();
+                                        b.data_size = IO.read_int32(Endian.High);
+                                        b.zero_size = IO.read_int32(Endian.High);
+                                        raw_file_info_h.block.Add(b);
+                                    }
+
+                                    break;
+                                case XeCompressionType.Compressed:
+
+                                    break;
+                                case XeCompressionType.DeltaCompressed:
+                                    break;
+                            }
+                            #endregion
                         }
-                        #endregion
-
+                        catch
+                        {
+                            return -2;
+                        }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DELTA_PATCH_DESCRIPTOR:
                         #region DeltaPatchDescriptor
-                        IO.position = opt_headers[i].pos;
-                        delta_patch = new XeDeltaPatch();
-                        delta_patch.size = IO.read_uint32(Endian.High);
-                        delta_patch.target_version = IO.read_uint32(Endian.High);
-                        delta_patch.source_version = IO.read_uint32(Endian.High);
-                        delta_patch.hash_source = IO.read_bytes(20);
-                        delta_patch.key_source = IO.read_bytes(16);
-                        delta_patch.target_headers_size = IO.read_uint32(Endian.High);
-                        delta_patch.headers_source_offset = IO.read_uint32(Endian.High);
-                        delta_patch.headers_source_size = IO.read_uint32(Endian.High);
-                        delta_patch.headers_target_offset = IO.read_uint32(Endian.High);
-                        delta_patch.image_source_offset = IO.read_uint32(Endian.High);
-                        delta_patch.image_source_size = IO.read_uint32(Endian.High);
-                        delta_patch.image_target_offset = IO.read_uint32(Endian.High);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            delta_patch = new XeDeltaPatch();
+                            delta_patch.size = IO.read_uint32(Endian.High);
+                            delta_patch.target_version = IO.read_uint32(Endian.High);
+                            delta_patch.source_version = IO.read_uint32(Endian.High);
+                            delta_patch.hash_source = IO.read_bytes(20);
+                            delta_patch.key_source = IO.read_bytes(16);
+                            delta_patch.target_headers_size = IO.read_uint32(Endian.High);
+                            delta_patch.headers_source_offset = IO.read_uint32(Endian.High);
+                            delta_patch.headers_source_size = IO.read_uint32(Endian.High);
+                            delta_patch.headers_target_offset = IO.read_uint32(Endian.High);
+                            delta_patch.image_source_offset = IO.read_uint32(Endian.High);
+                            delta_patch.image_source_size = IO.read_uint32(Endian.High);
+                            delta_patch.image_target_offset = IO.read_uint32(Endian.High);
 
-                        delta_patch.header_data = IO.read_bytes((int)(delta_patch.size - 76));
+                            delta_patch.header_data = IO.read_bytes((int)(delta_patch.size - 76));
+                        }
+                        catch
+                        {
+                            return -3;
+                        }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.XGD3_MEDIA_KEY:
-                        IO.position = opt_headers[i].pos;
-                        xgd3_media_id = IO.read_bytes((int)opt_headers[i].len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            xgd3_media_id = IO.read_bytes((int)opt_headers[i].len);
+                        }
+                        catch { return -4; }
                         break;
                     case (uint)XeHeaderKeys.BOUNDING_PATH:
-                        IO.position = (opt_headers[i].pos);
-                        len = IO.read_uint32(Endian.High);
-                        bound_path = IO.read_string((int)len);
+                        try
+                        {
+                            IO.position = (opt_headers[i].pos);
+                            len = IO.read_uint32(Endian.High);
+                            bound_path = IO.read_string((int)len);
+                        }
+                        catch { return -5; }
                         break;
-                    case (uint)XeHeaderKeys.DEVICE_ID: 
+                    case (uint)XeHeaderKeys.DEVICE_ID:
                         #region DeviceID
-                        IO.position = opt_headers[i].pos;
-                        device_id = IO.read_bytes((int)opt_headers[i].len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            device_id = IO.read_bytes((int)opt_headers[i].len);
+                        }
+                        catch { return -6; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ORIGINAL_BASE_ADDRESS:
@@ -267,78 +319,113 @@ namespace Xbox360
                         break;
                     case (uint)XeHeaderKeys.IMPORT_LIBRARIES:
                         #region ImportLibs
-                        IO.position = opt_headers[i].pos;
-                        uint ils = IO.read_uint32(Endian.High);
-                        uint libs_len = IO.read_uint32(Endian.High);
-                        uint num_libs = IO.read_uint32(Endian.High);
-                        string[] buf = IO.read_string((int)libs_len).Split('\0');
-                        import_libs = new List<XeImportLibary>();
-                                   string[] kernals = new string[num_libs];
-                        int g = 0;    
-                        // Get Import libary names.
-                        for (int x = 0; x < buf.Length; x++)
+                        try
                         {
-                            if (buf[x] != "")
+                            IO.position = opt_headers[i].pos;
+                            uint ils = IO.read_uint32(Endian.High);
+                            uint libs_len = IO.read_uint32(Endian.High);
+                            uint num_libs = IO.read_uint32(Endian.High);
+                            import_libs = new List<XeImportLibary>();
+                            if (num_libs == 1)
                             {
-                                kernals[g] = buf[x];
-                                g++;
+                                string buf = IO.read_string((int)libs_len);
+                                XeImportLibary impl = new XeImportLibary();
+                                impl.name = buf;
+                                impl.read(IO);
+                                import_libs.Add(impl);
+                            }
+                            else
+                            {
+                                string[] buf = IO.read_string((int)libs_len).Split('\0');
+                                string[] kernals = new string[num_libs];
+                                int g = 0;
+                                // Get Import libary names.
+                                for (int x = 0; x < buf.Length; x++)
+                                {
+                                    if (buf[x] != "")
+                                    {
+                                        kernals[g] = buf[x];
+                                        g++;
+                                    }
+                                }
+
+                                // Now get the import libs.
+                                for (int x = 0; x < num_libs; x++)
+                                {
+                                    XeImportLibary impl = new XeImportLibary();
+                                    impl.name = kernals[x];
+                                    impl.read(IO);
+                                    import_libs.Add(impl);
+                                }
                             }
                         }
-                        
-                        // Now get the import libs.
-                        for (int x = 0; x < num_libs; x++)
-                        {
-                            XeImportLibary impl = new XeImportLibary();
-                            impl.name = kernals[x];
-                            impl.read(IO);
-                            import_libs.Add(impl);
-                        }
+                        catch { return -7; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.CHECKSUM_TIMESTAMP:
                         #region ChecksumTimestamp
-                        IO.position = opt_headers[i].pos;
-                        checksum_timestamp = IO.read_uint64(Endian.High);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            checksum_timestamp = IO.read_uint64(Endian.High);
+                        }
+                        catch { return -8; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_CALLCAP:
-                        IO.position = opt_headers[i].pos;
-                        callcap_data = IO.read_bytes((int)opt_headers[i].len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            callcap_data = IO.read_bytes((int)opt_headers[i].len);
+                        }
+                        catch { return -9; }
                         break;
                     case (uint)XeHeaderKeys.ORIGINAL_PE_NAME:
                         #region OriginalPEName
-                        IO.position = opt_headers[i].pos;
-                        len = IO.read_uint32(Endian.High);
-                        orig_pe_name = IO.read_string((int)len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            len = IO.read_uint32(Endian.High);
+                            orig_pe_name = IO.read_string((int)len);
+                        }
+                        catch { return -10; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.STATIC_LIBRARIES:
                         #region StaticLibs
-                        IO.position = opt_headers[i].pos;
-                        len = ((IO.read_uint32(Endian.High) - 4) / 16);
-                        static_libs = new List<XeStaticLib>();
-
-                        for (int x = 0; x < len; x++)
+                        try
                         {
-                            XeStaticLib sl = new XeStaticLib();
-                            sl.name = IO.read_string(8);
-                            sl.major = IO.read_uint16(Endian.High);
-                            sl.minor = IO.read_uint16(Endian.High);
-                            sl.build = IO.read_uint16(Endian.High);
-                            sl.qfe = IO.read_uint16(Endian.High);
-                            sl.approval = (XeApprovalType)(sl.qfe & 0x8000);
-                            static_libs.Add(sl);
+                            IO.position = opt_headers[i].pos;
+                            len = ((IO.read_uint32(Endian.High) - 4) / 16);
+                            static_libs = new List<XeStaticLib>();
+
+                            for (int x = 0; x < len; x++)
+                            {
+                                XeStaticLib sl = new XeStaticLib();
+                                sl.name = IO.read_string(8);
+                                sl.major = IO.read_uint16(Endian.High);
+                                sl.minor = IO.read_uint16(Endian.High);
+                                sl.build = IO.read_uint16(Endian.High);
+                                sl.qfe = IO.read_uint16(Endian.High);
+                                sl.approval = (XeApprovalType)(sl.qfe & 0x8000);
+                                static_libs.Add(sl);
+                            }
                         }
+                        catch { return -11; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.TLS_INFO:
                         #region TLSInfo
-                        IO.position = opt_headers[i].pos;
-                        tls_info = new XeTLSInfo();
-                        tls_info.slot_count = IO.read_uint32(Endian.High);
-                        tls_info.raw_data_addr = IO.read_uint32(Endian.High);
-                        tls_info.data_size = IO.read_uint32(Endian.High);
-                        tls_info.raw_data_size = IO.read_uint32(Endian.High);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            tls_info = new XeTLSInfo();
+                            tls_info.slot_count = IO.read_uint32(Endian.High);
+                            tls_info.raw_data_addr = IO.read_uint32(Endian.High);
+                            tls_info.data_size = IO.read_uint32(Endian.High);
+                            tls_info.raw_data_size = IO.read_uint32(Endian.High);
+                        }
+                        catch { return -12; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DEFAULT_STACK_SIZE:
@@ -359,18 +446,24 @@ namespace Xbox360
                         Unknown_OPT_Data = opt_headers[i].data;
                         break; // Found in dash.xex...
                     case (uint)XeHeaderKeys.EXECUTION_INFO:
+
                         #region Execution Info
-                        IO.position = opt_headers[i].pos;
-                        xeinfo = new XeExecutionInfo();
-                        xeinfo.media_id = IO.read_uint32(Endian.High);
-                        xeinfo.version = IO.read_uint32(Endian.High);
-                        xeinfo.base_version = IO.read_uint32(Endian.High);
-                        xeinfo.title_id = IO.read_uint32(Endian.High);
-                        xeinfo.platform = IO.read_byte();
-                        xeinfo.executable_table = IO.read_byte();
-                        xeinfo.disc_number = IO.read_byte();
-                        xeinfo.disc_count = IO.read_byte();
-                        xeinfo.savegame_id = IO.read_uint32(Endian.High);
+                        try
+                        {
+                            
+                            IO.position = opt_headers[i].pos;
+                            xeinfo = new XeExecutionInfo();
+                            xeinfo.media_id = IO.read_uint32(Endian.High);
+                            xeinfo.version = IO.read_uint32(Endian.High);
+                            xeinfo.base_version = IO.read_uint32(Endian.High);
+                            xeinfo.title_id = IO.read_uint32(Endian.High);
+                            xeinfo.platform = IO.read_byte();
+                            xeinfo.executable_table = IO.read_byte();
+                            xeinfo.disc_number = IO.read_byte();
+                            xeinfo.disc_count = IO.read_byte();
+                            xeinfo.savegame_id = IO.read_uint32(Endian.High);
+                        }
+                        catch { return -13; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.TITLE_WORKSPACE_SIZE:
@@ -378,50 +471,70 @@ namespace Xbox360
                         break;
                     case (uint)XeHeaderKeys.GAME_RATINGS:
                         #region GameRatings
-                        ratings = new XeGame_Ratings();
-                        IO.position = opt_headers[i].pos;
-                        ratings.esrb = (XeRating_esrb)IO.read_byte();
-                        ratings.pegi = (XeRating_pegi)IO.read_byte();
-                        ratings.pegifi = (XeRating_pegi_fi)IO.read_byte();
-                        ratings.pegipt = (XeRating_pegi_pt)IO.read_byte();
-                        ratings.bbfc = (XeRating_bbfc)IO.read_byte();
-                        ratings.cero = (XeRating_cero)IO.read_byte();
-                        ratings.usk = (XeRating_usk)IO.read_byte();
-                        ratings.oflcau = (XeRating_oflc_au)IO.read_byte();
-                        ratings.oflcnz = (XeRating_oflc_nz)IO.read_byte();
-                        ratings.kmrb = (XeRating_kmrb)IO.read_byte();
-                        ratings.brazil = (XeRating_brazil)IO.read_byte();
-                        ratings.fpb = (XeRating_fpb)IO.read_byte();
-                        ratings.reserved = IO.read_bytes(52);
+                        try
+                        {
+                            ratings = new XeGame_Ratings();
+                            IO.position = opt_headers[i].pos;
+                            ratings.esrb = (XeRating_esrb)IO.read_byte();
+                            ratings.pegi = (XeRating_pegi)IO.read_byte();
+                            ratings.pegifi = (XeRating_pegi_fi)IO.read_byte();
+                            ratings.pegipt = (XeRating_pegi_pt)IO.read_byte();
+                            ratings.bbfc = (XeRating_bbfc)IO.read_byte();
+                            ratings.cero = (XeRating_cero)IO.read_byte();
+                            ratings.usk = (XeRating_usk)IO.read_byte();
+                            ratings.oflcau = (XeRating_oflc_au)IO.read_byte();
+                            ratings.oflcnz = (XeRating_oflc_nz)IO.read_byte();
+                            ratings.kmrb = (XeRating_kmrb)IO.read_byte();
+                            ratings.brazil = (XeRating_brazil)IO.read_byte();
+                            ratings.fpb = (XeRating_fpb)IO.read_byte();
+                            ratings.reserved = IO.read_bytes(52);
+                        }
+                        catch { return -14; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.LAN_KEY:
                         #region LanKey
-                        IO.position = opt_headers[i].pos;
-                        lan_key = IO.read_bytes((int)opt_headers[i].len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            lan_key = IO.read_bytes((int)opt_headers[i].len);
+                        }
+                        catch { return -15; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.XBOX360_LOGO:
                         #region Xbox360Logo
-                        IO.position = opt_headers[i].pos;
-                        uint x360l_len = IO.read_uint32(Endian.High);
-                        xbox_360_logo = IO.read_bytes((int)x360l_len);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            uint x360l_len = IO.read_uint32(Endian.High);
+                            xbox_360_logo = IO.read_bytes((int)x360l_len);
+                        }
+                        catch { return -16; }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ALTERNATE_TITLE_IDS:
-                        IO.position = opt_headers[i].pos;
-                        uint len2 = IO.read_uint32(Endian.High);
-                        alternative_title_ids = new List<byte[]>();
-                        for(int x = 0; x < (int)(len2 - 4) / 4; x++)
+                        try
                         {
-                            alternative_title_ids.Add(IO.read_bytes(4));
+                            IO.position = opt_headers[i].pos;
+                            uint len2 = IO.read_uint32(Endian.High);
+                            alternative_title_ids = new List<byte[]>();
+                            for (int x = 0; x < (int)(len2 - 4) / 4; x++)
+                            {
+                                alternative_title_ids.Add(IO.read_bytes(4));
+                            }
                         }
+                        catch { return -17; }
                         break;
                     case (uint)XeHeaderKeys.EXPORTS_BY_NAME:
-                        IO.position = opt_headers[i].pos;
-                        exports_named = new XeExportsByName();
-                        exports_named.raw_size = IO.read_uint32(Endian.High);
-                        exports_named.num_exports = IO.read_uint32(Endian.High);
+                        try
+                        {
+                            IO.position = opt_headers[i].pos;
+                            exports_named = new XeExportsByName();
+                            exports_named.raw_size = IO.read_uint32(Endian.High);
+                            exports_named.num_exports = IO.read_uint32(Endian.High);
+                        }
+                        catch { return -18; }
                         break;
 
                     case (uint)XeHeaderKeys.BASE_REFERENCE:
@@ -434,6 +547,7 @@ namespace Xbox360
                         break;
                 }
             }
+            return 0;
         }
 
         public void read_dos_header()
@@ -592,6 +706,16 @@ namespace Xbox360
             {
                 switch(opt.key)
                 {
+                    case XeHeaderKeys.ORIGINAL_PE_NAME:
+                        IO.position = opt.pos;
+                        IO.write((UInt32)orig_pe_name.Length, Endian.High);
+                        IO.write(Encoding.ASCII.GetBytes(orig_pe_name));
+                        break;
+                    case XeHeaderKeys.BOUNDING_PATH:
+                        IO.position = opt.pos;
+                        IO.write((UInt32)bound_path.Length, Endian.High);
+                        IO.write(Encoding.ASCII.GetBytes(bound_path));
+                        break;
                     case XeHeaderKeys.XGD3_MEDIA_KEY:
                         IO.position = opt.pos;
                         IO.write(xgd3_media_id);

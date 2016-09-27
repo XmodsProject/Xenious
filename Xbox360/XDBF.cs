@@ -12,7 +12,7 @@ namespace Xbox360
         MetaData = 0x0001,
         Image = 0x0002,
         StringTable = 0x0003
-    };
+    }
     public enum XDBFLocale : uint
     {
         Unknown = 0,
@@ -24,7 +24,7 @@ namespace Xbox360
         Italian = 6,
         Korean = 7,
         Chinese = 8,
-    };
+    }
     public class XDBFHeader
     {
         public string magic;

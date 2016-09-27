@@ -75,7 +75,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Xbox360">
-      <HintPath>..\Xbox360\bin\Release\Xbox360.dll</HintPath>
+      <HintPath>..\Xbox360\bin\Debug\Xbox360.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +104,12 @@
     <Compile Include="Forms\Dialogs\ExecutionInfo.Designer.cs">
       <DependentUpon>ExecutionInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\HexEditBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\HexEditBox.Designer.cs">
+      <DependentUpon>HexEditBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialogs\ImageFlags.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +128,12 @@
     <Compile Include="Forms\Dialogs\ModuleFlags.Designer.cs">
       <DependentUpon>ModuleFlags.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\NumericEditBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\NumericEditBox.Designer.cs">
+      <DependentUpon>NumericEditBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialogs\RatingsData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,6 +151,12 @@
     </Compile>
     <Compile Include="Forms\Dialogs\SystemFlags.Designer.cs">
       <DependentUpon>SystemFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\TextEditBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\TextEditBox.Designer.cs">
+      <DependentUpon>TextEditBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Panels\Editor\Imports.cs">
       <SubType>UserControl</SubType>
@@ -196,6 +214,9 @@
     <EmbeddedResource Include="Forms\Dialogs\ExecutionInfo.resx">
       <DependentUpon>ExecutionInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\HexEditBox.resx">
+      <DependentUpon>HexEditBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\ImageFlags.resx">
       <DependentUpon>ImageFlags.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +226,9 @@
     <EmbeddedResource Include="Forms\Dialogs\ModuleFlags.resx">
       <DependentUpon>ModuleFlags.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\NumericEditBox.resx">
+      <DependentUpon>NumericEditBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\RatingsData.resx">
       <DependentUpon>RatingsData.cs</DependentUpon>
     </EmbeddedResource>
@@ -213,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\SystemFlags.resx">
       <DependentUpon>SystemFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\TextEditBox.resx">
+      <DependentUpon>TextEditBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Panels\Editor\Imports.resx">
       <DependentUpon>Imports.cs</DependentUpon>
