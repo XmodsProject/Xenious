@@ -74,133 +74,6 @@ namespace Xbox360
         public List<ImageSectionHeader> img_sections;
         public SectionImportData pe_sec_idata;
 
-        public bool has_xuiz_header
-        {
-            get { return (bool)(xuiz_h.magic == "XUIZ"); }
-        }
-        public bool has_dos_header
-        {
-            get { return img_dos_h.e_magic == 23117; }
-        }
-        public bool has_file_header
-        {
-            get { return (img_file_h.magic == 17744); }
-        }
-        public bool has_opt_header
-        {
-            get { return (img_opt_h.Magic == 267); }
-        }
-        public bool has_img_pdata_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".pdata") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_rdata_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".rdata") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_edata_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".edata") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_text_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".text") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_data_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".data") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_idata_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".idata") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_xbld_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".XBLD") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_reloc_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".reloc") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_xbmovie_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".XBMOVIE") { return true; }
-                }
-                return false;
-            }
-        }
-        public bool has_img_xexid_section
-        {
-            get
-            {
-                for (int i = 0; i < img_sections.Count; i++)
-                {
-                    if (img_sections[i].Name.Replace("\0", "") == ".XEXID") { return true; }
-                }
-                return false;
-            }
-        }
-
         public XenonExecutable(string file)
         {
             IO = new FileIO(file, System.IO.FileMode.Open);
@@ -1376,11 +1249,11 @@ namespace Xbox360
 
         public void parse_image_sections()
         {
-            if (has_img_idata_section == true)
+            /*if (has_img_idata_section == true)
             {
                 pe_sec_idata = new SectionImportData(AppDomain.CurrentDomain.BaseDirectory + "/cache/idata.bin");
                 pe_sec_idata.read();
-            }
+            }*/
         }
 
         public static UInt32 get_version(byte major, byte minor, UInt16 build, byte qfe)

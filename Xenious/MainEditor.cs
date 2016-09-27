@@ -141,7 +141,7 @@ namespace Xenious
             }
             #endregion
             // Add PE Sections.
-            if (in_xex.has_dos_header == true && in_xex.has_file_header == true && in_xex.has_opt_header == true)
+            if (in_xex.img_opt_h != null && in_xex.img_opt_h.Magic == 267)
             {
                 TreeNode sections_node = new TreeNode();
                 sections_node.Text = "PE Sections";
@@ -208,7 +208,7 @@ namespace Xenious
             {
                 // Load PE.
                 in_xex.read_dos_header();
-                if (in_xex.has_dos_header == true)
+                if (in_xex.img_opt_h.Magic == 267)
                 {
                     in_xex.read_file_header();
                     in_xex.read_image_opt_header();
@@ -325,7 +325,10 @@ namespace Xenious
         }
         private void MainEditor_Load(object sender, EventArgs e)
         {
-            __log("Xenious - The Xenon Executable Editor v0.1 - By [ Hect0r ] has started...");
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            __log(string.Format("Xenious - The Xenon Executable Editor [{0}] - By [ Hect0r ] has started...", fvi.FileVersion));
             disable_ui();
 
             // Check we have a cache directory.
