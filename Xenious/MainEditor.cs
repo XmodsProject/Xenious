@@ -612,7 +612,6 @@ namespace Xenious
             }
             in_xex.alternative_title_ids = listoftids;
         }
-
         private void rebuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
