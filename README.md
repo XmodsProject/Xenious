@@ -45,6 +45,10 @@
 
 				             [ Changelog ]
 
+			             0.0.1050.0 [Beta] (27/09/2016)
+				Added update feature, will tell you whenever
+				there is a new version and downloads it.
+				
 			             0.0.1025.0 [Beta] (27/09/2016)
 				Added the ability to save encrypted/compressed
 				files edits.
