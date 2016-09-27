@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeVersion
+    public class XeVersion
     {
         public UInt32 version;
 

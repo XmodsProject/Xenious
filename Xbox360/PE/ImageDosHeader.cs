@@ -8,7 +8,7 @@ namespace Xbox360.PE
     /*
      * Grabbed from pe_image.h on windows.
      */
-    public struct ImageDosHeader
+    public class ImageDosHeader
     {
         public UInt16 e_magic;         // Magic number
         public UInt16 e_cblp;          // Bytes on last page of file

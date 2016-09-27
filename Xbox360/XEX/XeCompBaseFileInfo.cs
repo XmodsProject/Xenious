@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeCompBaseFileInfo
+    public class XeCompBaseFileInfo
     {
         public Int32 info_size;
         public XeEncryptionType enc_type;

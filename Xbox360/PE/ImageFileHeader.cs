@@ -8,7 +8,7 @@ namespace Xbox360.PE
     /*
      * Grabbed from pe_image.h on windows.
      */
-    public struct ImageFileHeader
+    public class ImageFileHeader
     {
         public UInt32 magic;
         public UInt16 Machine;

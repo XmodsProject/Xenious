@@ -41,7 +41,19 @@ namespace Xenious.Forms.Panels.Editor
                 listView1.Items.Add(item);
             }
             listView1.Update();
-            main.__log("Loaded resources...");
+
+            if (xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
+                xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
+                xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
+            {
+                extractSelectedToolStripMenuItem.Enabled = false;
+                extractToolStripMenuItem.Enabled = false;
+                main.__log("Loaded resources, unable to extract them...");
+            }
+            else
+            {
+                main.__log("Loaded resources...");
+            }
         }
 
         private void listView1_MouseClick(object sender, MouseEventArgs e)

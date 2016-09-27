@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeRawBaseFileBlock
+    public class XeRawBaseFileBlock
     {
         public Int32 data_size;
         public Int32 zero_size;

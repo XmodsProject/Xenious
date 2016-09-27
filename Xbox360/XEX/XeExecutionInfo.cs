@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeExecutionInfo
+    public class XeExecutionInfo
     {
         public UInt32 media_id;
         public UInt32 version;

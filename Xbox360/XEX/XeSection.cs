@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeSection
+    public class XeSection
     {
         public UInt32 page_size;
         public XeSectionType type

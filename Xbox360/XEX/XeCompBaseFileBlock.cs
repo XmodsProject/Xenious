@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public struct XeCompBaseFileBlock
+    public class XeCompBaseFileBlock
     {
         public Int32 data_size;
         public byte[] hash;

@@ -50,6 +50,115 @@ namespace Xenious
         }
 
         /* Loading functions */
+        public void init_gui()
+        {
+            // Disable menu items, as we currently cannot rebuild.
+            foreach (XeOptHeader opth in in_xex.opt_headers)
+            {
+                switch (opth.key)
+                {
+                    case XeHeaderKeys.EXECUTION_INFO:
+                        executionToolStripMenuItem.Enabled = true;
+                        break;
+                    case XeHeaderKeys.GAME_RATINGS:
+                        ratingsToolStripMenuItem1.Enabled = true;
+                        break;
+                    case XeHeaderKeys.ALTERNATE_TITLE_IDS:
+                        alternativeToolStripMenuItem.Enabled = true;
+                        break;
+                }
+            }
+            if (in_xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
+                in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
+                in_xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
+            {
+                extractToolStripMenuItem.Enabled = false;
+            }
+
+
+            // Build treeView with original pe name
+            // if we can, if not then filename.
+            TreeNode node = new TreeNode();
+            if (in_xex.orig_pe_name != null)
+            {
+                node.Text = in_xex.orig_pe_name;
+            }
+            else
+            {
+                node.Text = Path.GetFileName(in_xex.IO.file);
+            }
+
+            TreeNode secs = new TreeNode();
+            secs.Text = "Security Sections";
+            secs.Tag = "page sections";
+            node.Nodes.Add(secs);
+
+            TreeNode opt = new TreeNode();
+            opt.Text = "Optional Data";
+            opt.Tag = "page opt_headers";
+            node.Nodes.Add(opt);
+
+            // Add Opt Header Nodes.
+            #region Add Optional Header Nodes to Tree.
+            for (int i = 0; i < in_xex.opt_headers.Count; i++)
+            {
+                switch ((XeHeaderKeys)in_xex.opt_headers[i].key)
+                {
+                    case XeHeaderKeys.RESOURCE_INFO:
+                        TreeNode node3 = new TreeNode();
+                        node3.Text = "Resources";
+                        node3.Tag = "page resources";
+                        node.Nodes.Add(node3);
+                        break;
+                    case XeHeaderKeys.IMPORT_LIBRARIES:
+                        TreeNode node4 = new TreeNode();
+                        node4.Text = "Imports";
+
+                        foreach (XeImportLibary lib in in_xex.import_libs)
+                        {
+                            TreeNode nlib = new TreeNode();
+                            nlib.Text = lib.name;
+                            nlib.Tag = "page import_libs " + lib.name;
+                            node4.Nodes.Add(nlib);
+
+                        }
+                        node4.Collapse();
+                        node.Nodes.Add(node4);
+                        break;
+                    case XeHeaderKeys.XBOX360_LOGO:
+                        TreeNode node5 = new TreeNode();
+                        node5.Text = "Xbox 360 Logo";
+                        node5.Tag = "page xbox_360_logo";
+                        node.Nodes.Add(node5);
+                        break;
+                    case XeHeaderKeys.STATIC_LIBRARIES:
+                        TreeNode node6 = new TreeNode();
+                        node6.Text = "Static Libaries";
+                        node6.Tag = "page static_libs";
+                        node.Nodes.Add(node6);
+                        break;
+                }
+            }
+            #endregion
+            // Add PE Sections.
+            if (in_xex.has_dos_header == true && in_xex.has_file_header == true && in_xex.has_opt_header == true)
+            {
+                TreeNode sections_node = new TreeNode();
+                sections_node.Text = "PE Sections";
+
+                foreach (ImageSectionHeader sec in in_xex.img_sections)
+                {
+                    TreeNode nodesec = new TreeNode();
+                    nodesec.Text = sec.Name;
+                    nodesec.Tag = "page section_edit " + sec.Name;
+                    sections_node.Nodes.Add(nodesec);
+                }
+                sections_node.Collapse();
+                node.Nodes.Add(sections_node);
+            }
+            treeView1.Nodes.Add(node);
+            treeView1.Update();
+        }
         public void clear_cache()
         {
             string[] files = Directory.GetFiles(Application.StartupPath + "/cache");
@@ -74,13 +183,13 @@ namespace Xenious
                 in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
                 in_xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
             {
-                MessageBox.Show("Unable to parse xex further, compression and decryption are currently unsupported.\n\n please run the xex through xextool via cmd (cmd : xextool -e u -c u xex.xex)", "Ohh noooooo !");
-                close_xex();
+                init_gui();
+                __log("Executable is encrypted, only edits are available...");
                 return;
             }
 
             // Check for unknown headers.
-            if(in_xex.unk_headers.Count > 0)
+            if (in_xex.unk_headers.Count > 0)
             {
                 MessageBox.Show("This executable has option header data that is currently unsupported by this editor, please consider emailing me this xex (compress it with winrar) to sysop@staticpi.net, thanks !");
                 close_xex();
@@ -104,6 +213,13 @@ namespace Xenious
                     in_xex.read_file_header();
                     in_xex.read_image_opt_header();
                     in_xex.read_image_sections();
+                    
+                    if(in_xex.img_file_h.Machine != 498)
+                    {
+                        MessageBox.Show("This executable has a unknown machine id, cannot continue, the xex is currupt !", "Ohhh noooo");
+                        close_xex();
+                        return;
+                    }
 
                     // Extract PE Sections.
                     // HudUISkin.xex freaks here with a currupt section o.0 - TODO.
@@ -161,102 +277,7 @@ namespace Xenious
                             return;
                     }
                 }
-                // Disable menu items, as we currently cannot rebuild.
-                foreach(XeOptHeader opth in in_xex.opt_headers)
-                {
-                    switch(opth.key)
-                    {
-                        case XeHeaderKeys.EXECUTION_INFO:
-                            executionToolStripMenuItem.Enabled = true;
-                            break;
-                        case XeHeaderKeys.GAME_RATINGS:
-                            ratingsToolStripMenuItem1.Enabled = true;
-                            break;
-                        case XeHeaderKeys.ALTERNATE_TITLE_IDS:
-                            alternativeToolStripMenuItem.Enabled = true;
-                            break;
-                    }
-                }
-                // Build treeView with original pe name
-                // if we can, if not then filename.
-                TreeNode node = new TreeNode();
-                if (in_xex.orig_pe_name != null)
-                {
-                    node.Text = in_xex.orig_pe_name;
-                }
-                else
-                {
-                    node.Text = Path.GetFileName(file);
-                }
-
-                TreeNode secs = new TreeNode();
-                secs.Text = "Security Sections";
-                secs.Tag = "page sections";
-                node.Nodes.Add(secs);
-
-                TreeNode opt = new TreeNode();
-                opt.Text = "Optional Data";
-                opt.Tag = "page opt_headers";
-                node.Nodes.Add(opt);
-
-                // Add Opt Header Nodes.
-                #region Add Optional Header Nodes to Tree.
-                for (int i = 0; i < in_xex.opt_headers.Count; i++)
-                {
-                    switch ((XeHeaderKeys)in_xex.opt_headers[i].key)
-                    {
-                        case XeHeaderKeys.RESOURCE_INFO:
-                            TreeNode node3 = new TreeNode();
-                            node3.Text = "Resources";
-                            node3.Tag = "page resources";
-                            node.Nodes.Add(node3);
-                            break;
-                        case XeHeaderKeys.IMPORT_LIBRARIES:
-                            TreeNode node4 = new TreeNode();
-                            node4.Text = "Imports";
-
-                            foreach (XeImportLibary lib in in_xex.import_libs)
-                            {
-                                TreeNode nlib = new TreeNode();
-                                nlib.Text = lib.name;
-                                nlib.Tag = "page import_libs " + lib.name;
-                                node4.Nodes.Add(nlib);
-
-                            }
-                            node4.Collapse();
-                            node.Nodes.Add(node4);
-                            break;
-                        case XeHeaderKeys.XBOX360_LOGO:
-                            TreeNode node5 = new TreeNode();
-                            node5.Text = "Xbox 360 Logo";
-                            node5.Tag = "page xbox_360_logo";
-                            node.Nodes.Add(node5);
-                            break;
-                        case XeHeaderKeys.STATIC_LIBRARIES:
-                            TreeNode node6 = new TreeNode();
-                            node6.Text = "Static Libaries";
-                            node6.Tag = "page static_libs";
-                            node.Nodes.Add(node6);
-                            break;
-                    }
-                }
-                #endregion
-                // Add PE Sections.
-                TreeNode sections_node = new TreeNode();
-                sections_node.Text = "PE Sections";
-
-                foreach (ImageSectionHeader sec in in_xex.img_sections)
-                {
-                    TreeNode nodesec = new TreeNode();
-                    nodesec.Text = sec.Name;
-                    nodesec.Tag = "page section_edit " + sec.Name;
-                    sections_node.Nodes.Add(nodesec);
-                }
-                sections_node.Collapse();
-                node.Nodes.Add(sections_node);
-
-                treeView1.Nodes.Add(node);
-                treeView1.Update();
+                init_gui();
             }
         }
         public void load_xex(string file)
@@ -590,6 +611,17 @@ namespace Xenious
                 in_xex.opt_headers.Add(nopt);
             }
             in_xex.alternative_title_ids = listoftids;
+        }
+
+        private void rebuildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save rebuilt xex as...";
+            if(sfd.ShowDialog() == DialogResult.OK)
+            {
+                in_xex.rebuild_xex(sfd.FileName, true);
+                __log("Rebuilt executable " + sfd.FileName + "...");
+            }
         }
     }
 }

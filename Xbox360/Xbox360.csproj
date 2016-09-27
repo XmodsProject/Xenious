@@ -42,9 +42,13 @@
   <ItemGroup>
     <Compile Include="Crypto\rijndael.cs" />
     <Compile Include="IO\IO.cs" />
+    <Compile Include="PE\ImageDirectoryEntry.cs" />
     <Compile Include="PE\ImageDosHeader.cs" />
+    <Compile Include="PE\ImageFileFlags.cs" />
     <Compile Include="PE\ImageFileHeader.cs" />
+    <Compile Include="PE\ImageLoaderFlags.cs" />
     <Compile Include="PE\ImageOptHeader.cs" />
+    <Compile Include="PE\ImageSectionFlags.cs" />
     <Compile Include="PE\ImageSectionHeader.cs" />
     <Compile Include="PE\SectionImportData.cs" />
     <Compile Include="PE\SectionRData.cs" />

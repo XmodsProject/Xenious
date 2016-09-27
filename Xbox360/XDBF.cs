@@ -25,7 +25,7 @@ namespace Xbox360
         Korean = 7,
         Chinese = 8,
     };
-    public struct XDBFHeader
+    public class XDBFHeader
     {
         public string magic;
         public UInt32 version;
@@ -34,33 +34,33 @@ namespace Xbox360
         public UInt32 free_count;
         public UInt32 free_used;
     };
-    public struct XDBFEntry
+    public class XDBFEntry
     {
         public UInt16 section;
         public UInt64 id;
         public UInt32 offset;
         public UInt32 size;
     };
-    public struct XDBFXSTC
+    public class XDBFXSTC
     {
         public string magic;
         public UInt32 version;
         public UInt32 size;
         public UInt32 default_lang;
     };
-    public struct XDBFXSTRHeader
+    public class XDBFXSTRHeader
     {
         public string magic;
         public UInt32 version;
         public UInt32 size;
         public UInt32 str_count;
     };
-    public struct XDBFStringTableEntry
+    public class XDBFStringTableEntry
     {
         public UInt16 id;
         public UInt16 str_len;
     };
-    public struct XDBFFileLoc
+    public class XDBFFileLoc
     {
         public UInt32 offset;
         public UInt32 size;

@@ -8,7 +8,7 @@ namespace Xbox360.PE
     /*
      * Grabbed from pe_image.h on windows.
      */
-    public struct ImageOptHeader
+    public class ImageOptHeader
     {
         public UInt16 Magic;
         public byte MajorLinkerVersion;

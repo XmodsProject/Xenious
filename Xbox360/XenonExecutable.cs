@@ -827,20 +827,13 @@ namespace Xbox360
             outio.write(module_flags, Endian.High);
             outio.write((UInt32)0, Endian.High); // Leave blank for now.
             outio.write(reserved, Endian.High);
-            outio.write((UInt32)0, Endian.High); // Leave blank for now.
+            outio.write((UInt32)(24 + (8 * opt_headers.Count)), Endian.High);
             outio.write((UInt32)opt_headers.Count, Endian.High);
 
-            // Write out blank for now.
-            for (int i = 0; i < opt_headers.Count; i++) { outio.write((UInt64)0, Endian.High); }
-
-            UInt32 cert_offset = (UInt32)outio.position;
-            // Write out certificate offset.
-            outio.position = 16;
-            outio.write(cert_offset, Endian.High);
 
             // Write out the certificate.
             #region Certificate
-            outio.position = cert_offset;
+            outio.position = 24 + (8 * opt_headers.Count);
             outio.write(cert.header_size, Endian.High);
             outio.write(cert.image_size, Endian.High);
             outio.write(cert.rsa_sig);
@@ -859,7 +852,7 @@ namespace Xbox360
             #endregion
 
             // Write out Section Table.
-            outio.position = cert_offset + 0x180;
+            outio.position = (24 + (8 * opt_headers.Count)) + 0x180;
             outio.write((UInt32)sections.Count, Endian.High);
 
             for (int i = 0; i < sections.Count; i++)
@@ -984,7 +977,7 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.IMPORT_LIBRARIES:
                         #region Writeout ImportLibarys
                         long pos = outio.position;
-                        opt_headers[i].data = (UInt32)outio.position;
+                        opt_headers[i].data = (uint)pos;
                         string kernals = "";
 
                         foreach (XeImportLibary lib in import_libs)
@@ -1250,7 +1243,37 @@ namespace Xbox360
                 outio.write(img_opt_h.NumberOfRvaAndSizes, Endian.Low);
                 #endregion
                 #region ImageSections
+                outio.position = pe_offset + img_dos_h.e_lfanew + 248;
 
+                for (int i = 0; i < img_file_h.NumberOfSections; i++)
+                {
+                    for(int x = img_sections[i].Name.Length; x < 8; x++)
+                    {
+                        img_sections[i].Name += "\0";
+                    }
+                    outio.write(Encoding.ASCII.GetBytes(img_sections[i].Name));
+                    outio.write(img_sections[i].Misc, Endian.Low);
+                    outio.write(img_sections[i].VirtualAddress, Endian.Low);
+                    outio.write(img_sections[i].SizeOfRawData, Endian.Low);
+                    outio.write(img_sections[i].RawDataPtr, Endian.Low);
+                    outio.write(img_sections[i].RelocationsPtr, Endian.Low);
+                    outio.write(img_sections[i].LineNumsPtr, Endian.Low);
+                    outio.write(img_sections[i].NumRelocations, Endian.Low);
+                    outio.write(img_sections[i].NUmLineNumbers, Endian.Low);
+                    outio.write(img_sections[i].Characteristics, Endian.Low);
+
+                    long pos = outio.position;
+
+                    // read -> write section data.
+                    IO.position = pe_data_offset + img_sections[i].RawDataPtr;
+                    byte[] data = IO.read_bytes((int)img_sections[i].SizeOfRawData);
+
+                    outio.position = pe_offset + img_sections[i].RawDataPtr;
+                    outio.write(data);
+
+                    // Go back to writing sections table.
+                    outio.position = pos;
+                }
                 #endregion
             }
             else // Else, just copy the original.
