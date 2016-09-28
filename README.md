@@ -43,6 +43,9 @@
 
 
 				             [ Changelog ]
+			             0.0.2101.0 [Beta] (28/08/2016)
+				Fixed 2 bugs that where left from the previous
+				build, sorry for that :)
 
 				     0.0.2100.0 [Beta] (28/08/2016)
 				Added support for xextool, now you can load
