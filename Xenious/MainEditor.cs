@@ -334,17 +334,17 @@ namespace Xenious
 
                         #region Parse XDBF
                         // Check for Game XDBF.
-                        //byte[] xdbf_title = BitConverter.GetBytes(in_xex.xeinfo.title_id);
-                        //Array.Reverse(xdbf_title);
+                        /*byte[] xdbf_title = BitConverter.GetBytes(in_xex.xeinfo.title_id);
+                        Array.Reverse(xdbf_title);
 
-                        //if (File.Exists(Application.StartupPath + "/cache/" + BitConverter.ToString(xdbf_title).ToUpper().Replace("-", "")))
-                        //{
-                        //    XDBF xdbf = new XDBF(Application.StartupPath + "/cache/" + BitConverter.ToString(xdbf_title).ToUpper().Replace("-", ""));
-                        //    xdbf.read_header();
-                        //    xdbf.read_entrys();
-                        //    xdbf.read_free_entrys();
-                        //    //MessageBox.Show("");
-                        //}
+                        if (File.Exists(Application.StartupPath + "/cache/" + BitConverter.ToString(xdbf_title).ToUpper().Replace("-", "")))
+                        {
+                            XDBF xdbf = new XDBF(Application.StartupPath + "/cache/" + BitConverter.ToString(xdbf_title).ToUpper().Replace("-", ""));
+                            xdbf.read_header();
+                            xdbf.read_entrys();
+                            xdbf.read_free_entrys();
+                            MessageBox.Show("");
+                        }*/
                         #endregion
                     }
                 }

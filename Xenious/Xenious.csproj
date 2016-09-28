@@ -75,7 +75,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Xbox360">
-      <HintPath>..\Xbox360\bin\Debug\Xbox360.dll</HintPath>
+      <HintPath>..\Xbox360\bin\Release\Xbox360.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
