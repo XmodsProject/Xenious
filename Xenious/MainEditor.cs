@@ -41,6 +41,7 @@ namespace Xenious
         public void __log(string msg)
         {
             richTextBox1.Text += string.Format("[ {0} ] - {1}\n", DateTime.Now, msg);
+            richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.ScrollToCaret();
         }
         private void disable_ui()
@@ -399,7 +400,7 @@ namespace Xenious
         public void save_xex() 
         {
             
-            if(has_xextool == true)
+            if(has_xextool == true && File.Exists(Application.StartupPath + "/cache/original.xex"))
             {
                 
                 in_xex.save_xex();
