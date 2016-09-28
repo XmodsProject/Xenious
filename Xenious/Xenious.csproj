@@ -116,6 +116,12 @@
     <Compile Include="Forms\Dialogs\ImageFlags.Designer.cs">
       <DependentUpon>ImageFlags.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\LoadFileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\LoadFileDialog.Designer.cs">
+      <DependentUpon>LoadFileDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialogs\MediaFlags.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\ImageFlags.resx">
       <DependentUpon>ImageFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\LoadFileDialog.resx">
+      <DependentUpon>LoadFileDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\MediaFlags.resx">
       <DependentUpon>MediaFlags.cs</DependentUpon>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,9 @@ namespace Xenious.Forms.Dialogs
 
         private void About_Load(object sender, EventArgs e)
         {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            label3.Text = string.Format("Version : {0} - [BETA]", fvi.FileVersion);
 
         }
 

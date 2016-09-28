@@ -18,13 +18,26 @@ namespace Xenious
 {
     public partial class MainEditor : Form
     {
+        /* Input / Output */
         XenonExecutable in_xex;
+
+        /* Form Options and Settings */
         bool rebuild_xex = false;
-        string current_dir = Application.StartupPath;
+        bool has_xextool = false;
+        string input_file = "";
+
+        /* Dialogs */
         Forms.Dialogs.HexEditBox hebox;
         Forms.Dialogs.TextEditBox tebox;
         Forms.Dialogs.NumericEditBox nebox;
+        Forms.Dialogs.LoadFileDialog lfd;
 
+        /* Output File */
+        string output_file = "";
+        XeEncryptionType output_enc_type;
+        XeCompressionType output_comp_type;
+
+        /* UI Funcs */
         public void __log(string msg)
         {
             richTextBox1.Text += string.Format("[ {0} ] - {1}\n", DateTime.Now, msg);
@@ -49,8 +62,6 @@ namespace Xenious
             treeView1.Nodes[0].Expand();
             treeView1.Update();
         }
-
-        /* Loading functions */
         public void init_gui()
         {
             // Disable menu items, as we currently cannot rebuild.
@@ -82,10 +93,10 @@ namespace Xenious
                     case XeHeaderKeys.TITLE_WORKSPACE_SIZE:
                         titleWorkspaceSizeToolStripMenuItem.Enabled = true;
                         break;
-                   // Disabled until I find the format.
-                   // case XeHeaderKeys.ENABLED_FOR_CALLCAP:
-                   //     callcapToolStripMenuItem.Enabled = true;
-                   //     break;
+                    // Disabled until I find the format.
+                    // case XeHeaderKeys.ENABLED_FOR_CALLCAP:
+                    //     callcapToolStripMenuItem.Enabled = true;
+                    //     break;
                     case XeHeaderKeys.DEVICE_ID:
                         deviceIDToolStripMenuItem1.Enabled = true;
                         break;
@@ -200,16 +211,8 @@ namespace Xenious
             treeView1.Nodes.Add(node);
             treeView1.Update();
         }
-        public void clear_cache()
-        {
-            string[] files = Directory.GetFiles(Application.StartupPath + "/cache");
 
-            foreach (string file in files)
-            {
-                File.Delete(file);
-            }
-            __log("Cache has been cleared...");
-        }
+        /* Loading functions */
         public void init_xex(string file)
         {
             // Parse all xex meta info.
@@ -219,22 +222,61 @@ namespace Xenious
                 in_xex.parse_sections();
 
                 int x = in_xex.parse_optional_headers();
+                if (x != 0)
+                {
+                    throw new Exception("Unable to parse optional headers, error code : " + x.ToString());
+                }
                 // Debug - MessageBox.Show(x.ToString());
             }
             catch
             {
                 throw new Exception("Unable to parse the xenon executable meta...");
             }
-            // Encryption and Compression Check.
-            // Current unsupported so run it through 
-            // xextool -e u -c u default.xex
+
             if (in_xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
                 in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
                 in_xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
             {
-                init_gui();
-                __log("Executable is encrypted, only edits are available...");
-                return;
+                if (has_xextool == false)
+                {
+                    init_gui();
+                    __log("Executable is encrypted, only edits are available...");
+                    return;
+                }
+                else
+                {
+                    // Dump a zero'ed xex to cache.
+                    if(xextool_to_raw_xextool())
+                    {
+                        // Parse all xex meta info.
+                        try
+                        {
+                            in_xex.IO.close();
+                            in_xex = null;
+                            in_xex = new XenonExecutable(Application.StartupPath + "/cache/original.xex");
+                            in_xex.read_header();
+                            in_xex.parse_certificate();
+                            in_xex.parse_sections();
+                            int x = in_xex.parse_optional_headers();
+                            if (x != 0)
+                            {
+                                throw new Exception("Unable to parse optional headers, error code : " + x.ToString());
+                            }
+                            // Debug - MessageBox.Show(x.ToString());
+                        }
+                        catch
+                        {
+                            throw new Exception("Unable to parse the xenon executable meta...");
+                        }
+                    }
+                    else
+                    {
+                        __log("Unable to open decompressed and decrypted cache file...");
+                        disable_ui();
+                        in_xex = null;
+                        return;
+                    }
+                }
             }
 
             // Check for unknown headers.
@@ -256,7 +298,7 @@ namespace Xenious
             {
                 // Load PE.
                 in_xex.read_dos_header();
-                if (in_xex.img_opt_h.Magic == 267)
+                if (in_xex.img_dos_h.e_magic == 23117)
                 {
                     in_xex.read_file_header();
                     in_xex.read_image_opt_header();
@@ -356,17 +398,109 @@ namespace Xenious
         }
         public void save_xex() 
         {
-            in_xex.save_xex();
-            __log(string.Format("Saved edits to '{0}'...", Path.GetFileName(in_xex.IO.file)));
+            
+            if(has_xextool == true)
+            {
+                
+                in_xex.save_xex();
+
+                // Delete original.
+                string filename = input_file;
+                in_xex.IO.close();
+                in_xex = null;
+                File.Delete(filename);
+
+                // Copy original to new output file.
+                File.Copy(Application.StartupPath + "/cache/original.xex", filename);
+                disable_ui();
+                load_xex(filename);
+                __log(string.Format("Saved edits to '{0}'...", Path.GetFileName(in_xex.IO.file)));
+            }
+            else
+            {
+                in_xex.save_xex();
+                __log(string.Format("Saved edits to '{0}'...", Path.GetFileName(in_xex.IO.file)));
+            }
         }
         public void close_xex()
         {
-            in_xex.IO.close();
-            in_xex = null;
+            if (in_xex != null)
+            {
+                in_xex.IO.close();
+                in_xex = null;
+            }
             clear_cache();
             disable_ui();
         }
 
+        /* Init Funcs */
+        public void clear_cache()
+        {
+            string[] files = Directory.GetFiles(Application.StartupPath + "/cache");
+
+            foreach (string file in files)
+            {
+                File.Delete(file);
+            }
+            __log("Cache has been cleared...");
+        }
+        public void check_xextool_exists()
+        {
+            if(File.Exists(Application.StartupPath + "/bin/xextool.exe"))
+            {
+                has_xextool = true;
+                __log("xextool Support Enabled...");
+            }
+            else
+            {
+                has_xextool = false;
+                __log("xextool Supoort Disabled...");
+            }
+        }
+
+        // For now until I get my modchips to RGH my slim,
+        // I need the hypervisor and xboxkernal, for routines 
+        // Compress, Decompression, Encryption, Decryption...
+        // We use xextool instead, thanks again to xorloser !
+        public bool xex_process_xextool(string inputfile, string args, string outputfile)
+        {
+            Process process = new Process
+            {
+                StartInfo = {
+                    FileName = AppDomain.CurrentDomain.BaseDirectory + "/bin/xextool.exe",
+                    Arguments = string.Format("{0} {1} {2}{3}{4}", args, ((outputfile != "") ? string.Format("-o {0}{1}{2}", '"', outputfile, '"') : ""), '"', inputfile, '"'),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+            process.Start();
+            string str = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+            if (str.Length > 0)
+            {
+                Console.WriteLine("xextool error :");
+                Console.WriteLine(str);
+                return false;
+            }
+
+            if(File.Exists(Application.StartupPath + "/cache/original.xex") == false)
+            {
+                return false;
+            }
+            return true;
+        }
+        public bool xextool_to_raw_xextool()
+        {
+            if(xex_process_xextool(in_xex.IO.file, "-c u -e u", Application.StartupPath + "/cache/original.xex") == true)
+            {
+                __log("xextool : Decompressed and Decrypted Executable...");
+                return true;
+            }
+            return false;
+        }
+
+        /* Form Funcs and Events */
         public MainEditor()
         {
             InitializeComponent();
@@ -388,19 +522,44 @@ namespace Xenious
             {
                 clear_cache();
             }
+
+            check_xextool_exists();
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (in_xex != null)
+            /*lfd = new Forms.Dialogs.LoadFileDialog(has_xextool);
+            lfd.ShowDialog();
+            if(lfd.load_file == true)
             {
-                close_xex();
-            }
+                // Close original.
+                if(in_xex != null)
+                {
+                    in_xex.IO.close();
+                    in_xex = null;
+                }
+
+                // Load new.
+                output_file = lfd.output_file;
+                if(has_xextool == true)
+                {
+                    output_enc_type = lfd.output_enc_type;
+                    output_comp_type = lfd.output_comp_type;
+                }
+                load_xex(lfd.input_file);
+            } */
+
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select a Xenon Executable...";
-            if (ofd.ShowDialog() == DialogResult.OK)
+            ofd.Title = "Open a Xenon Executable File...";
+            if(ofd.ShowDialog() == DialogResult.OK)
             {
+                // Close original.
+                if (in_xex != null)
+                {
+                    close_xex();
+                }
+                input_file = ofd.FileName;
                 load_xex(ofd.FileName);
-            }
+            }  
         }
         private void regionFlagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -717,6 +876,7 @@ namespace Xenious
         private void imageBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.img_base_addr);
             nebox.ShowDialog();
             in_xex.img_base_addr = nebox.value;
@@ -724,6 +884,7 @@ namespace Xenious
         private void originalBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.orig_base_addr);
             nebox.ShowDialog();
             in_xex.orig_base_addr = nebox.value;
@@ -731,6 +892,7 @@ namespace Xenious
         private void entryPointToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.exe_entry_point);
             nebox.ShowDialog();
             in_xex.exe_entry_point = nebox.value;
@@ -738,6 +900,7 @@ namespace Xenious
         private void titleWorkspaceSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.title_workspace_size);
             nebox.ShowDialog();
             in_xex.title_workspace_size = nebox.value;
@@ -745,6 +908,7 @@ namespace Xenious
         private void stackSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.default_stack_size);
             nebox.ShowDialog();
             in_xex.default_stack_size = nebox.value;
@@ -752,6 +916,7 @@ namespace Xenious
         private void filesystemCacheSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.default_fs_cache_size);
             nebox.ShowDialog();
             in_xex.default_fs_cache_size = nebox.value;
@@ -759,9 +924,15 @@ namespace Xenious
         private void heapSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
+            nebox.set_max(UInt32.MaxValue);
             nebox.set_value(in_xex.default_heap_size);
             nebox.ShowDialog();
             in_xex.default_heap_size = nebox.value;
+        }
+        private void MainEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            close_xex();
+            clear_cache();
         }
     }
 }

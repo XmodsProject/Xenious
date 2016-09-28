@@ -65,6 +65,7 @@ namespace Xbox360
         public byte[] xbox_360_logo;
         public byte[] lan_key;
         public byte[] device_id;
+        public byte[] base_file_format_header;
         public List<byte[]> alternative_title_ids;
 
         /* PE Stuff */
@@ -219,34 +220,6 @@ namespace Xbox360
                             base_file_info_h.info_size = IO.read_int32(Endian.High);
                             base_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
                             base_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
-
-                            #region XeCompression
-                            switch (base_file_info_h.comp_type)
-                            {
-                                case XeCompressionType.Raw:
-                                    int num3 = (base_file_info_h.info_size - 8) / 8;
-                                    raw_file_info_h = new XeRawBaseFileInfo();
-                                    raw_file_info_h.info_size = IO.read_int32(Endian.High);
-                                    raw_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
-                                    raw_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
-                                    raw_file_info_h.block = new List<XeRawBaseFileBlock>();
-
-                                    for (int x = 0; x < num3; x++)
-                                    {
-                                        XeRawBaseFileBlock b = new XeRawBaseFileBlock();
-                                        b.data_size = IO.read_int32(Endian.High);
-                                        b.zero_size = IO.read_int32(Endian.High);
-                                        raw_file_info_h.block.Add(b);
-                                    }
-
-                                    break;
-                                case XeCompressionType.Compressed:
-
-                                    break;
-                                case XeCompressionType.DeltaCompressed:
-                                    break;
-                            }
-                            #endregion
                         }
                         catch
                         {
@@ -794,7 +767,7 @@ namespace Xbox360
                         break;
                     case XeHeaderKeys.LAN_KEY:
                         IO.position = opt.pos;
-                        IO.write(xgd3_media_id);
+                        IO.write(lan_key);
                         break;
                     case XeHeaderKeys.ALTERNATE_TITLE_IDS:
                         IO.position = opt.pos + 4;

@@ -18,6 +18,10 @@ namespace Xenious.Forms.Dialogs
             numericUpDown1.Value = val;
             value = val;
         }
+        public void set_max(uint val)
+        {
+            numericUpDown1.Maximum = val;
+        }
         public NumericEditBox()
         {
             InitializeComponent();
