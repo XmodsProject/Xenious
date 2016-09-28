@@ -20,12 +20,11 @@
 
 				           [ * PLEASE NOTE * ]
 
-		This tool does not currently support encryption, decryption, compression,
-		decompression or delta, you can however still edit the files.
+		This tool uses xextool by xorloser to decompress/decrypt the executable,
+		just create a folder in the applications directory called "bin", then place
+		xextool.exe in there.
 
-		So each xex you run through this must have been passed through to xextool,
 		Which you can grab at (http://xorloser.com/)
-		Run with the command : xextool -c u -e u xex.xex
 		
 		This is only for full browsing, like pe sections, extracting resources.
 
@@ -44,7 +43,32 @@
 
 
 				             [ Changelog ]
+			             0.0.2101.0 [Beta] (28/08/2016)
+				Fixed 2 bugs that where left from the previous
+				build, sorry for that :)
 
+				     0.0.2100.0 [Beta] (28/08/2016)
+				Added support for xextool, now you can load
+				compressed / encrypted xexs and still view 
+				and edit the file. NOTE the original file will
+				be decrypted and decompressed, no backups.
+				
+				Fixed bugs in GUI, mainly Numeric editing 
+				optional headers, they wouldent load.
+				
+				Fixed a buf in Xbox360.
+			             0.0.1175.0 [Beta] (27/09/2016)
+				Added the ability edit most of the optional
+				headers. 
+				
+				Few bug fixes in the Xbox 360 libary where
+				it wouldent load certain types of xex's with
+				single import libary kernals.
+				
+			             0.0.1050.0 [Beta] (27/09/2016)
+				Added update feature, will tell you whenever
+				there is a new version and downloads it.
+				
 			             0.0.1025.0 [Beta] (27/09/2016)
 				Added the ability to save encrypted/compressed
 				files edits.
