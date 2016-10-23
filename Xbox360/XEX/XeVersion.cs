@@ -13,23 +13,44 @@ namespace Xbox360.XEX
 {
     public class XeVersion
     {
-        public UInt32 version;
+        public byte[] version;
 
-        public UInt32 major
+        public byte major
         {
-            get { return (version >> 28); }
+            get { return (byte)(version[0] & 0xF); }
+            set { version[0] ^= (byte)(value & 0xF); }
         }
-        public UInt32 minor
+        public byte minor
         {
-            get { return (version >> 24) & 0xF0; }
+            get { return (byte)((version[0] & 0x0F) << 4); }
+            set { version[0] ^= (byte)((value >> 4) & 0x0F); }
         }
-        public UInt32 build
+        public UInt16 build
         {
-            get { return (version >> 8) & 0x00FF; }
+            get
+            {
+                if(BitConverter.IsLittleEndian)
+                {
+                    return BitConverter.ToUInt16(new byte[2] { version[2], version[1] }, 0);
+                }
+                return BitConverter.ToUInt16(new byte[2] { version[1], version[2] }, 0);
+            }
+            set
+            {
+                byte[] data = BitConverter.GetBytes(value);
+
+                if(BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(data);
+                }
+                version[1] = data[1];
+                version[2] = data[2];
+            }
         }
-        public UInt32 qfe
+        public byte qfe
         {
-            get { return (version & 0xFF00) & 0xFF; }
+            get { return version[3]; }
+            set { version[3] = value; }
         }
         public string get_string
         {

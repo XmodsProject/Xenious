@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Xbox360.IO;
 
 namespace Xenious.Forms.Dialogs
 {
@@ -32,7 +33,7 @@ namespace Xenious.Forms.Dialogs
 
         private void button1_Click(object sender, EventArgs e)
         {
-            value = IO.IOFuncs.StringToByteArrayFastest(richTextBox1.Text);
+            value = IOFuncs.StringToByteArrayFastest(richTextBox1.Text);
             this.Close();
         }
     }

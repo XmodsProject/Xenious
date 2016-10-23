@@ -14,10 +14,13 @@ using Xbox360;
 using Xbox360.XEX;
 using Xbox360.PE;
 
-namespace Xenious
+namespace Xenious.Forms
 {
-    public partial class MainEditor : Form
+    public partial class MetaEditor : Form
     {
+        /* Version for Launcher. */
+        public static string tool_version = "0.0.600.0";
+
         /* Input / Output */
         XenonExecutable in_xex;
 
@@ -247,7 +250,7 @@ namespace Xenious
                 else
                 {
                     // Dump a zero'ed xex to cache.
-                    if(xextool_to_raw_xextool())
+                    if(Xecutable.xextool.xextool_to_raw_xextool(in_xex.IO.file, Application.StartupPath + "/cache/original.xex"))
                     {
                         // Parse all xex meta info.
                         try
@@ -445,73 +448,15 @@ namespace Xenious
             }
             __log("Cache has been cleared...");
         }
-        public void check_xextool_exists()
-        {
-            if(File.Exists(Application.StartupPath + "/bin/xextool.exe"))
-            {
-                has_xextool = true;
-                __log("xextool Support Enabled...");
-            }
-            else
-            {
-                has_xextool = false;
-                __log("xextool Supoort Disabled...");
-            }
-        }
-
-        // For now until I get my modchips to RGH my slim,
-        // I need the hypervisor and xboxkernal, for routines 
-        // Compress, Decompression, Encryption, Decryption...
-        // We use xextool instead, thanks again to xorloser !
-        public bool xex_process_xextool(string inputfile, string args, string outputfile)
-        {
-            Process process = new Process
-            {
-                StartInfo = {
-                    FileName = AppDomain.CurrentDomain.BaseDirectory + "/bin/xextool.exe",
-                    Arguments = string.Format("{0} {1} {2}{3}{4}", args, ((outputfile != "") ? string.Format("-o {0}{1}{2}", '"', outputfile, '"') : ""), '"', inputfile, '"'),
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                }
-            };
-            process.Start();
-            string str = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-            if (str.Length > 0)
-            {
-                Console.WriteLine("xextool error :");
-                Console.WriteLine(str);
-                return false;
-            }
-
-            if(File.Exists(Application.StartupPath + "/cache/original.xex") == false)
-            {
-                return false;
-            }
-            return true;
-        }
-        public bool xextool_to_raw_xextool()
-        {
-            if(xex_process_xextool(in_xex.IO.file, "-c u -e u", Application.StartupPath + "/cache/original.xex") == true)
-            {
-                __log("xextool : Decompressed and Decrypted Executable...");
-                return true;
-            }
-            return false;
-        }
 
         /* Form Funcs and Events */
-        public MainEditor()
+        public MetaEditor()
         {
             InitializeComponent();
         }
         private void MainEditor_Load(object sender, EventArgs e)
         {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-            __log(string.Format("Xenious - The Xenon Executable Editor [{0}] - By [ Hect0r ] has started...", fvi.FileVersion));
+            __log("Meta Editor has started...");
             disable_ui();
 
             // Check we have a cache directory.
@@ -524,7 +469,16 @@ namespace Xenious
                 clear_cache();
             }
 
-            check_xextool_exists();
+            if(Xecutable.xextool.check_xextool_exists())
+            {
+                has_xextool = true;
+                __log("xextool Tool Support Enabled...");
+            }
+            else
+            {
+                has_xextool = false;
+                __log("xextool Tool Support Disabled...");
+            }
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -690,12 +644,6 @@ namespace Xenious
             exinf.Show();
 
             
-        }
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // This loads the About form.
-            Forms.Dialogs.About about = new Forms.Dialogs.About();
-            about.ShowDialog();
         }
         private void addToDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {

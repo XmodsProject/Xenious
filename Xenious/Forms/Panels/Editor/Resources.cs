@@ -14,8 +14,8 @@ namespace Xenious.Forms.Panels.Editor
     public partial class Resources : UserControl
     {
         XenonExecutable xex;
-        MainEditor main;
-        public Resources(XenonExecutable in_xex, MainEditor in_main)
+        MetaEditor main;
+        public Resources(XenonExecutable in_xex, MetaEditor in_main)
         {
             InitializeComponent();
             xex = in_xex;

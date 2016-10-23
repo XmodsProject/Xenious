@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Xbox360.IO;
 
 namespace Xenious.Forms.Dialogs
 {
@@ -91,7 +92,7 @@ namespace Xenious.Forms.Dialogs
                 MessageBox.Show("The title id must be 8 characters long...");
                 return;
             }
-            byte[] data = IO.IOFuncs.StringToByteArrayFastest(textBox1.Text);
+            byte[] data = IOFuncs.StringToByteArrayFastest(textBox1.Text);
             title_ids[selected_titleid] = data;
             treeView1.SelectedNode.Text = textBox1.Text.ToUpper();
         }

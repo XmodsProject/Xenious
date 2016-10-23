@@ -38,11 +38,12 @@ namespace Xenious.Forms.Panels.Editor
             // Add Records.
             listView1.Items.Clear();
             int num = 0;
-            foreach (uint import in libinf.records)
+            foreach (XeImportOridinal import in libinf.records)
             {
                 ListViewItem item = new ListViewItem();
                 item.Text = num.ToString();
-                item.SubItems.Add("0x" + import.ToString("X8"));
+                item.SubItems.Add("0x" + import.actual_pos.ToString("X8"));
+                item.SubItems.Add("0x" + import.ord.ToString("X8"));
                 listView1.Items.Add(item);
                 num++;
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Xenious.IO;
 using System.IO;
+using Xbox360.IO;
 
 namespace Xbox360.PE
 {

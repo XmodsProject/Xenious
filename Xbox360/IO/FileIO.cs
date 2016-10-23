@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Xbox360.IO;
 
 namespace Xenious.IO
 {
-    public enum Endian : uint
-    {
-        High = 0,
-        Low = 1
-    }
     public class FileIO
     {
         Endian machine_endian;
@@ -60,7 +56,8 @@ namespace Xenious.IO
         }
 
         /* Read Functions */
-        public byte read_byte() {
+        public byte read_byte()
+        {
             return br.ReadByte();
         }
         public byte[] read_bytes(int len, bool reverse = false)
@@ -213,30 +210,6 @@ namespace Xenious.IO
             br.Close();
             bw.Close();
             handle.Close();
-        }
-
-    }
-    public class IOFuncs
-    {
-        // With Thanks to 
-        // http://stackoverflow.com/a/9995303
-        
-        public static byte[] StringToByteArrayFastest(string hex)
-        {
-            byte[] arr = new byte[hex.Length >> 1];
-
-            for (int i = 0; i < hex.Length >> 1; ++i)
-            {
-                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
-            }
-
-            return arr;
-        }
-
-        public static int GetHexVal(char hex)
-        {
-            int val = (int)hex;
-            return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
         }
     }
 }

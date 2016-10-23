@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Xbox360.IO;
 using Xbox360.XEX;
 
 namespace Xenious.Forms.Dialogs
@@ -43,14 +44,14 @@ namespace Xenious.Forms.Dialogs
 
         private void button1_Click(object sender, EventArgs e)
         {
-            byte[] data = IO.IOFuncs.StringToByteArrayFastest(textBox1.Text);
+            byte[] data = IOFuncs.StringToByteArrayFastest(textBox1.Text);
             if(BitConverter.IsLittleEndian)
             {
                 Array.Reverse(data);
             }
             xec.load_address = BitConverter.ToUInt32(data, 0);
-            xec.seed_key = IO.IOFuncs.StringToByteArrayFastest(textBox2.Text);
-            xec.xgd2_media_id = IO.IOFuncs.StringToByteArrayFastest(textBox3.Text);
+            xec.seed_key = IOFuncs.StringToByteArrayFastest(textBox2.Text);
+            xec.xgd2_media_id = IOFuncs.StringToByteArrayFastest(textBox3.Text);
             this.Close();
         }
 

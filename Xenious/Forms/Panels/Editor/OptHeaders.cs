@@ -15,9 +15,9 @@ namespace Xenious.Forms.Panels.Editor
     public partial class OptHeaders : UserControl
     {
         XenonExecutable xex;
-        MainEditor main;
+        MetaEditor main;
 
-        public OptHeaders(XenonExecutable in_xex, MainEditor in_main)
+        public OptHeaders(XenonExecutable in_xex, MetaEditor in_main)
         {
             InitializeComponent();
             xex = in_xex;

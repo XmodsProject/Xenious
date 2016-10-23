@@ -41,7 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crypto\rijndael.cs" />
-    <Compile Include="IO\IO.cs" />
+    <Compile Include="IO\EndianType.cs" />
+    <Compile Include="IO\FileIO.cs" />
+    <Compile Include="IO\IOFuncs.cs" />
+    <Compile Include="IO\MemoryIO.cs" />
+    <Compile Include="Kernal\Memory\XboxMemory.cs" />
     <Compile Include="PE\ImageDirectoryEntry.cs" />
     <Compile Include="PE\ImageDosHeader.cs" />
     <Compile Include="PE\ImageFileFlags.cs" />
@@ -84,6 +88,9 @@
     <Compile Include="XEX\XeTLSInfo.cs" />
     <Compile Include="XEX\XeVersion.cs" />
     <Compile Include="XUIZ\XUIZHeader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Kernal\Network\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

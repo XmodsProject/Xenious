@@ -12,6 +12,7 @@ using System.IO;
 using Xbox360.PE;
 using Xbox360.XEX;
 using Xbox360.XUIZ;
+using Xbox360.IO;
 
 namespace Xbox360
 {
@@ -59,7 +60,8 @@ namespace Xbox360
         public UInt32 title_workspace_size = 0;
         public UInt32 default_fs_cache_size = 0;
         public UInt32 default_heap_size = 0;
-        public UInt64 checksum_timestamp = 0;
+        public byte[] checksum;
+        public UInt32 timestamp = 0;
         public byte[] callcap_data;
         public byte[] xgd3_media_id;
         public byte[] xbox_360_logo;
@@ -340,7 +342,8 @@ namespace Xbox360
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            checksum_timestamp = IO.read_uint64(Endian.High);
+                            checksum = IO.read_bytes(4);
+                            timestamp = IO.read_uint32(Endian.High);
                         }
                         catch { return -8; }
                         #endregion
@@ -427,8 +430,8 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             xeinfo = new XeExecutionInfo();
                             xeinfo.media_id = IO.read_uint32(Endian.High);
-                            xeinfo.version = IO.read_uint32(Endian.High);
-                            xeinfo.base_version = IO.read_uint32(Endian.High);
+                            xeinfo.version = IO.read_bytes(4);
+                            xeinfo.base_version = IO.read_bytes(4);
                             xeinfo.title_id = IO.read_uint32(Endian.High);
                             xeinfo.platform = IO.read_byte();
                             xeinfo.executable_table = IO.read_byte();
@@ -711,7 +714,8 @@ namespace Xbox360
                         break;
                     case XeHeaderKeys.CHECKSUM_TIMESTAMP:
                         IO.position = opt.pos;
-                        IO.write(checksum_timestamp, Endian.High);
+                        IO.write(checksum);
+                        IO.write(timestamp, Endian.High);
                         break;
                     case XeHeaderKeys.DEFAULT_STACK_SIZE:
                         IO.position = 24 + ((8 * (num + 1))  - 4);
@@ -736,8 +740,8 @@ namespace Xbox360
                     case XeHeaderKeys.EXECUTION_INFO:
                         IO.position = opt.pos;
                         IO.write(xeinfo.media_id, Endian.High);
-                        IO.write(xeinfo.version, Endian.High);
-                        IO.write(xeinfo.base_version, Endian.High);
+                        IO.write(xeinfo.version);
+                        IO.write(xeinfo.base_version);
                         IO.write(xeinfo.title_id, Endian.High);
                         IO.write(xeinfo.platform);
                         IO.write(xeinfo.executable_table);
@@ -977,7 +981,8 @@ namespace Xbox360
                         opt_headers[i].data = (uint)outio.position;
 
                         // Write out ChecksumTimestamp (No length, header has length.
-                        outio.write(checksum_timestamp, Endian.High);
+                        outio.write(checksum);
+                        outio.write(timestamp, Endian.High);
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_CALLCAP:
@@ -1063,8 +1068,8 @@ namespace Xbox360
 
                         // Writeout Execution Info
                         outio.write(xeinfo.media_id, Endian.High);
-                        outio.write(xeinfo.version, Endian.High);
-                        outio.write(xeinfo.base_version, Endian.High);
+                        outio.write(xeinfo.version);
+                        outio.write(xeinfo.base_version);
                         outio.write(xeinfo.title_id, Endian.High);
                         outio.write(xeinfo.platform);
                         outio.write(xeinfo.executable_table);

@@ -60,7 +60,7 @@ namespace Xenious
                     return;
                 }
             }
-            Application.Run(new MainEditor());
+            Application.Run(new Launcher());
         }
     }
 }
