@@ -45,36 +45,30 @@ namespace Xbox360.XEX
                 Array.Copy(buf, 0, data, 20, 4);
             }
         }
-        public UInt32 version
+        public byte[] version
         {
             get
             {
                 byte[] buf = new byte[4];
                 Array.Copy(data, 24, buf, 0, 4);
-                Array.Reverse(buf, 0, 4);
-                return BitConverter.ToUInt32(buf, 0);
+                return data;
             }
             set
             {
-                byte[] buf = BitConverter.GetBytes(value);
-                Array.Reverse(buf);
-                Array.Copy(buf, 0, data, 24, 4);
+                Array.Copy(value, 0, data, 24, 4);
             }
         }
-        public UInt32 min_version
+        public byte[] min_version
         {
             get
             {
                 byte[] buf = new byte[4];
                 Array.Copy(data, 28, buf, 0, 4);
-                Array.Reverse(buf, 0, 4);
-                return BitConverter.ToUInt32(buf, 0);
+                return data;
             }
             set
             {
-                byte[] buf = BitConverter.GetBytes(value);
-                Array.Reverse(buf);
-                Array.Copy(buf, 0, data, 28, 4);
+                Array.Copy(value, 0, data, 28, 4);
             }
         }
         public UInt32 record_count

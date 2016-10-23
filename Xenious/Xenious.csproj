@@ -75,16 +75,41 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Xbox360">
-      <HintPath>..\Xbox360\bin\Release\Xbox360.dll</HintPath>
+      <HintPath>..\Xbox360\bin\Debug\Xbox360.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\CreateNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CreateNew.Designer.cs">
+      <DependentUpon>CreateNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Database\PE_Function.cs" />
     <Compile Include="Database\XEXReportFile.cs" />
     <Compile Include="Forms\Dialogs\About.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Dialogs\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\CapData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\CapData.Designer.cs">
+      <DependentUpon>CapData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\LoadFileProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\LoadFileProgress.Designer.cs">
+      <DependentUpon>LoadFileProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\MultidiscMediaIDs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\MultidiscMediaIDs.Designer.cs">
+      <DependentUpon>MultidiscMediaIDs.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dialogs\AlternativeTitleIDs.cs">
       <SubType>Form</SubType>
@@ -164,6 +189,24 @@
     <Compile Include="Forms\Dialogs\TextEditBox.Designer.cs">
       <DependentUpon>TextEditBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\XenonMemory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\XenonMemory.Designer.cs">
+      <DependentUpon>XenonMemory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\XenonMemoryDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\XenonMemoryDatabase.Designer.cs">
+      <DependentUpon>XenonMemoryDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialogs\XEXExtraction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\XEXExtraction.Designer.cs">
+      <DependentUpon>XEXExtraction.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Panels\Editor\Imports.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -200,16 +243,41 @@
     <Compile Include="Forms\Panels\PE_Editor.Designer.cs">
       <DependentUpon>PE_Editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainEditor.cs">
+    <Compile Include="Launcher.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainEditor.Designer.cs">
-      <DependentUpon>MainEditor.cs</DependentUpon>
+    <Compile Include="Launcher.Designer.cs">
+      <DependentUpon>Launcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MetaEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MetaEditor.Designer.cs">
+      <DependentUpon>MetaEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Forms\XEXEditorDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\XEXEditorDebugger.Designer.cs">
+      <DependentUpon>XEXEditorDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xecutable\xextool.cs" />
+    <EmbeddedResource Include="Forms\CreateNew.resx">
+      <DependentUpon>CreateNew.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\About.resx">
       <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\CapData.resx">
+      <DependentUpon>CapData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\LoadFileProgress.resx">
+      <DependentUpon>LoadFileProgress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\MultidiscMediaIDs.resx">
+      <DependentUpon>MultidiscMediaIDs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\AlternativeTitleIDs.resx">
       <DependentUpon>AlternativeTitleIDs.cs</DependentUpon>
@@ -250,6 +318,15 @@
     <EmbeddedResource Include="Forms\Dialogs\TextEditBox.resx">
       <DependentUpon>TextEditBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\XenonMemory.resx">
+      <DependentUpon>XenonMemory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\XenonMemoryDatabase.resx">
+      <DependentUpon>XenonMemoryDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\XEXExtraction.resx">
+      <DependentUpon>XEXExtraction.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Panels\Editor\Imports.resx">
       <DependentUpon>Imports.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,8 +345,11 @@
     <EmbeddedResource Include="Forms\Panels\PE_Editor.resx">
       <DependentUpon>PE_Editor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainEditor.resx">
-      <DependentUpon>MainEditor.cs</DependentUpon>
+    <EmbeddedResource Include="Launcher.resx">
+      <DependentUpon>Launcher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MetaEditor.resx">
+      <DependentUpon>MetaEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -281,6 +361,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Forms\XEXEditorDebugger.resx">
+      <DependentUpon>XEXEditorDebugger.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
@@ -296,6 +379,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Forms\Wizards\BuildFromExe\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>

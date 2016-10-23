@@ -47,7 +47,6 @@ namespace Xbox360
         public XeDeltaPatch delta_patch;
         public XeTLSInfo tls_info;
         public XeExportsByName exports_named;
-        public XUIZHeader xuiz_h;
         public string bound_path = "";
         public string orig_pe_name = "";
         public UInt32 orig_base_addr = 0;
@@ -59,21 +58,20 @@ namespace Xbox360
         public UInt32 title_workspace_size = 0;
         public UInt32 default_fs_cache_size = 0;
         public UInt32 default_heap_size = 0;
-        public UInt64 checksum_timestamp = 0;
-        public byte[] callcap_data;
+        public UInt32 checksum = 0;
+        public UInt32 timestamp = 0;
+        public UInt32 callcap_start = 0;
+        public UInt32 callcap_end = 0;
         public byte[] xgd3_media_id;
         public byte[] xbox_360_logo;
         public byte[] lan_key;
         public byte[] device_id;
         public byte[] base_file_format_header;
         public List<byte[]> alternative_title_ids;
+        public List<byte[]> multidisc_media_ids;
 
-        /* PE Stuff */
-        public ImageDosHeader img_dos_h;
-        public ImageFileHeader img_file_h;
-        public ImageOptHeader img_opt_h;
-        public List<ImageSectionHeader> img_sections;
-        public SectionImportData pe_sec_idata;
+        public PortableExecutable pe;
+        public XUIZHeader xuiz_h;
 
         public XenonExecutable(string file)
         {
@@ -255,14 +253,17 @@ namespace Xbox360
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.XGD3_MEDIA_KEY:
+                        #region XGD3MediaKey
                         try
                         {
                             IO.position = opt_headers[i].pos;
                             xgd3_media_id = IO.read_bytes((int)opt_headers[i].len);
                         }
                         catch { return -4; }
+                        #endregion
                         break;
                     case (uint)XeHeaderKeys.BOUNDING_PATH:
+                        #region BoundingPath
                         try
                         {
                             IO.position = (opt_headers[i].pos);
@@ -270,6 +271,7 @@ namespace Xbox360
                             bound_path = IO.read_string((int)len);
                         }
                         catch { return -5; }
+                        #endregion
                         break;
                     case (uint)XeHeaderKeys.DEVICE_ID:
                         #region DeviceID
@@ -317,8 +319,12 @@ namespace Xbox360
                                 {
                                     if (buf[x] != "")
                                     {
-                                        kernals[g] = buf[x];
-                                        g++;
+                                        // Some xex's have random padding, so cut the crap from the end.
+                                        if (g < num_libs)
+                                        {
+                                            kernals[g] = buf[x];
+                                            g++;
+                                        }
                                     }
                                 }
 
@@ -340,7 +346,8 @@ namespace Xbox360
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            checksum_timestamp = IO.read_uint64(Endian.High);
+                            checksum = IO.read_uint32(Endian.High);
+                            timestamp = IO.read_uint32(Endian.High);
                         }
                         catch { return -8; }
                         #endregion
@@ -349,7 +356,8 @@ namespace Xbox360
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            callcap_data = IO.read_bytes((int)opt_headers[i].len);
+                            callcap_start = IO.read_uint32(Endian.High);
+                            callcap_end = IO.read_uint32(Endian.High);
                         }
                         catch { return -9; }
                         break;
@@ -427,8 +435,8 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             xeinfo = new XeExecutionInfo();
                             xeinfo.media_id = IO.read_uint32(Endian.High);
-                            xeinfo.version = IO.read_uint32(Endian.High);
-                            xeinfo.base_version = IO.read_uint32(Endian.High);
+                            xeinfo.version = IO.read_bytes(4);
+                            xeinfo.base_version = IO.read_bytes(4);
                             xeinfo.title_id = IO.read_uint32(Endian.High);
                             xeinfo.platform = IO.read_byte();
                             xeinfo.executable_table = IO.read_byte();
@@ -486,13 +494,22 @@ namespace Xbox360
                         catch { return -16; }
                         #endregion
                         break;
+                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                        IO.position = opt_headers[i].pos;
+                        uint len2 = IO.read_uint32(Endian.High);
+                        multidisc_media_ids = new List<byte[]>();
+                        for (int x = 0; x < (int)(len2 - 4) / 16; x++)
+                        {
+                            multidisc_media_ids.Add(IO.read_bytes(16));
+                        }
+                        break;
                     case (uint)XeHeaderKeys.ALTERNATE_TITLE_IDS:
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            uint len2 = IO.read_uint32(Endian.High);
+                            len = IO.read_uint32(Endian.High);
                             alternative_title_ids = new List<byte[]>();
-                            for (int x = 0; x < (int)(len2 - 4) / 4; x++)
+                            for (int x = 0; x < (int)(len - 4) / 4; x++)
                             {
                                 alternative_title_ids.Add(IO.read_bytes(4));
                             }
@@ -514,118 +531,13 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.ENABLED_FOR_FASTCAP:
                     case (uint)XeHeaderKeys.ADDITIONAL_TITLE_MEMORY:
                     case (uint)XeHeaderKeys.PAGE_HEAP_SIZE_AND_FLAGS:
-                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                        // header size -4, / 16 ?
                     default:
                         unk_headers.Add(opt_headers[i]);
                         break;
                 }
             }
             return 0;
-        }
-
-        public void read_dos_header()
-        {
-            IO.position = pe_data_offset;
-            img_dos_h = new ImageDosHeader();
-            img_dos_h.e_magic = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cblp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_crlc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cparhdr = IO.read_uint16(Endian.Low);
-            img_dos_h.e_minalloc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_maxalloc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ss = IO.read_uint16(Endian.Low);
-            img_dos_h.e_sp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_csum = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ip = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cs = IO.read_uint16(Endian.Low);
-            img_dos_h.e_lfarlc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ovno = IO.read_uint16(Endian.Low);
-            img_dos_h.e_res = new List<UInt16>();
-            for (int i = 0; i < 4; i++)
-            {
-                img_dos_h.e_res.Add(IO.read_uint16(Endian.Low));
-            }
-
-            img_dos_h.e_oemid = IO.read_uint16(Endian.Low);
-            img_dos_h.e_oeminfo = IO.read_uint16(Endian.Low);
-
-            img_dos_h.e_res2 = new List<UInt16>();
-            for (int i = 0; i < 10; i++)
-            {
-                img_dos_h.e_res2.Add(IO.read_uint16(Endian.Low));
-            }
-            img_dos_h.e_lfanew = IO.read_int32(Endian.Low);
-            img_dos_h.e_rstub = IO.read_bytes(img_dos_h.e_lfanew - 64);
-        }
-        public void read_file_header()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew;
-            img_file_h = new ImageFileHeader();
-            img_file_h.magic = IO.read_uint32(Endian.Low);
-            img_file_h.Machine = IO.read_uint16(Endian.Low);
-            img_file_h.NumberOfSections = IO.read_uint16(Endian.Low);
-            img_file_h.TimeDateStamp = IO.read_uint32(Endian.Low);
-            img_file_h.PointerToSymbolTable = IO.read_uint32(Endian.Low);
-            img_file_h.NumberOfSymbols = IO.read_uint32(Endian.Low);
-            img_file_h.SizeOfOptionalHeader = IO.read_uint16(Endian.Low);
-            img_file_h.Characteristics = IO.read_uint16(Endian.Low);
-        }
-        public void read_image_opt_header()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew + 24;
-            ImageOptHeader opt = new ImageOptHeader();
-            opt.Magic = IO.read_uint16(Endian.Low);
-            opt.MajorLinkerVersion = IO.read_byte();
-            opt.MinorLinkerVersion = IO.read_byte();
-            opt.SizeOfCode = IO.read_uint32(Endian.Low);
-            opt.SizeOfInitializedData = IO.read_uint32(Endian.Low);
-            opt.SizeOfUninitializedData = IO.read_uint32(Endian.Low);
-            opt.AddressOfEntryPoint = IO.read_uint32(Endian.Low);
-            opt.BaseOfCode = IO.read_uint32(Endian.Low);
-            opt.BaseOfData = IO.read_uint32(Endian.Low);
-            opt.ImageBase = IO.read_uint32(Endian.Low);
-            opt.SectionAlignment = IO.read_uint32(Endian.Low);
-            opt.FileAlignment = IO.read_uint32(Endian.Low);
-            opt.MajorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.MinorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.MajorImageVersion = IO.read_uint16(Endian.Low);
-            opt.MinorImageVersion = IO.read_uint16(Endian.Low);
-            opt.MajorSubsystemVersion = IO.read_uint16(Endian.Low);
-            opt.MinorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.Reserved1 = IO.read_uint32(Endian.Low);
-            opt.SizeOfImage = IO.read_uint32(Endian.Low);
-            opt.CheckSum = IO.read_uint32(Endian.Low);
-            opt.Subsystem = IO.read_uint16(Endian.Low);
-            opt.DllCharacteristics = IO.read_uint16(Endian.Low);
-            opt.SizeOfStackReserve = IO.read_uint32(Endian.Low);
-            opt.SizeOfStackCommit = IO.read_uint32(Endian.Low);
-            opt.SizeOfHeapReserve = IO.read_uint32(Endian.Low);
-            opt.SizeOfHeapCommit = IO.read_uint32(Endian.Low);
-            opt.LoaderFlags = IO.read_uint32(Endian.Low);
-            opt.NumberOfRvaAndSizes = IO.read_uint32(Endian.Low);
-            img_opt_h = opt;
-        }
-        public void read_image_sections()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew + 248;
-            img_sections = new List<ImageSectionHeader>();
-
-            for (int i = 0; i < img_file_h.NumberOfSections; i++)
-            {
-                ImageSectionHeader sec = new ImageSectionHeader();
-                sec.Name = IO.read_string(8);
-                sec.Misc = IO.read_uint32(Endian.Low);
-                sec.VirtualAddress = IO.read_uint32(Endian.Low);
-                sec.SizeOfRawData = IO.read_uint32(Endian.Low);
-                sec.RawDataPtr = IO.read_uint32(Endian.Low);
-                sec.RelocationsPtr = IO.read_uint32(Endian.Low);
-                sec.LineNumsPtr = IO.read_uint32(Endian.Low);
-                sec.NumRelocations = IO.read_uint16(Endian.Low);
-                sec.NUmLineNumbers = IO.read_uint16(Endian.Low);
-                sec.Characteristics = IO.read_uint32(Endian.Low);
-                img_sections.Add(sec);
-            }
         }
 
         public void read_xuiz_header()
@@ -711,7 +623,8 @@ namespace Xbox360
                         break;
                     case XeHeaderKeys.CHECKSUM_TIMESTAMP:
                         IO.position = opt.pos;
-                        IO.write(checksum_timestamp, Endian.High);
+                        IO.write(checksum, Endian.High);
+                        IO.write(timestamp, Endian.High);
                         break;
                     case XeHeaderKeys.DEFAULT_STACK_SIZE:
                         IO.position = 24 + ((8 * (num + 1))  - 4);
@@ -736,8 +649,8 @@ namespace Xbox360
                     case XeHeaderKeys.EXECUTION_INFO:
                         IO.position = opt.pos;
                         IO.write(xeinfo.media_id, Endian.High);
-                        IO.write(xeinfo.version, Endian.High);
-                        IO.write(xeinfo.base_version, Endian.High);
+                        IO.write(xeinfo.version);
+                        IO.write(xeinfo.base_version);
                         IO.write(xeinfo.title_id, Endian.High);
                         IO.write(xeinfo.platform);
                         IO.write(xeinfo.executable_table);
@@ -773,6 +686,13 @@ namespace Xbox360
                         IO.position = opt.pos + 4;
 
                         foreach(byte[] id in alternative_title_ids)
+                        {
+                            IO.write(id);
+                        }
+                        break;
+                    case XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                        IO.position = opt.pos + 4;
+                        foreach (byte[] id in multidisc_media_ids)
                         {
                             IO.write(id);
                         }
@@ -977,7 +897,8 @@ namespace Xbox360
                         opt_headers[i].data = (uint)outio.position;
 
                         // Write out ChecksumTimestamp (No length, header has length.
-                        outio.write(checksum_timestamp, Endian.High);
+                        outio.write(checksum, Endian.High);
+                        outio.write(timestamp, Endian.High);
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_CALLCAP:
@@ -986,7 +907,8 @@ namespace Xbox360
                         opt_headers[i].data = (uint)outio.position;
 
                         // Write out Callcap
-                        outio.write(callcap_data);
+                        outio.write(callcap_start, Endian.High);
+                        outio.write(callcap_end, Endian.High);
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_FASTCAP: break;
@@ -1063,8 +985,8 @@ namespace Xbox360
 
                         // Writeout Execution Info
                         outio.write(xeinfo.media_id, Endian.High);
-                        outio.write(xeinfo.version, Endian.High);
-                        outio.write(xeinfo.base_version, Endian.High);
+                        outio.write(xeinfo.version);
+                        outio.write(xeinfo.base_version);
                         outio.write(xeinfo.title_id, Endian.High);
                         outio.write(xeinfo.platform);
                         outio.write(xeinfo.executable_table);
@@ -1141,104 +1063,104 @@ namespace Xbox360
                 outio.position = pe_offset;
 
                 #region ImageDosHeader
-                outio.write(img_dos_h.e_magic, Endian.Low);
-                outio.write(img_dos_h.e_cblp, Endian.Low);
-                outio.write(img_dos_h.e_cp, Endian.Low);
-                outio.write(img_dos_h.e_crlc, Endian.Low);
-                outio.write(img_dos_h.e_cparhdr, Endian.Low);
-                outio.write(img_dos_h.e_minalloc, Endian.Low);
-                outio.write(img_dos_h.e_maxalloc, Endian.Low);
-                outio.write(img_dos_h.e_ss, Endian.Low);
-                outio.write(img_dos_h.e_sp, Endian.Low);
-                outio.write(img_dos_h.e_csum, Endian.Low);
-                outio.write(img_dos_h.e_ip, Endian.Low);
-                outio.write(img_dos_h.e_cs, Endian.Low);
-                outio.write(img_dos_h.e_lfarlc, Endian.Low);
-                outio.write(img_dos_h.e_ovno, Endian.Low);
+                outio.write(pe.img_dos_h.e_magic, Endian.Low);
+                outio.write(pe.img_dos_h.e_cblp, Endian.Low);
+                outio.write(pe.img_dos_h.e_cp, Endian.Low);
+                outio.write(pe.img_dos_h.e_crlc, Endian.Low);
+                outio.write(pe.img_dos_h.e_cparhdr, Endian.Low);
+                outio.write(pe.img_dos_h.e_minalloc, Endian.Low);
+                outio.write(pe.img_dos_h.e_maxalloc, Endian.Low);
+                outio.write(pe.img_dos_h.e_ss, Endian.Low);
+                outio.write(pe.img_dos_h.e_sp, Endian.Low);
+                outio.write(pe.img_dos_h.e_csum, Endian.Low);
+                outio.write(pe.img_dos_h.e_ip, Endian.Low);
+                outio.write(pe.img_dos_h.e_cs, Endian.Low);
+                outio.write(pe.img_dos_h.e_lfarlc, Endian.Low);
+                outio.write(pe.img_dos_h.e_ovno, Endian.Low);
 
                 for (int i = 0; i < 4; i++)
                 {
-                    outio.write(img_dos_h.e_res[i], Endian.Low);
+                    outio.write(pe.img_dos_h.e_res[i], Endian.Low);
                 }
 
-                outio.write(img_dos_h.e_oemid, Endian.Low);
-                outio.write(img_dos_h.e_oeminfo, Endian.Low);
+                outio.write(pe.img_dos_h.e_oemid, Endian.Low);
+                outio.write(pe.img_dos_h.e_oeminfo, Endian.Low);
 
                 for (int i = 0; i < 10; i++)
                 {
-                    outio.write(img_dos_h.e_res2[i], Endian.Low);
+                    outio.write(pe.img_dos_h.e_res2[i], Endian.Low);
                 }
-                outio.write(img_dos_h.e_lfanew, Endian.Low);
-                outio.write(img_dos_h.e_rstub);
+                outio.write(pe.img_dos_h.e_lfanew, Endian.Low);
+                outio.write(pe.img_dos_h.e_rstub);
                 #endregion
                 #region ImageFileHeader
-                outio.write(img_file_h.magic, Endian.Low);
-                outio.write(img_file_h.Machine, Endian.Low);
-                outio.write(img_file_h.NumberOfSections, Endian.Low);
-                outio.write(img_file_h.TimeDateStamp, Endian.Low);
-                outio.write(img_file_h.PointerToSymbolTable, Endian.Low);
-                outio.write(img_file_h.NumberOfSymbols, Endian.Low);
-                outio.write(img_file_h.SizeOfOptionalHeader, Endian.Low);
-                outio.write(img_file_h.Characteristics, Endian.Low);
+                outio.write(pe.img_file_h.magic, Endian.Low);
+                outio.write(pe.img_file_h.Machine, Endian.Low);
+                outio.write(pe.img_file_h.NumberOfSections, Endian.Low);
+                outio.write(pe.img_file_h.TimeDateStamp, Endian.Low);
+                outio.write(pe.img_file_h.PointerToSymbolTable, Endian.Low);
+                outio.write(pe.img_file_h.NumberOfSymbols, Endian.Low);
+                outio.write(pe.img_file_h.SizeOfOptionalHeader, Endian.Low);
+                outio.write(pe.img_file_h.Characteristics, Endian.Low);
                 #endregion
                 #region ImageOptionalHeader
-                outio.write(img_opt_h.Magic, Endian.Low);
-                outio.write(img_opt_h.MajorLinkerVersion);
-                outio.write(img_opt_h.MinorLinkerVersion);
-                outio.write(img_opt_h.SizeOfCode, Endian.Low);
-                outio.write(img_opt_h.SizeOfInitializedData, Endian.Low);
-                outio.write(img_opt_h.SizeOfUninitializedData, Endian.Low);
-                outio.write(img_opt_h.AddressOfEntryPoint, Endian.Low);
-                outio.write(img_opt_h.BaseOfCode, Endian.Low);
-                outio.write(img_opt_h.BaseOfData, Endian.Low);
-                outio.write(img_opt_h.ImageBase, Endian.Low);
-                outio.write(img_opt_h.SectionAlignment, Endian.Low);
-                outio.write(img_opt_h.FileAlignment, Endian.Low);
-                outio.write(img_opt_h.MajorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.MinorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.MajorImageVersion, Endian.Low);
-                outio.write(img_opt_h.MinorImageVersion, Endian.Low);
-                outio.write(img_opt_h.MajorSubsystemVersion, Endian.Low);
-                outio.write(img_opt_h.MinorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.Reserved1, Endian.Low);
-                outio.write(img_opt_h.SizeOfImage, Endian.Low);
-                outio.write(img_opt_h.CheckSum, Endian.Low);
-                outio.write(img_opt_h.Subsystem, Endian.Low);
-                outio.write(img_opt_h.DllCharacteristics, Endian.Low);
-                outio.write(img_opt_h.SizeOfStackReserve, Endian.Low);
-                outio.write(img_opt_h.SizeOfStackCommit, Endian.Low);
-                outio.write(img_opt_h.SizeOfHeapReserve, Endian.Low);
-                outio.write(img_opt_h.SizeOfHeapCommit, Endian.Low);
-                outio.write(img_opt_h.LoaderFlags, Endian.Low);
-                outio.write(img_opt_h.NumberOfRvaAndSizes, Endian.Low);
+                outio.write(pe.img_opt_h.Magic, Endian.Low);
+                outio.write(pe.img_opt_h.MajorLinkerVersion);
+                outio.write(pe.img_opt_h.MinorLinkerVersion);
+                outio.write(pe.img_opt_h.SizeOfCode, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfInitializedData, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfUninitializedData, Endian.Low);
+                outio.write(pe.img_opt_h.AddressOfEntryPoint, Endian.Low);
+                outio.write(pe.img_opt_h.BaseOfCode, Endian.Low);
+                outio.write(pe.img_opt_h.BaseOfData, Endian.Low);
+                outio.write(pe.img_opt_h.ImageBase, Endian.Low);
+                outio.write(pe.img_opt_h.SectionAlignment, Endian.Low);
+                outio.write(pe.img_opt_h.FileAlignment, Endian.Low);
+                outio.write(pe.img_opt_h.MajorOperatingSystemVersion, Endian.Low);
+                outio.write(pe.img_opt_h.MinorOperatingSystemVersion, Endian.Low);
+                outio.write(pe.img_opt_h.MajorImageVersion, Endian.Low);
+                outio.write(pe.img_opt_h.MinorImageVersion, Endian.Low);
+                outio.write(pe.img_opt_h.MajorSubsystemVersion, Endian.Low);
+                outio.write(pe.img_opt_h.MinorOperatingSystemVersion, Endian.Low);
+                outio.write(pe.img_opt_h.Reserved1, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfImage, Endian.Low);
+                outio.write(pe.img_opt_h.CheckSum, Endian.Low);
+                outio.write(pe.img_opt_h.Subsystem, Endian.Low);
+                outio.write(pe.img_opt_h.DllCharacteristics, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfStackReserve, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfStackCommit, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfHeapReserve, Endian.Low);
+                outio.write(pe.img_opt_h.SizeOfHeapCommit, Endian.Low);
+                outio.write(pe.img_opt_h.LoaderFlags, Endian.Low);
+                outio.write(pe.img_opt_h.NumberOfRvaAndSizes, Endian.Low);
                 #endregion
                 #region ImageSections
-                outio.position = pe_offset + img_dos_h.e_lfanew + 248;
+                outio.position = pe_offset + pe.img_dos_h.e_lfanew + 248;
 
-                for (int i = 0; i < img_file_h.NumberOfSections; i++)
+                for (int i = 0; i < pe.img_file_h.NumberOfSections; i++)
                 {
-                    for(int x = img_sections[i].Name.Length; x < 8; x++)
+                    for(int x = pe.img_sections[i].Name.Length; x < 8; x++)
                     {
-                        img_sections[i].Name += "\0";
+                        pe.img_sections[i].Name += "\0";
                     }
-                    outio.write(Encoding.ASCII.GetBytes(img_sections[i].Name));
-                    outio.write(img_sections[i].Misc, Endian.Low);
-                    outio.write(img_sections[i].VirtualAddress, Endian.Low);
-                    outio.write(img_sections[i].SizeOfRawData, Endian.Low);
-                    outio.write(img_sections[i].RawDataPtr, Endian.Low);
-                    outio.write(img_sections[i].RelocationsPtr, Endian.Low);
-                    outio.write(img_sections[i].LineNumsPtr, Endian.Low);
-                    outio.write(img_sections[i].NumRelocations, Endian.Low);
-                    outio.write(img_sections[i].NUmLineNumbers, Endian.Low);
-                    outio.write(img_sections[i].Characteristics, Endian.Low);
+                    outio.write(Encoding.ASCII.GetBytes(pe.img_sections[i].Name));
+                    outio.write(pe.img_sections[i].Misc, Endian.Low);
+                    outio.write(pe.img_sections[i].VirtualAddress, Endian.Low);
+                    outio.write(pe.img_sections[i].SizeOfRawData, Endian.Low);
+                    outio.write(pe.img_sections[i].RawDataPtr, Endian.Low);
+                    outio.write(pe.img_sections[i].RelocationsPtr, Endian.Low);
+                    outio.write(pe.img_sections[i].LineNumsPtr, Endian.Low);
+                    outio.write(pe.img_sections[i].NumRelocations, Endian.Low);
+                    outio.write(pe.img_sections[i].NUmLineNumbers, Endian.Low);
+                    outio.write(pe.img_sections[i].Characteristics, Endian.Low);
 
                     long pos = outio.position;
 
                     // read -> write section data.
-                    IO.position = pe_data_offset + img_sections[i].RawDataPtr;
-                    byte[] data = IO.read_bytes((int)img_sections[i].SizeOfRawData);
+                    IO.position = pe_data_offset + pe.img_sections[i].RawDataPtr;
+                    byte[] data = IO.read_bytes((int)pe.img_sections[i].SizeOfRawData);
 
-                    outio.position = pe_offset + img_sections[i].RawDataPtr;
+                    outio.position = pe_offset + pe.img_sections[i].RawDataPtr;
                     outio.write(data);
 
                     // Go back to writing sections table.
@@ -1315,33 +1237,26 @@ namespace Xbox360
             outio = null;
             exe = null;
         }
-        public void extract_resource(string output_file, XeResourceInfo res)
+        public bool extract_resource(string output_file, XeResourceInfo res)
         {
-            IO.position = pe_data_offset + (res.address - cert.load_address);
+            try
+            {
+                int load_addr = (int)(res.address - cert.load_address);
+                IO.position = pe_data_offset + load_addr;
 
-            byte[] data = IO.read_bytes((int)res.size);
+                byte[] data = IO.read_bytes((int)res.size);
 
-            FileStream outio = new FileStream(output_file, FileMode.Create);
+                FileStream outio = new FileStream(output_file, FileMode.Create);
 
-            outio.Position = 0;
-            outio.Write(data, 0, data.Length);
-            outio.Flush();
-            outio.Close();
-            outio = null;
-            data = null;
-        }
-        public void extract_pe_section(string output_file, ImageSectionHeader sec)
-        {
-            IO.position = pe_data_offset + sec.RawDataPtr;
-            byte[] data = IO.read_bytes((int)sec.SizeOfRawData);
-
-            FileStream outio = new FileStream(output_file, FileMode.Create);
-            outio.Position = 0;
-            outio.Write(data, 0, data.Length);
-            outio.Flush();
-            outio.Close();
-            outio = null;
-            data = null;
+                outio.Position = 0;
+                outio.Write(data, 0, data.Length);
+                outio.Flush();
+                outio.Close();
+                outio = null;
+                data = null;
+                return true;
+            }
+            catch { return false; }
         }
 
         public void parse_image_sections()
@@ -1351,11 +1266,6 @@ namespace Xbox360
                 pe_sec_idata = new SectionImportData(AppDomain.CurrentDomain.BaseDirectory + "/cache/idata.bin");
                 pe_sec_idata.read();
             }*/
-        }
-
-        public static UInt32 get_version(byte major, byte minor, UInt16 build, byte qfe)
-        {
-            return (UInt32)(((major & 0xFFFFFFF0) << 28) | ((minor & 0xFFFFFFF0) << 24) | ((build & 0xFFFF0000) << 8) | (qfe & 0xFFFFFF00));
         }
     }
 }
