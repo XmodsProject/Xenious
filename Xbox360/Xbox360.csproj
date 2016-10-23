@@ -40,12 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crypto\AccountRC4.cs" />
     <Compile Include="Crypto\rijndael.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IO\IO.cs" />
-    <Compile Include="ISO\FilesystemEntry.cs" />
-    <Compile Include="Kernal\XenonMemory.cs" />
     <Compile Include="PE\ImageDirectoryEntry.cs" />
     <Compile Include="PE\ImageDosHeader.cs" />
     <Compile Include="PE\ImageFileFlags.cs" />
@@ -54,20 +50,11 @@
     <Compile Include="PE\ImageOptHeader.cs" />
     <Compile Include="PE\ImageSectionFlags.cs" />
     <Compile Include="PE\ImageSectionHeader.cs" />
-    <Compile Include="PortableExecutable.cs" />
     <Compile Include="PE\SectionImportData.cs" />
     <Compile Include="PE\SectionRData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecureTransactedFileSystem.cs" />
-    <Compile Include="STFS\XeCertificate.cs" />
-    <Compile Include="STFS\XeContentTypes.cs" />
-    <Compile Include="STFS\XeLicenceEntrys.cs" />
-    <Compile Include="STFS\XeVolumeDescriptorSTFS.cs" />
     <Compile Include="XDBF.cs" />
-    <Compile Include="XeKeyVault.cs" />
     <Compile Include="XenonExecutable.cs" />
-    <Compile Include="XboxGameDisc.cs" />
-    <Compile Include="XenonNand.cs" />
     <Compile Include="XEX\XeApprovalType.cs" />
     <Compile Include="XEX\XeBaseFileInfoHeader.cs" />
     <Compile Include="XEX\XeCertificate.cs" />
@@ -97,10 +84,6 @@
     <Compile Include="XEX\XeTLSInfo.cs" />
     <Compile Include="XEX\XeVersion.cs" />
     <Compile Include="XUIZ\XUIZHeader.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="KeyVault\" />
-    <Folder Include="NAND\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

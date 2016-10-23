@@ -22,17 +22,5 @@ namespace Xenious.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("memory.bin")]
-        public string MemoryFile {
-            get {
-                return ((string)(this["MemoryFile"]));
-            }
-            set {
-                this["MemoryFile"] = value;
-            }
-        }
     }
 }

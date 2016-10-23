@@ -35,11 +35,6 @@
             // numericUpDown1
             // 
             this.numericUpDown1.Location = new System.Drawing.Point(17, 17);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            -1,
-            0,
-            0,
-            0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(324, 26);
             this.numericUpDown1.TabIndex = 0;
@@ -55,7 +50,7 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // NumericEditBox
+            // NumericExitBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -66,8 +61,8 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "NumericEditBox";
-            this.Padding = new System.Windows.Forms.Padding(14);
+            this.Name = "NumericExitBox";
+            this.Padding = new System.Windows.Forms.Padding(14, 14, 14, 14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

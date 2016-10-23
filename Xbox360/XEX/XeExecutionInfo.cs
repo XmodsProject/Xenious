@@ -14,8 +14,8 @@ namespace Xbox360.XEX
     public class XeExecutionInfo
     {
         public UInt32 media_id;
-        public byte[] version;
-        public byte[] base_version;
+        public UInt32 version;
+        public UInt32 base_version;
         public UInt32 title_id;
         public byte platform;
         public byte executable_table;

@@ -14,18 +14,18 @@ namespace Xbox360.XEX
     public class XeSection
     {
         public UInt32 page_size;
-        public XeSectionType xetype
+        public XeSectionType type
         {
             get
             {
-                return (XeSectionType)(byte)(value & 0xF);
+                return (XeSectionType)(byte)(value >> 28);
             }
         }
         public UInt32 page_count
         {
             get
             {
-                return (UInt32)(value & 0x0FFFFFFF);
+                return (UInt32)(value & 0xF0000000);
             }
         }
         public UInt32 value;

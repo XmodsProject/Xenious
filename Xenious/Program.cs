@@ -16,7 +16,7 @@ namespace Xenious
             try
             {
                 // Get current available version.
-                string url = "https://xenious.staticpi.net/downloads/current";
+                string url = "http://xenious.staticpi.net/downloads/current";
                 WebRequest myReq = WebRequest.Create(url);
                 WebResponse wr = myReq.GetResponse();
                 Stream receiveStream = wr.GetResponseStream();
@@ -56,17 +56,11 @@ namespace Xenious
                 DialogResult dr = MessageBox.Show("There is a new version available, would you like to download it ?", "New Update...", MessageBoxButtons.YesNo);
                 if(dr == DialogResult.Yes)
                 {
-                    System.Diagnostics.Process.Start("https://xenious.staticpi.net/downloads/xenious.zip");
+                    System.Diagnostics.Process.Start("http://xenious.staticpi.net/downloads/xenious.zip");
                     return;
                 }
             }
-
-            // Check kernal Folder Exist, creat if not.
-            if(Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "/kernal/") == false)
-            {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/kernal/");
-            }
-            Application.Run(new Launcher());
+            Application.Run(new MainEditor());
         }
     }
 }

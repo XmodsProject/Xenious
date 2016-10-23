@@ -181,40 +181,40 @@
             this.textBox11.Location = new System.Drawing.Point(151, 25);
             this.textBox11.MaxLength = 8;
             this.textBox11.Name = "textBox11";
+            this.textBox11.ReadOnly = true;
             this.textBox11.Size = new System.Drawing.Size(33, 26);
             this.textBox11.TabIndex = 3;
             this.textBox11.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox11.TextChanged += new System.EventHandler(this.textBox11_TextChanged);
             // 
             // textBox12
             // 
             this.textBox12.Location = new System.Drawing.Point(84, 25);
             this.textBox12.MaxLength = 8;
             this.textBox12.Name = "textBox12";
+            this.textBox12.ReadOnly = true;
             this.textBox12.Size = new System.Drawing.Size(61, 26);
             this.textBox12.TabIndex = 2;
             this.textBox12.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox12.TextChanged += new System.EventHandler(this.textBox12_TextChanged);
             // 
             // textBox13
             // 
             this.textBox13.Location = new System.Drawing.Point(45, 25);
-            this.textBox13.MaxLength = 2;
+            this.textBox13.MaxLength = 8;
             this.textBox13.Name = "textBox13";
+            this.textBox13.ReadOnly = true;
             this.textBox13.Size = new System.Drawing.Size(33, 26);
             this.textBox13.TabIndex = 1;
             this.textBox13.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox13.TextChanged += new System.EventHandler(this.textBox13_TextChanged);
             // 
             // textBox14
             // 
             this.textBox14.Location = new System.Drawing.Point(6, 25);
-            this.textBox14.MaxLength = 2;
+            this.textBox14.MaxLength = 8;
             this.textBox14.Name = "textBox14";
+            this.textBox14.ReadOnly = true;
             this.textBox14.Size = new System.Drawing.Size(33, 26);
             this.textBox14.TabIndex = 0;
             this.textBox14.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox14.TextChanged += new System.EventHandler(this.textBox14_TextChanged);
             // 
             // groupBox21
             // 
@@ -234,40 +234,40 @@
             this.textBox10.Location = new System.Drawing.Point(151, 25);
             this.textBox10.MaxLength = 8;
             this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
             this.textBox10.Size = new System.Drawing.Size(33, 26);
             this.textBox10.TabIndex = 3;
             this.textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox10.TextChanged += new System.EventHandler(this.textBox10_TextChanged);
             // 
             // textBox9
             // 
             this.textBox9.Location = new System.Drawing.Point(84, 25);
             this.textBox9.MaxLength = 8;
             this.textBox9.Name = "textBox9";
+            this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(61, 26);
             this.textBox9.TabIndex = 2;
             this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox9.TextChanged += new System.EventHandler(this.textBox9_TextChanged);
             // 
             // textBox8
             // 
             this.textBox8.Location = new System.Drawing.Point(45, 25);
-            this.textBox8.MaxLength = 2;
+            this.textBox8.MaxLength = 8;
             this.textBox8.Name = "textBox8";
+            this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(33, 26);
             this.textBox8.TabIndex = 1;
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox8.TextChanged += new System.EventHandler(this.textBox8_TextChanged);
             // 
             // textBox7
             // 
             this.textBox7.Location = new System.Drawing.Point(6, 25);
-            this.textBox7.MaxLength = 2;
+            this.textBox7.MaxLength = 8;
             this.textBox7.Name = "textBox7";
+            this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(33, 26);
             this.textBox7.TabIndex = 0;
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox7.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
             // 
             // groupBox20
             // 

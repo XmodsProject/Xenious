@@ -54,7 +54,7 @@ namespace Xenious.IO
             handle.Seek(0, SeekOrigin.Begin);
         }
 
-        public static Endian get_machine_endian()
+        private Endian get_machine_endian()
         {
             return BitConverter.IsLittleEndian ? Endian.Low : Endian.High;
         }

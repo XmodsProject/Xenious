@@ -14,8 +14,8 @@ namespace Xenious.Forms.Panels.Editor
     public partial class Resources : UserControl
     {
         XenonExecutable xex;
-        MetaEditor main;
-        public Resources(XenonExecutable in_xex, MetaEditor in_main)
+        MainEditor main;
+        public Resources(XenonExecutable in_xex, MainEditor in_main)
         {
             InitializeComponent();
             xex = in_xex;
@@ -85,14 +85,8 @@ namespace Xenious.Forms.Panels.Editor
             sfd.FileName = item.Text;
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                if (xex.extract_resource(sfd.FileName, xex.resources[resource]) == true)
-                {
-                    main.__log(string.Format("Extracted '{0}' to '{1}'...", item.Text, sfd.FileName));
-                }
-                else
-                {
-                    main.__log(string.Format("Unable to extract resource '{0}'...", item.Text));
-                }
+                xex.extract_resource(sfd.FileName, xex.resources[resource]);
+                main.__log(string.Format("Extracted '{0}' to '{1}'...", item.Text, sfd.FileName));
             }
         }
 

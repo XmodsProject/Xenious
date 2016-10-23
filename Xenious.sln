@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenious", "Xenious\Xenious.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbox360", "Xbox360\Xbox360.csproj", "{49483A47-B2B2-40D9-8586-2251CE0C98D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPC", "PowerPC\PowerPC.csproj", "{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,18 +42,6 @@ Global
 		{49483A47-B2B2-40D9-8586-2251CE0C98D7}.Release|x64.Build.0 = Release|Any CPU
 		{49483A47-B2B2-40D9-8586-2251CE0C98D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{49483A47-B2B2-40D9-8586-2251CE0C98D7}.Release|x86.Build.0 = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|x64.Build.0 = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Debug|x86.Build.0 = Debug|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|x64.ActiveCfg = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|x64.Build.0 = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|x86.ActiveCfg = Release|Any CPU
-		{58C0C8E9-15DC-4173-AF36-D7C8985C6D54}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

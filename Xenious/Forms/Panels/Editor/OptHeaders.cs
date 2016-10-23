@@ -15,9 +15,9 @@ namespace Xenious.Forms.Panels.Editor
     public partial class OptHeaders : UserControl
     {
         XenonExecutable xex;
-        MetaEditor main;
+        MainEditor main;
 
-        public OptHeaders(XenonExecutable in_xex, MetaEditor in_main)
+        public OptHeaders(XenonExecutable in_xex, MainEditor in_main)
         {
             InitializeComponent();
             xex = in_xex;
@@ -43,6 +43,13 @@ namespace Xenious.Forms.Panels.Editor
                         item.Text = "Bound Path";
                         item.SubItems.Add(xex.bound_path);
                         item.Tag = "edit bound_path";
+                        listView1.Items.Add(item);
+                        break;
+                    case XeHeaderKeys.ENABLED_FOR_CALLCAP:
+                        item = new ListViewItem();
+                        item.Text = "Callcap";
+                        item.SubItems.Add(BitConverter.ToString(xex.callcap_data).Replace("-", ""));
+                        item.Tag = "edit callcap";
                         listView1.Items.Add(item);
                         break;
                     case XeHeaderKeys.ENTRY_POINT:

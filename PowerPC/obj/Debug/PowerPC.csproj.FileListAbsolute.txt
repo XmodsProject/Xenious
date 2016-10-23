@@ -1,5 +1,0 @@
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\PowerPC\bin\Debug\PowerPC.dll
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\PowerPC\bin\Debug\PowerPC.pdb
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\PowerPC\obj\Debug\PowerPC.dll
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\PowerPC\obj\Debug\PowerPC.pdb
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\PowerPC\obj\Debug\PowerPC.csprojResolveAssemblyReference.cache

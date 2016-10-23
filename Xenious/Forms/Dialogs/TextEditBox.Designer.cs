@@ -61,10 +61,11 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TextEditBox";
-            this.Padding = new System.Windows.Forms.Padding(14);
+            this.Padding = new System.Windows.Forms.Padding(14, 14, 14, 14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "TextEditBox";
             this.Load += new System.EventHandler(this.TextEditBox_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
