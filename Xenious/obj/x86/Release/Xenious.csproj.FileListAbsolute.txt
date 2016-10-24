@@ -32,3 +32,7 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Re
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Launcher.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.XEXDebugger.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.XboxMemoryLoader.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Release\XenonPowerPC.dll
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Release\XenonPowerPC.pdb
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.CallcapData.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.LoadProgressDialog.resources

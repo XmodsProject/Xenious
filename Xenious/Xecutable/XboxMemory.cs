@@ -94,12 +94,6 @@ namespace Xenious.Xecutable
                 }
             }
 
-            // Load Main App PE.
-            if(main_app.load_pe() != true)
-            {
-                throw new Exception("Unable to parse pe file of main app :(");
-            }
-
             // Now Load Into Xenon memory.
             memory.LoadApp(main_app, imports);
         }

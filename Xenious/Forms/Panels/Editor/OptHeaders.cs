@@ -45,13 +45,6 @@ namespace Xenious.Forms.Panels.Editor
                         item.Tag = "edit bound_path";
                         listView1.Items.Add(item);
                         break;
-                    case XeHeaderKeys.ENABLED_FOR_CALLCAP:
-                        item = new ListViewItem();
-                        item.Text = "Callcap";
-                        item.SubItems.Add(BitConverter.ToString(xex.callcap_data).Replace("-", ""));
-                        item.Tag = "edit callcap";
-                        listView1.Items.Add(item);
-                        break;
                     case XeHeaderKeys.ENTRY_POINT:
                         item = new ListViewItem();
                         item.Text = "Entry Point";

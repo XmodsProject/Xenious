@@ -62,7 +62,8 @@ namespace Xbox360
         public UInt32 default_heap_size = 0;
         public byte[] checksum;
         public UInt32 timestamp = 0;
-        public byte[] callcap_data;
+        public UInt32 callcap_start = 0;
+        public UInt32 callcap_end = 0;
         public byte[] xgd3_media_id;
         public byte[] xbox_360_logo;
         public byte[] lan_key;
@@ -352,7 +353,8 @@ namespace Xbox360
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            callcap_data = IO.read_bytes((int)opt_headers[i].len);
+                            callcap_start = IO.read_uint32(Endian.High);
+                            callcap_end = IO.read_uint32(Endian.High);
                         }
                         catch { return -9; }
                         break;
@@ -524,6 +526,18 @@ namespace Xbox360
                 }
             }
             return 0;
+        }
+
+        public bool has_header_key(XeHeaderKeys key)
+        {
+            foreach(XeOptHeader k in this.opt_headers)
+            {
+                if(key == k.key)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         // Will return true only if there is a pe on the end of it. NO XUIZ etc.
@@ -734,6 +748,11 @@ namespace Xbox360
                         IO.position = opt.pos;
                         IO.write(checksum);
                         IO.write(timestamp, Endian.High);
+                        break;
+                    case XeHeaderKeys.ENABLED_FOR_CALLCAP:
+                        IO.position = opt.pos;
+                        IO.write(callcap_start, Endian.High);
+                        IO.write(callcap_start, Endian.High);
                         break;
                     case XeHeaderKeys.DEFAULT_STACK_SIZE:
                         IO.position = 24 + ((8 * (num + 1))  - 4);
@@ -1009,7 +1028,8 @@ namespace Xbox360
                         opt_headers[i].data = (uint)outio.position;
 
                         // Write out Callcap
-                        outio.write(callcap_data);
+                        outio.write(callcap_start, Endian.High);
+                        outio.write(callcap_end, Endian.High);
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_FASTCAP: break;
@@ -1374,11 +1394,6 @@ namespace Xbox360
                 pe_sec_idata = new SectionImportData(AppDomain.CurrentDomain.BaseDirectory + "/cache/idata.bin");
                 pe_sec_idata.read();
             }*/
-        }
-
-        public static UInt32 get_version(byte major, byte minor, UInt16 build, byte qfe)
-        {
-            return (UInt32)(((major & 0xFFFFFFF0) << 28) | ((minor & 0xFFFFFFF0) << 24) | ((build & 0xFFFF0000) << 8) | (qfe & 0xFFFFFF00));
         }
     }
 }

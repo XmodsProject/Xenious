@@ -97,10 +97,9 @@ namespace Xenious.Forms
                     case XeHeaderKeys.TITLE_WORKSPACE_SIZE:
                         titleWorkspaceSizeToolStripMenuItem.Enabled = true;
                         break;
-                    // Disabled until I find the format.
-                    // case XeHeaderKeys.ENABLED_FOR_CALLCAP:
-                    //     callcapToolStripMenuItem.Enabled = true;
-                    //     break;
+                     case XeHeaderKeys.ENABLED_FOR_CALLCAP:
+                         callcapToolStripMenuItem.Enabled = true;
+                         break;
                     case XeHeaderKeys.DEVICE_ID:
                         deviceIDToolStripMenuItem1.Enabled = true;
                         break;
@@ -882,6 +881,18 @@ namespace Xenious.Forms
         {
             close_xex();
             clear_cache();
+        }
+
+        private void callcapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Forms.Dialogs.CallcapData callcap = new Dialogs.CallcapData();
+            callcap.start = in_xex.callcap_start;
+            callcap.end = in_xex.callcap_end;
+            callcap.ShowDialog();
+
+            // Save edits.
+            in_xex.callcap_start = callcap.start;
+            in_xex.callcap_end = callcap.end;
         }
     }
 }

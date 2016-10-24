@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xbox360;
+using Xbox360.XEX;
 
 namespace Xenious.Xecutable
 {
@@ -24,11 +26,35 @@ namespace Xenious.Xecutable
     }
     public class XEXLoader
     {
+        public static bool xex_is_encrypted_or_compressed(string file)
+        {
+            try
+            {
+                XenonExecutable xex = new XenonExecutable(file);
+                xex.read_header();
+                int x = xex.parse_optional_headers();
+
+                if(x == 0)
+                {
+                    if (xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
+                        xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
+                        xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch { throw new Exception("Unable to parse executable..."); }
+            return false;
+        }
         public static bool import_libary_exists(string import_name)
         {
-            if(File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/kernel/imports/" + import_name))
+            foreach(string import in Xenious.Program.imports_available)
             {
-                return true;
+                if(import_name == Path.GetFileName(import))
+                {
+                    return true;
+                }
             }
             return false;
         }

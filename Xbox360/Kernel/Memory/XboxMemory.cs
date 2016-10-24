@@ -40,6 +40,10 @@ namespace Xbox360.Kernal.Memory
         {
             get { return main_app; }
         }
+        public List<XenonExecutable> AppImports
+        {
+            get { return main_app_imports; }
+        }
 
         public void set_length(int length)
         {
@@ -85,7 +89,7 @@ namespace Xbox360.Kernal.Memory
             // The code previous should check for a XUIZ or other, 
             // Make sure it is a XEX package with pe only.
             main_app.IO.position = main_app.pe_data_offset;
-            byte[] pe = this.handle.read_bytes((int)main_app.cert.image_size);
+            byte[] pe = main_app.IO.read_bytes((int)main_app.cert.image_size);
 
             // Write PE to its resulting load address.
             this.Position = main_app.cert.load_address;

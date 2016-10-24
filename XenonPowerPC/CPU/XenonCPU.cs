@@ -233,9 +233,15 @@ namespace XenonPowerPC.CPU
         }
 
         // Altivec PowerPC Instructions.
-        public void AddImmediate(byte d, byte a, UInt16 simm)
+        public void AddImmediate(byte d, byte a, UInt16 simm) // addi
         {
             GPRS[d] = (GPRS[a] + simm);
         }
+        public void MoveFromLinkRegister(byte ra)
+        {
+            LR = GPRS[ra];
+            // TODO Branch to link reigter.
+        } 
+        //public void StoreDoubleword()
     }
 }

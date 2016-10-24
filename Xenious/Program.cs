@@ -11,6 +11,8 @@ namespace Xenious
 {
     static class Program
     {
+        public static List<string> imports_available;
+
         static bool is_update()
         {
             try
@@ -43,6 +45,11 @@ namespace Xenious
 
             return false;
         }
+        static void startup_tasks()
+        {
+            Startup.Tasks.check_kernal_imports();
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -51,7 +58,9 @@ namespace Xenious
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if(is_update() == true)
+
+            // Check for update.
+            if (is_update() == true)
             {
                 DialogResult dr = MessageBox.Show("There is a new version available, would you like to download it ?", "New Update...", MessageBoxButtons.YesNo);
                 if(dr == DialogResult.Yes)
@@ -60,6 +69,11 @@ namespace Xenious
                     return;
                 }
             }
+
+            // Do some startup tasks.
+            startup_tasks();
+
+            // Run Launcher.
             Application.Run(new Launcher());
         }
     }
