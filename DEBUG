@@ -35,10 +35,8 @@ work, so a little wait for myself but worth it to see where I can get this tool 
 
 So the list for improvements, To be Written and worked on is :
 
-Xbox Memory - Get it working.
 PowerPC - Map out all known altivec codes.
 XenonCPU - get working.
-Disasmble - Once Xbox Memory is working, correct and work on this.
 
 Map out Xbox kernal memory for Xbox Memory.
 Code a Memory extracter or bootloaders compiler (from nand) to grab HV, XboxKrnl other Xecutables from fs
