@@ -40,6 +40,8 @@
 			            Any SDK > 21256.3, I wont leak :)
 
 		Please consider donating some spare crypto to cover development costs.
+		
+		For source code, read DEBUG..., it is easy to build and debug :)
 
 
 				             [ Changelog ]
