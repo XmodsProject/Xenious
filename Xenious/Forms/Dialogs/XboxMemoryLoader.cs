@@ -14,6 +14,7 @@ namespace Xenious.Forms.Dialogs
     partial class XboxMemoryLoader : Form
     {
         XenonExecutable xex;
+        public bool exit = false;
         public List<Xecutable.LocalAppImport> local_imports;
         public List<Xecutable.KernalImport> kernal_imports;
 
@@ -108,6 +109,12 @@ namespace Xenious.Forms.Dialogs
                 }
                 num++;
             }
+            this.Close();
+        }
+
+        private void XboxMemoryLoader_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.exit = true;
         }
     }
 }

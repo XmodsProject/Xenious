@@ -32,3 +32,4 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Debug\
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.csprojResolveAssemblyReference.cache
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.exe
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.pdb
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.LoadProgressDialog.resources

@@ -23,6 +23,7 @@ namespace Xenious.Forms
 
         XenonExecutable in_xex;
         Xbox360.Kernal.Memory.XboxMemory in_mem;
+        public Database.PEFileDatabase pe_db;
         bool has_xextool = false;
 
         public void __log(string msg)
@@ -98,9 +99,14 @@ namespace Xenious.Forms
                             // Parse all xex meta info.
                             try
                             {
+                                // Close original xex.
                                 in_xex.IO.close();
                                 in_xex = null;
+
+                                // Open New xex.
                                 in_xex = new XenonExecutable(Application.StartupPath + "/cache/original.xex");
+
+                                // Parse xex.
                                 in_xex.read_header();
                                 in_xex.parse_certificate();
                                 in_xex.parse_sections();
@@ -131,6 +137,10 @@ namespace Xenious.Forms
             Forms.Dialogs.XboxMemoryLoader loader = new Dialogs.XboxMemoryLoader(in_xex);
             loader.ShowDialog();
 
+            if(loader.exit == true)
+            {
+                return;
+            }
             // Check if we need kernal memory aswell.
             if(loader.kernal_imports.Count > 0)
             {
@@ -149,6 +159,15 @@ namespace Xenious.Forms
 
             // Setup Xenon Memory.
             Xecutable.XenonMemory.setup_xenon_memory(in_xex, loader.local_imports, loader.kernal_imports, in_mem);
+
+            // Setup PEDatabase.
+            pe_db = Xecutable.Database.generate_pe_file_template(in_xex);
+
+            // Start to destroy.
+            if(Xecutable.XEXLoader.load_xex_from_load_address(pe_db, in_mem) != true)
+            {
+                throw new Exception("Wtf :(");
+            }
             return;
         }
 

@@ -43,15 +43,19 @@ namespace Xenious.Xecutable
                             }
                             else
                             {
+                                string file = xex.IO.file;
+
+                                // Close original.
+                                xex.IO.close();
+                                xex = null;
+
                                 // Dump a zero'ed xex to cache.
-                                if (Xecutable.xextool.xextool_to_raw_xextool(xex.IO.file, AppDomain.CurrentDomain.BaseDirectory + "/cache/" + System.IO.Path.GetFileName(xex.IO.file) + ".lib"))
+                                if (Xecutable.xextool.xextool_to_raw_xextool_original(file, "-c u -e u"))
                                 {
                                     // Parse all xex meta info.
                                     try
                                     {
-                                        xex.IO.close();
-                                        xex = null;
-                                        xex = new Xbox360.XenonExecutable(AppDomain.CurrentDomain.BaseDirectory + "/cache/" + System.IO.Path.GetFileName(xex.IO.file) + ".lib");
+                                        xex = new Xbox360.XenonExecutable(AppDomain.CurrentDomain.BaseDirectory + "cache/" + System.IO.Path.GetFileName(file));
                                         xex.read_header();
                                         xex.parse_certificate();
                                         xex.parse_sections();
@@ -74,6 +78,12 @@ namespace Xenious.Xecutable
                             }
                         }
 
+                        // Try Load pe.
+                        if(xex.load_pe() != true)
+                        {
+                            throw new Exception("Unable to load pe from import...");
+                        }
+
                         // Add XEX to imports.
                         imports.Add(xex);
                     }
@@ -82,6 +92,12 @@ namespace Xenious.Xecutable
                         throw new Exception("Unable to parse Import Xenon Executable (" + System.IO.Path.GetFileName(imp.filename) + ")");
                     }
                 }
+            }
+
+            // Load Main App PE.
+            if(main_app.load_pe() != true)
+            {
+                throw new Exception("Unable to parse pe file of main app :(");
             }
 
             // Now Load Into Xenon memory.

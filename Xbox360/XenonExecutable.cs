@@ -526,6 +526,24 @@ namespace Xbox360
             return 0;
         }
 
+        // Will return true only if there is a pe on the end of it. NO XUIZ etc.
+        public bool load_pe()
+        {
+            IO.position = pe_data_offset;
+
+            string magic = IO.read_string(2);
+
+            if(magic == "MZ")
+            {
+                this.read_dos_header();
+                this.read_file_header();
+                this.read_image_opt_header();
+                this.read_image_sections();
+            }
+            else { return false; }
+
+            return true;
+        }
         public void read_dos_header()
         {
             IO.position = pe_data_offset;

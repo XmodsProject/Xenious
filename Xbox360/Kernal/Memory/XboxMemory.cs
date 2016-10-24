@@ -25,7 +25,8 @@ namespace Xbox360.Kernal.Memory
             }
             set
             {
-                handle.position = (value - start_address);
+                Int64 val = (value - start_address);
+                handle.position = val;
             }
         }
         public Int64 Length
@@ -34,6 +35,10 @@ namespace Xbox360.Kernal.Memory
             {
                 return (Int64)handle.length;
             }
+        }
+        public XenonExecutable MainApp
+        {
+            get { return main_app; }
         }
 
         public void set_length(int length)

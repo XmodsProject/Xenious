@@ -127,6 +127,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Xbox Memory Loader";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.XboxMemoryLoader_FormClosing);
             this.Load += new System.EventHandler(this.XboxMemoryLoader_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

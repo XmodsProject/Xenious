@@ -40,5 +40,52 @@ namespace Xenious.Xecutable
             }
             throw new Exception("Unable to import libary from local import directory, Import Required : " + import_name);
         }
+        public static bool load_xex_from_load_address(Xenious.Database.PEFileDatabase pe_db, Xbox360.Kernal.Memory.XboxMemory memory)
+        {
+            // First set entry point.
+            memory.Position = memory.MainApp.exe_entry_point;
+
+            // Now loop through until we hit a blr to end the function of start.
+            UInt32 op = 1;
+
+            // Get section index of text.
+            int text_idx = 0;
+            foreach(Xenious.Database.PEFileSection sec in pe_db.sections)
+            {
+                if(sec.section_name == ".text")
+                {
+                    break;
+                }
+                else
+                {
+                    text_idx++;
+                }
+            }
+            // Init Text Functions List.
+            pe_db.sections[text_idx].functions = new List<Xenious.Database.PEFunction>();
+
+            // Make First One - Start.
+            Xenious.Database.PEFunction pef = new Xenious.Database.PEFunction();
+            pef.func_name = "start";
+            pef.start_address = memory.MainApp.exe_entry_point;
+            UInt32 end_addr = memory.MainApp.exe_entry_point;
+            pef.op_codes = new List<uint>();
+
+            // The first function ends with 0.
+            while (op != 0)
+            {
+                end_addr += 4;
+                op = BitConverter.ToUInt32(memory.ReadBytes(4, false), 0);
+                pef.op_codes.Add(op);
+            }
+
+            pef.end_address = end_addr;
+
+            // Add first function to list.
+            pe_db.sections[text_idx].functions.Add(pef);
+            pef = null;
+
+            return true;
+        }
     }
 }

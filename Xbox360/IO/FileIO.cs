@@ -94,6 +94,11 @@ namespace Xenious.IO
 
             return BitConverter.ToUInt32(data, 0);
         }
+        public UInt32 read_uint32()
+        {
+            byte[] data = this.read_bytes(4);
+            return BitConverter.ToUInt32(data, 0);
+        }
         public Int32 read_int32(Endian e)
         {
             byte[] data;

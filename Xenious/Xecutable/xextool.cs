@@ -51,6 +51,30 @@ namespace Xenious.Xecutable
             }
             return true;
         }
+
+        public static bool xextool_to_raw_xextool_original(string inputfile, string args)
+        {
+            Process process = new Process
+            {
+                StartInfo = {
+                    FileName = AppDomain.CurrentDomain.BaseDirectory + "/bin/xextool.exe",
+                    Arguments = string.Format("{0} {1}{2}{3}", args, '"', inputfile, '"'),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+            process.Start();
+            string str = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+            if (str.Length > 0)
+            {
+                Console.WriteLine("xextool error :");
+                Console.WriteLine(str);
+                return false;
+            }
+            return true;
+        }
         public static bool xextool_to_raw_xextool(string input, string output)
         {
             if (xex_process_xextool(input, "-c u -e u", output) == true)
