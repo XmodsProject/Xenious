@@ -1,7 +1,10 @@
 So how to build and debug,
 
 Download this repoistory as a zip or if you have the github app then clone it.
-Open "Xenious.sln" in Microsoft Visual Studip C# 2015 (Free Edition) or other.
+Open "Xenious.sln" in Microsoft Visual Studio C# 2015 (Free Edition) or other.
+
+MSVS2015 Update 3 : https://msdn.microsoft.com/en-us/library/dd831853.aspx
+You will need .NET Framwork 4 : https://www.microsoft.com/en-gb/download/details.aspx?id=17851
 
 Then Set to debug, it will show the current break points.
 
@@ -43,6 +46,7 @@ Code a Memory extracter or bootloaders compiler (from nand) to grab HV, XboxKrnl
 
 Grab the 1BL from linux on RGH.
 Then link together so XenonCPU can be used to run them.
+Remove xextool and code in Decryption, Decompression (Skip Encryption and Compression, for the future maybe)
 
 And Much More :)
 
