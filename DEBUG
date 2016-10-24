@@ -1,0 +1,52 @@
+So how to build and debug,
+
+Download this repoistory as a zip or if you have the github app then clone it.
+Open "Xenious.sln" in Microsoft Visual Studio C# 2015 (Free Edition) or other.
+
+MSVS2015 Update 3 : https://msdn.microsoft.com/en-us/library/dd831853.aspx
+You will need .NET Framwork 4 : https://www.microsoft.com/en-gb/download/details.aspx?id=17851
+
+Then Set to debug, it will show the current break points.
+
+The code has now been split, it has a launcher that launches currently a meta editor
+and the xex local debugger, I still dont have a RGH console to check whats in the memory,
+but when I get my hands on one I will map the memory out for the kernel and the other stuff,
+like 1bl, hypervisor and xboxkernal.
+
+So currently im trying to get it to load the main app executable into the xenon memory file,
+with imports too, you will notice that the loader dialog when you load up the xex editor will attempt
+to load the local (some games have them when you extract them from iso and stfs) and available kernal
+imports, if you include them which are (xapi.xex, xam.xex, xboxkrnl.exe, xbdm.xex) but they wont load yet.
+
+Next is to load the entry point, but some hwere there is a bug in the code that means they arnt loading,
+So todo, but you get the jist, it loads into the entry point, attempts to find the ending point, 
+then next round we would just keep looping to get the other functions and sub functions.
+
+I will keep working away at this, as for now I can still build the editor and the debugger, it will work a little
+before it hits a kernal import, I know A few kernal imports can be remapped and hard coded but id rather do this
+from original code, without the need to write out the kernal, just edit the kernal if needs be.
+
+When I get the time and the equipment to do imports of the kernal, im just guessing and from this point,
+Im also using the debug kernal and symbols to achieve this but I dont have the 1bl unfortually,
+Ill be ordering two falcon rgh's which should arrive just after the fourth of november, so expect a update then.
+
+I will be able to test alot of things, that really badly need testing, I still do not know if saving any of the edits
+work, so a little wait for myself but worth it to see where I can get this tool to compile its own power pc.
+
+So the list for improvements, To be Written and worked on is :
+
+Xbox Memory - Get it working.
+PowerPC - Map out all known altivec codes.
+XenonCPU - get working.
+Disasmble - Once Xbox Memory is working, correct and work on this.
+
+Map out Xbox kernal memory for Xbox Memory.
+Code a Memory extracter or bootloaders compiler (from nand) to grab HV, XboxKrnl other Xecutables from fs
+(Ill probably go with the memory extracter from the xdk first)
+
+Grab the 1BL from linux on RGH.
+Then link together so XenonCPU can be used to run them.
+Remove xextool and code in Decryption, Decompression (Skip Encryption and Compression, for the future maybe)
+
+And Much More :)
+
