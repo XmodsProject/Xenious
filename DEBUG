@@ -1,0 +1,22 @@
+So how to build and debug,
+
+Download this repoistory as a zip or if you have the github app then clone it.
+Open "Xenious.sln" in Microsoft Visual Studip C# 2015 (Free Edition) or other.
+
+Then Set to debug, it will show the current break points.
+
+The code has now been split, it has a launcher that launches currently a meta editor
+and the xex local debugger, I still dont have a RGH console to check whats in the memory,
+but when I get my hands on one I will map the memory out for the kernel and the other stuff,
+like 1bl, hypervisor and xboxkernal.
+
+So currently im trying to get it to load the main app executable into the xenon memory file,
+with imports too, you will notice that the loader dialog when you load up the xex editor will attempt
+to load the local (some games have them when you extract them from iso and stfs) and available kernal
+imports, if you include them which are (xapi.xex, xam.xex, xboxkrnl.exe, xbdm.xex) but they wont load yet.
+
+Next is to load the entry point, but some hwere there is a bug in the code that means they arnt loading,
+So todo, but you get the jist, it loads into the entry point, attempts to find the ending point, 
+then next round we would just keep looping to get the other functions and sub functions.
+
+When I get the time and the equipment to do this I will update the executable :)
