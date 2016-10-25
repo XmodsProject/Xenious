@@ -12,7 +12,7 @@ namespace Xenious.Database
         public UInt32 end_address;
         public string func_name;
 
-        public List<UInt32> op_codes;
+        public List<byte[]> op_codes;
     }
     public class PEFileSection {
         public string section_name;
@@ -22,6 +22,8 @@ namespace Xenious.Database
     public class PEFileDatabase
     {
         public string exe_name;
+        public UInt32 start_address;
+        public UInt32 end_address;
         public List<PEFileSection> sections;
 
         public PEFileDatabase()

@@ -38,8 +38,64 @@ namespace Xenious.Forms
                 case "goto":
                     switch (cmd[1])
                     {
-                        case "pos":
+                        case "func":
+                            UInt32 pos = UInt32.Parse(cmd[2]);
 
+                            Database.PEFileDatabase pefd = new Database.PEFileDatabase();
+
+                            foreach(Database.PEFileDatabase pfd in pe_dbs)
+                            {
+                                if(pos < pfd.end_address && pos >= pfd.start_address)
+                                {
+                                    pefd = pfd;
+                                }
+                            }
+
+                            Database.PEFileSection pefs = new Database.PEFileSection();
+                            // Find the section.
+                            foreach(Database.PEFileSection sec in pefd.sections)
+                            {
+                                if(cmd[3] == sec.section_name)
+                                {
+                                    pefs = sec;
+                                }
+                            }
+
+                            // Now loop through and find function.
+
+                            Database.PEFunction pef = new Database.PEFunction();
+                            foreach(Database.PEFunction pf in pefs.functions)
+                            {
+                                if(cmd[4] == pf.func_name)
+                                {
+                                    pef = pf;
+                                }
+                            }
+
+                            // Now output function code.
+
+                            // Clear other.
+                            richTextBox2.Text = "";
+
+                            // Starting Address.
+                            UInt32 start_addr = pef.start_address;
+
+                            richTextBox2.Text += string.Format("{0}         {1}: {2}\n\n", start_addr.ToString("X8"), pef.func_name, '{');
+                            foreach(byte[] op in pef.op_codes)
+                            {
+                                // Check for Endianness.
+                                if(BitConverter.IsLittleEndian)
+                                {
+                                    Array.Reverse(op);
+                                }
+
+                                richTextBox2.Text += string.Format("{0}            {1}\n", start_addr.ToString("X8"), XenonPowerPC.PowerPC.Functions.find_func(BitConverter.ToUInt32(op, 0)).op);
+                                start_addr += 4;
+                                
+                            }
+
+                            richTextBox2.Text += string.Format("{0}        {1}\n\n", start_addr, '}');
+                            
                             break;
                     }
                     break;
@@ -203,13 +259,10 @@ namespace Xenious.Forms
 
             pe_dbs.Add(pe_db);
 
-            // Now this may take a while.
-
+            // Now this may take a while, destroy imports.
+            
             // Now Init GUI.
             init_gui();
-
-            // Build output xex.
-            build_text();
 
             richTextBox2.Text = xex_text;
 
@@ -253,7 +306,10 @@ namespace Xenious.Forms
                 {
                     TreeNode fnc = new TreeNode();
                     fnc.Text = pe_dbs[0].sections[i].functions[x].func_name;
-                    fnc.Tag = "goto pos 0x" + pe_dbs[0].sections[i].functions[x].start_address.ToString("X8");
+                    fnc.Tag = string.Format("goto func {0} {1} {2}", 
+                        pe_dbs[0].sections[i].functions[x].start_address.ToString(), 
+                        pe_dbs[0].sections[i].section_name,
+                        pe_dbs[0].sections[i].functions[x].func_name);
                     sn.Nodes.Add(fnc);
                 }
 
@@ -276,46 +332,6 @@ namespace Xenious.Forms
                 }
             }
             
-        }
-        public void build_text()
-        {
-            // Firstly the Main App.
-            for (int i = 0; i < pe_dbs[0].sections.Count; i++)
-            {
-                xex_text += (string.Format(".section_name {0}{1}{2}\n\n", '"', pe_dbs[0].sections[i].section_name, '"'));
-                
-                for (int x = 0; x < pe_dbs[0].sections[i].functions.Count; x++)
-                {
-                    xex_text += (string.Format("{0}:{1}    .{2}: {3}\n",
-                        pe_dbs[0].sections[i].section_name,
-                        pe_dbs[0].sections[i].functions[x].start_address.ToString("X8"),
-                        pe_dbs[0].sections[i].functions[x].func_name,
-                        '{'
-                    ));
-
-                    // List Function code.
-                    UInt32 start_Addr = pe_dbs[0].sections[i].functions[x].start_address;
-                    foreach (UInt32 op in pe_dbs[0].sections[i].functions[x].op_codes)
-                    {
-
-                        XenonPowerPC.PowerPC.FuncID opcode = XenonPowerPC.PowerPC.Functions.find_func(op);
-
-                        xex_text += string.Format("{0}:{1}    {2}\n", 
-                            pe_dbs[0].sections[i].section_name,
-                            start_Addr.ToString("X8"),
-                            op.ToString("X8"));
-                        start_Addr += 4;
-                    }
-
-                    xex_text += string.Format("{0}:{1}    {2}\n\n",
-                            pe_dbs[0].sections[i].section_name,
-                            (start_Addr - 4).ToString("X8"),
-                            '}'
-                    );
-                }
-
-                xex_text += ".end_section\n\n";
-            }
         }
 
         public XEXDebugger()
@@ -356,7 +372,7 @@ namespace Xenious.Forms
 
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
-            if(treeView1.SelectedNode.Tag != null)
+            if(treeView1.SelectedNode != null && treeView1.SelectedNode.Tag != null)
             {
                 string[] cmd = treeView1.SelectedNode.Tag.ToString().Split(' ');
 

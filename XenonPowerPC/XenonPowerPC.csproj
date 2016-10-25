@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="CPU\XenonCPU.cs" />
     <Compile Include="PowerPC\FuncIDs.cs" />
+    <Compile Include="PowerPC\OpCodes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

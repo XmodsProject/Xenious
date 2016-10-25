@@ -15,6 +15,8 @@ namespace Xenious.Xecutable
             PEFileDatabase pefdb = new PEFileDatabase();
 
             pefdb.exe_name = System.IO.Path.GetFileName(xex.IO.file);
+            pefdb.start_address = xex.cert.load_address;
+            pefdb.end_address = (xex.cert.load_address + xex.cert.image_size);
             pefdb.sections = new List<PEFileSection>();
 
             foreach (Xbox360.PE.ImageSectionHeader sec in xex.img_sections)

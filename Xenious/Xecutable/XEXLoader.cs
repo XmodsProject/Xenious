@@ -72,7 +72,7 @@ namespace Xenious.Xecutable
             memory.Position = memory.MainApp.exe_entry_point;
 
             // Now loop through until we hit a blr to end the function of start.
-            UInt32 op = 1;
+            byte[] op = new byte[4] { 0x01, 0x00, 0x00, 0x00 };
 
             // Get section index of text.
             int text_idx = 0;
@@ -95,13 +95,13 @@ namespace Xenious.Xecutable
             pef.func_name = "start";
             pef.start_address = memory.MainApp.exe_entry_point;
             UInt32 end_addr = memory.MainApp.exe_entry_point;
-            pef.op_codes = new List<uint>();
+            pef.op_codes = new List<byte[]>();
 
             // The first function ends with 0.
-            while (op != 0)
+            while (op[0] != 0)
             {
                 end_addr += 4;
-                op = BitConverter.ToUInt32(memory.ReadBytes(4, false), 0);
+                op = memory.ReadBytes(4, false);
                 pef.op_codes.Add(op);
             }
 
