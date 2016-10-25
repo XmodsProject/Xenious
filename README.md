@@ -45,6 +45,12 @@
 
 
 				             [ Changelog ]
+					     
+				     0.0.2380.0 [Beta] (24/10/1026)
+				     Added Proof of concept XEX Editor (ASM)
+				     Added Launcher, Now select the tools.
+			       Added Ability to edit Callcap data in metaeditor.
+					     
 			             0.0.2101.0 [Beta] (28/08/2016)
 				Fixed 2 bugs that where left from the previous
 				build, sorry for that :)
