@@ -2,4 +2,3 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\bin\D
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\bin\Debug\XenonPowerPC.pdb
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Debug\XenonPowerPC.dll
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Debug\XenonPowerPC.pdb
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Debug\XenonPowerPC.csprojResolveAssemblyReference.cache

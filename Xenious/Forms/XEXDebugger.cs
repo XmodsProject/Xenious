@@ -102,7 +102,7 @@ namespace Xenious.Forms
                                     Array.Reverse(op);
                                 }
 
-                                richTextBox2.Text += string.Format("{0}\n", XenonPowerPC.PowerPC.Functions.find_func(BitConverter.ToUInt32(op, 0)).op);
+                                richTextBox2.Text += string.Format("0x{0}        {1}\n", start_addr.ToString("X8"), XenonPowerPC.PowerPC.Functions.find_func(BitConverter.ToUInt32(op, 0)).op);
                                 start_addr += 4;
                             }
 
@@ -439,6 +439,12 @@ namespace Xenious.Forms
                 this.Close();
             }
 
+            // Check for cache dir.
+            if(Directory.Exists(Application.StartupPath + "/cache/") == false)
+            {
+                Directory.CreateDirectory(Application.StartupPath + "/cache/");
+            }
+
             clear_cache();
             disable_gui();
         }
@@ -455,7 +461,6 @@ namespace Xenious.Forms
                 init_destroyer(xex);
             }
         }
-
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
             if(treeView1.SelectedNode != null && treeView1.SelectedNode.Tag != null)
@@ -465,18 +470,15 @@ namespace Xenious.Forms
                 __cmd(cmd);
             }
         }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             close_xex();
 
         }
-
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
 

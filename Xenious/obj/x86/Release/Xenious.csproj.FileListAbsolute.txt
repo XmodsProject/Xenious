@@ -36,3 +36,4 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Releas
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.CallcapData.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.LoadProgressDialog.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.Forms.Dialogs.SettingsDialog.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Release\Xenious.csprojResolveAssemblyReference.cache
