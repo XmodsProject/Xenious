@@ -168,6 +168,12 @@
     <Compile Include="Forms\Dialogs\RegionFlags.Designer.cs">
       <DependentUpon>RegionFlags.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialogs\SystemFlags.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,6 +294,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\RegionFlags.resx">
       <DependentUpon>RegionFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialogs\SystemFlags.resx">
       <DependentUpon>SystemFlags.cs</DependentUpon>

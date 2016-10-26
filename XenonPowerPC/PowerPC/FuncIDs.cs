@@ -19,11 +19,14 @@ namespace XenonPowerPC.PowerPC
             List<FuncID> ids = new List<FuncID>();
 
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.mflr, op = "mflr r{0}" });
+            ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.mtlr, op = "mtlr r{0}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.addi, op = "addi r{0}, r{1}, 0x{2}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.beq, op = "beq {0}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.bne, op = "bne cr{0}, {1}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.bl, op = "bl {0}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.cmpwi, op = "cmpwi r{0}, {1}" });
+            ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.extsb, op = "extsb r{0}, r{1}" });
+            ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.extsb_condition, op = "extsb. r{0}, r{1}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.li, op = "li r{0}, {1}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.lis, op = "lis r{1} {1}@{2}" });
             ids.Add(new PowerPC.FuncID() { id = (UInt32)op_codes.lwz, op = "lwz r{0}, {1}@{2}(r{3})" });

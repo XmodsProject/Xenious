@@ -2,3 +2,4 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\bin\Debug\
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\bin\Debug\Xbox360.pdb
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\obj\Debug\Xbox360.dll
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\obj\Debug\Xbox360.pdb
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\obj\Debug\Xbox360.csprojResolveAssemblyReference.cache

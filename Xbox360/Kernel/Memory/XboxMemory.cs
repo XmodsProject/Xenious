@@ -16,6 +16,7 @@ namespace Xbox360.Kernal.Memory
         private Int64 start_address = 0x80000000;
         private XenonExecutable main_app;
         private List<XenonExecutable> main_app_imports;
+        
 
         public Int64 Position
         {
@@ -62,10 +63,6 @@ namespace Xbox360.Kernal.Memory
         }
         public XboxMemory(int length)
         {
-            if(System.IO.File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/cache/xbox_memory.bin"))
-            {
-                System.IO.File.Delete(AppDomain.CurrentDomain.BaseDirectory + "/cache/xbox_memory.bin");
-            }
             this.input = new System.IO.FileStream(AppDomain.CurrentDomain.BaseDirectory + "/cache/xbox_memory.bin", System.IO.FileMode.Create);
             this.set_length(length);
             this.handle = new FileIO(input);
@@ -113,6 +110,21 @@ namespace Xbox360.Kernal.Memory
                     main_app_imports.Add(import);
                 }
             }
+        }
+
+        public void close()
+        {
+            this.main_app.IO.close();
+
+            if(this.main_app_imports != null && this.main_app_imports.Count > 0)
+            {
+                foreach (XenonExecutable xex in this.main_app_imports)
+                {
+                    xex.IO.close();
+                }
+            }
+
+            this.handle.close();
         }
     }
 }

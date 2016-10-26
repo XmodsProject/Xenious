@@ -24,6 +24,8 @@ namespace Xenious.Xecutable
                 pefdb.sections.Add(new PEFileSection()
                 {
                     section_name = sec.Name.Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace("\0", ""),
+                    start_address = xex.cert.load_address + sec.RawDataPtr,
+                    end_address = xex.cert.load_address + sec.RawDataPtr + sec.SizeOfRawData,
                     functions = new List<PEFunction>()
                 });
             }

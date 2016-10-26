@@ -894,5 +894,10 @@ namespace Xenious.Forms
             in_xex.callcap_start = callcap.start;
             in_xex.callcap_end = callcap.end;
         }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
     }
 }

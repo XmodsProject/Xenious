@@ -45,6 +45,7 @@
     <Compile Include="IO\FileIO.cs" />
     <Compile Include="IO\IOFuncs.cs" />
     <Compile Include="IO\MemoryIO.cs" />
+    <Compile Include="Kernel\Memory\KernelImport.cs" />
     <Compile Include="Kernel\Memory\XboxMemory.cs" />
     <Compile Include="PE\ImageDirectoryEntry.cs" />
     <Compile Include="PE\ImageDosHeader.cs" />

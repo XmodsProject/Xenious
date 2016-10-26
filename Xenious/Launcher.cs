@@ -68,5 +68,12 @@ namespace Xenious
             System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
             label3.Text = fvi.FileVersion.ToString();
         }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+            Forms.Dialogs.SettingsDialog settings = new Forms.Dialogs.SettingsDialog();
+
+            settings.ShowDialog();
+        }
     }
 }

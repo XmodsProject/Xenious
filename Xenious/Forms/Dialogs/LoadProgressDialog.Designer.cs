@@ -57,10 +57,10 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoadProgressDialog";
-            this.Padding = new System.Windows.Forms.Padding(14, 14, 14, 14);
+            this.Padding = new System.Windows.Forms.Padding(14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.LoadProgressDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
