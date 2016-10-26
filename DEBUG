@@ -13,25 +13,15 @@ and the xex local debugger, I still dont have a RGH console to check whats in th
 but when I get my hands on one I will map the memory out for the kernel and the other stuff,
 like 1bl, hypervisor and xboxkernal.
 
-So currently im trying to get it to load the main app executable into the xenon memory file,
-with imports too, you will notice that the loader dialog when you load up the xex editor will attempt
-to load the local (some games have them when you extract them from iso and stfs) and available kernal
-imports, if you include them which are (xapi.xex, xam.xex, xboxkrnl.exe, xbdm.xex) but they wont load yet.
+The editor is now able to decode some instructions, more work needs to be done on things like mixups (addi should be li etc)
+Extracting the various variables from the opcodes to determine format, then We will be able to start finding other
+code other than the main function, then fixup any bugs or mixups.
 
-Next is to load the entry point, but some hwere there is a bug in the code that means they arnt loading,
-So todo, but you get the jist, it loads into the entry point, attempts to find the ending point, 
-then next round we would just keep looping to get the other functions and sub functions.
+The onto XenonCPU emulation on the cpu, thatll happen as soon as I get my hands on the rgh's I ordered !
 
-I will keep working away at this, as for now I can still build the editor and the debugger, it will work a little
-before it hits a kernal import, I know A few kernal imports can be remapped and hard coded but id rather do this
-from original code, without the need to write out the kernal, just edit the kernal if needs be.
-
-When I get the time and the equipment to do imports of the kernal, im just guessing and from this point,
-Im also using the debug kernal and symbols to achieve this but I dont have the 1bl unfortually,
-Ill be ordering two falcon rgh's which should arrive just after the fourth of november, so expect a update then.
-
-I will be able to test alot of things, that really badly need testing, I still do not know if saving any of the edits
-work, so a little wait for myself but worth it to see where I can get this tool to compile its own power pc.
+I will be able to test alot of things, that really badly need testing, When they arive, 
+I still do not know if saving any of the edits work, so a little wait for myself but worth it
+to see where I can get this tool to compile its own power pc.
 
 So the list for improvements, To be Written and worked on is :
 
