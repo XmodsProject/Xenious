@@ -23,7 +23,9 @@ namespace Xenious.Database
 
         public static void generate_html_report(string html_file, XenonExecutable xex)
         {
+            string header = "";
 
+            string report;
         }
         public static void generate_report(string report_file, XenonExecutable xex) 
         {

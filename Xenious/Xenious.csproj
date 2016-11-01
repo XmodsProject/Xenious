@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Xenious</RootNamespace>
     <AssemblyName>Xenious</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -66,6 +66,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -192,6 +193,18 @@
     <Compile Include="Forms\Dialogs\XboxMemoryLoader.Designer.cs">
       <DependentUpon>XboxMemoryLoader.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ExeDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExeDebugger.Designer.cs">
+      <DependentUpon>ExeDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Panels\Debugger\OperationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Panels\Debugger\OperationPanel.Designer.cs">
+      <DependentUpon>OperationPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Panels\Editor\Imports.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -234,11 +247,17 @@
     <Compile Include="Forms\MetaEditor.Designer.cs">
       <DependentUpon>MetaEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\XEXDebugger.cs">
+    <Compile Include="Forms\ExeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\XEXDebugger.Designer.cs">
-      <DependentUpon>XEXDebugger.cs</DependentUpon>
+    <Compile Include="Forms\ExeEditor.Designer.cs">
+      <DependentUpon>ExeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Updater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Updater.Designer.cs">
+      <DependentUpon>Updater.cs</DependentUpon>
     </Compile>
     <Compile Include="Launcher.cs">
       <SubType>Form</SubType>
@@ -246,9 +265,13 @@
     <Compile Include="Launcher.Designer.cs">
       <DependentUpon>Launcher.cs</DependentUpon>
     </Compile>
+    <Compile Include="Network\WebAPI.cs" />
+    <Compile Include="Network\WebServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shutdown\Tasks.cs" />
     <Compile Include="Startup\Tasks.cs" />
+    <Compile Include="Startup\Update.cs" />
     <Compile Include="Xecutable\Database.cs" />
     <Compile Include="Xecutable\XboxMemory.cs" />
     <Compile Include="Xecutable\XEXLoader.cs" />
@@ -307,6 +330,12 @@
     <EmbeddedResource Include="Forms\Dialogs\XboxMemoryLoader.resx">
       <DependentUpon>XboxMemoryLoader.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExeDebugger.resx">
+      <DependentUpon>ExeDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Panels\Debugger\OperationPanel.resx">
+      <DependentUpon>OperationPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Panels\Editor\Imports.resx">
       <DependentUpon>Imports.cs</DependentUpon>
     </EmbeddedResource>
@@ -328,8 +357,11 @@
     <EmbeddedResource Include="Forms\MetaEditor.resx">
       <DependentUpon>MetaEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\XEXDebugger.resx">
-      <DependentUpon>XEXDebugger.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ExeEditor.resx">
+      <DependentUpon>ExeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Updater.resx">
+      <DependentUpon>Updater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Launcher.resx">
       <DependentUpon>Launcher.cs</DependentUpon>

@@ -47,6 +47,7 @@
     <Compile Include="IO\MemoryIO.cs" />
     <Compile Include="Kernel\Memory\KernelImport.cs" />
     <Compile Include="Kernel\Memory\XboxMemory.cs" />
+    <Compile Include="PDB\GUID.cs" />
     <Compile Include="PE\ImageDirectoryEntry.cs" />
     <Compile Include="PE\ImageDosHeader.cs" />
     <Compile Include="PE\ImageFileFlags.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="PE\ImageSectionHeader.cs" />
     <Compile Include="PE\SectionImportData.cs" />
     <Compile Include="PE\SectionRData.cs" />
+    <Compile Include="ProgramDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XDBF.cs" />
     <Compile Include="XenonExecutable.cs" />

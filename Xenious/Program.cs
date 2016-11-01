@@ -6,12 +6,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
+using Xenious.Network;
 
 namespace Xenious
 {
     static class Program
     {
         public static List<string> imports_available;
+
+        // Network.
+        public static WebAPI wapi;
 
         static bool is_update()
         {
@@ -48,6 +52,11 @@ namespace Xenious
         static void startup_tasks()
         {
             Startup.Tasks.check_kernal_imports();
+            Startup.Tasks.start_wapi();
+        }
+        static void shutdown_tasks()
+        {
+            Shutdown.Tasks.shutdown_wapi();
         }
 
         /// <summary>
@@ -65,8 +74,10 @@ namespace Xenious
                 DialogResult dr = MessageBox.Show("There is a new version available, would you like to download it ?", "New Update...", MessageBoxButtons.YesNo);
                 if(dr == DialogResult.Yes)
                 {
-                    System.Diagnostics.Process.Start("http://xenious.staticpi.net/downloads/xenious.zip");
-                    return;
+                    if(Startup.Tasks.do_update() == true)
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -75,6 +86,9 @@ namespace Xenious
 
             // Run Launcher.
             Application.Run(new Launcher());
+
+            // Do shutdown tasks.
+            shutdown_tasks();
         }
     }
 }

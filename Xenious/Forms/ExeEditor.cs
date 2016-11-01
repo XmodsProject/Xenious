@@ -17,7 +17,7 @@ using Xbox360.XEX;
 
 namespace Xenious.Forms
 {
-    public partial class XEXDebugger : Form
+    public partial class ExeEditor : Form
     {
         /* Version for Launcher. */
         public static string tool_version = "0.0.600.0";
@@ -93,7 +93,6 @@ namespace Xenious.Forms
                             UInt32 start_addr = pef.start_address;
 
                             richTextBox2.Text += string.Format("{0}:\n\n", pef.func_name);
-                            richTextBox2.Text += "# Start Address : " + start_addr.ToString("X8") + "\n\n";
                             foreach(byte[] op in pef.op_codes)
                             {
                                 // Check for Endianness.
@@ -105,8 +104,6 @@ namespace Xenious.Forms
                                 richTextBox2.Text += string.Format("0x{0}        {1}\n", start_addr.ToString("X8"), XenonPowerPC.PowerPC.Functions.find_func(BitConverter.ToUInt32(op, 0)).op);
                                 start_addr += 4;
                             }
-
-                            richTextBox2.Text += "# End Address : " + start_addr.ToString("X8") + "\n\n";
                             #endregion
                             break;
                     }
@@ -278,8 +275,8 @@ namespace Xenious.Forms
                         }
                         #endregion
 
-                        // Dump a zero'ed xex to cache.
                         #region Decrypt and Decompress XEX
+                        // Write over original xex.
                         if (Xecutable.xextool.xextool_to_raw_xextool(in_xex.IO.file, Application.StartupPath + "/cache/original.xex"))
                         {
                             // Parse all xex meta info.
@@ -419,7 +416,7 @@ namespace Xenious.Forms
             
         }
 
-        public XEXDebugger()
+        public ExeEditor()
         {
             InitializeComponent();
         }
@@ -472,6 +469,10 @@ namespace Xenious.Forms
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(this.in_mem != null)
+            {
+                this.close_xex();
+            }
             this.Close();
         }
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -482,6 +483,14 @@ namespace Xenious.Forms
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
+        }
+
+        private void XEXDebugger_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.in_mem != null)
+            {
+                this.close_xex();
+            }
         }
     }
 }

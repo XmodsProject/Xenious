@@ -17,6 +17,7 @@ namespace XenonPowerPC.PowerPC
         addic_ = 0x34000000,
         add = 0x7c000214,
         add_ = 0x7c000215,
+        mr = 0x7C000378,
         addo = 0x7c000614,
         addo_ = 0x7c000615,
         addc = 0x7c000014,

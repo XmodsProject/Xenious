@@ -70,6 +70,7 @@ namespace Xbox360
         public byte[] device_id;
         public byte[] base_file_format_header;
         public List<byte[]> alternative_title_ids;
+        public List<byte[]> multidisc_media_ids;
 
         /* PE Stuff */
         public ImageDosHeader img_dos_h;
@@ -491,6 +492,16 @@ namespace Xbox360
                         catch { return -16; }
                         #endregion
                         break;
+                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                        IO.position = opt_headers[i].pos;
+                        uint size = IO.read_uint32(Endian.High);
+                        multidisc_media_ids = new List<byte[]>();
+
+                        for(uint x = 0; x < (size - 4) / 16; x++)
+                        {
+                            multidisc_media_ids.Add(IO.read_bytes(16));
+                        }
+                        break;
                     case (uint)XeHeaderKeys.ALTERNATE_TITLE_IDS:
                         try
                         {
@@ -519,7 +530,7 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.ENABLED_FOR_FASTCAP:
                     case (uint)XeHeaderKeys.ADDITIONAL_TITLE_MEMORY:
                     case (uint)XeHeaderKeys.PAGE_HEAP_SIZE_AND_FLAGS:
-                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                    
                     default:
                         unk_headers.Add(opt_headers[i]);
                         break;

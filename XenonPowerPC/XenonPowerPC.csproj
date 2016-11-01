@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CPU\SPRS.cs" />
     <Compile Include="CPU\XenonCPU.cs" />
     <Compile Include="PowerPC\FuncIDs.cs" />
     <Compile Include="PowerPC\OpCodes.cs" />

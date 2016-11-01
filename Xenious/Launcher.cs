@@ -32,9 +32,13 @@ namespace Xenious
                         Forms.MetaEditor medit = new Forms.MetaEditor();
                         medit.ShowDialog();
                         break;
-                    case "Xenon Executable Debugger":
-                        Forms.XEXDebugger xdbgr = new Forms.XEXDebugger();
-                        xdbgr.ShowDialog();
+                    case "Executable Editor":
+                        Forms.ExeEditor xedtr = new Forms.ExeEditor();
+                        xedtr.ShowDialog();
+                        break;
+                    case "Executable Debugger":
+                        Forms.ExeDebugger xebdgr = new Forms.ExeDebugger();
+                        xebdgr.ShowDialog();
                         break;
                 }
             }
@@ -56,9 +60,14 @@ namespace Xenious
             listView1.Items.Add(medit);
 
             // Add XEXDebugger
+            ListViewItem edtr = new ListViewItem();
+            edtr.Text = "Executable Editor";
+            edtr.SubItems.Add(Forms.ExeEditor.tool_version);
+            listView1.Items.Add(edtr);
+
             ListViewItem dbgr = new ListViewItem();
-            dbgr.Text = "Xenon Executable Debugger";
-            dbgr.SubItems.Add(Forms.XEXDebugger.tool_version);
+            dbgr.Text = "Executable Debugger";
+            dbgr.SubItems.Add(Forms.ExeDebugger.tool_version);
             listView1.Items.Add(dbgr);
 
             listView1.Update();

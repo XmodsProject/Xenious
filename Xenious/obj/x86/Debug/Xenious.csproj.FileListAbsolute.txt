@@ -20,7 +20,6 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\De
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.StaticLibs.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.PE_Editor.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.MetaEditor.resources
-C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.XEXDebugger.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Launcher.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Properties.Resources.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.GenerateResource.Cache
@@ -37,3 +36,7 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Debug\
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\bin\Debug\XenonPowerPC.pdb
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.CallcapData.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.SettingsDialog.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.ExeDebugger.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.ExeEditor.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Debugger.OperationPanel.resources
+C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Updater.resources

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Xenious.Startup
 {
@@ -70,6 +71,40 @@ namespace Xenious.Startup
 
                 }
             }
+        }
+
+        /*
+         * Start Web API
+         * Starts up a json response type web server. 
+         */
+        public static void start_wapi()
+        {
+            Xenious.Program.wapi = new Network.WebAPI();
+            Xenious.Program.wapi.init();
+        }
+
+        /*
+         * Do Update
+         * This function launches the updater dialog,
+         * then the updater dialog downloads the update,
+         * extracts it then deletes the old installation.
+         * jumps back to this function and restarts.
+         */
+        public static bool do_update()
+        {
+            Forms.Updater updtr = new Forms.Updater();
+            updtr.ShowDialog();
+
+            if(updtr.updated == true)
+            {
+                System.Diagnostics.Process.Start(Application.StartupPath + "/Xenious.exe");
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Could not update the executable...", "Error : ");
+            }
+            return false;
         }
     }
 }

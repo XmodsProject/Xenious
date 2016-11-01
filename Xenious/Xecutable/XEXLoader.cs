@@ -75,7 +75,7 @@ namespace Xenious.Xecutable
 
             return result;
         }
-        public static void load_mainapp_imports_from_rdata(Xenious.Database.PEFileDatabase pe_db, Xbox360.Kernal.Memory.XboxMemory memory)
+        public static void load_imports_from_rdata(Xenious.Database.PEFileDatabase pe_db, Xbox360.Kernal.Memory.XboxMemory memory, int import_id = -1)
         {
             #region Get section index of rdata.
             int rdata_idx = 0;
@@ -91,7 +91,6 @@ namespace Xenious.Xecutable
                 }
             }
             #endregion
-
             memory.Position = pe_db.sections[rdata_idx].start_address;
 
             pe_db.sections[rdata_idx].imports = new List<Xenious.Database.PEImport>();
@@ -99,13 +98,12 @@ namespace Xenious.Xecutable
             {
                 UInt16 id = 1;
                 UInt16 ord = 1;
-                while (id != 0 && ord != 0)
+                while (true)
                 {
-                   ;
                     id = BitConverter.ToUInt16(memory.ReadBytes(2, BitConverter.IsLittleEndian), 0);
                     ord = BitConverter.ToUInt16(memory.ReadBytes(2, BitConverter.IsLittleEndian), 0);
 
-                    if (id != 0 && ord != 0)
+                    if (ord != 0)
                     {
                         pe_db.sections[rdata_idx].imports.Add(new Xenious.Database.PEImport()
                         {
@@ -113,34 +111,41 @@ namespace Xenious.Xecutable
                             ordinal = ord
                         });
                     }
+                    else
+                    {
+                        break;
+                    }
+                    
                 }
             }
+            return;
         }
         public static bool load_mainapp_from_load_address(Xenious.Database.PEFileDatabase pe_db, Xbox360.Kernal.Memory.XboxMemory memory)
         {
-            // First set entry point.
-            memory.Position = memory.MainApp.exe_entry_point;
-
-            // Now loop through until we hit a blr to end the function of start.
-            byte[] op = new byte[4] { 0x01, 0x00, 0x00, 0x00 };
-
-            #region Get section index of text.
-            int text_idx = 0;
+            #region Get section index of starting entry.
+            int section_idx = 0;
             foreach(Xenious.Database.PEFileSection sec in pe_db.sections)
             {
-                if(sec.section_name == ".text")
+                if(memory.MainApp.exe_entry_point <= sec.end_address && 
+                   memory.MainApp.exe_entry_point >= sec.start_address)
                 {
                     break;
                 }
                 else
                 {
-                    text_idx++;
+                    section_idx++;
                 }
             }
             #endregion
 
+            // First set entry point.
+            memory.Position = memory.MainApp.exe_entry_point;
+
+            // Now loop through until we hit a zero's to end the function of start.
+            byte[] op = new byte[4] { 0x01, 0x00, 0x00, 0x00 };
+
             // Init Text Functions List.
-            pe_db.sections[text_idx].functions = new List<Xenious.Database.PEFunction>();
+            pe_db.sections[section_idx].functions = new List<Xenious.Database.PEFunction>();
 
             // Make First One - Start.
             Xenious.Database.PEFunction pef = new Xenious.Database.PEFunction();
@@ -151,20 +156,28 @@ namespace Xenious.Xecutable
 
             // The first function ends with 0.
             #region Load Inital Function
-            while (BitConverter.ToUInt32(op, 0) != 0)
+            while (true)
             {
                 end_addr += 4;
                 op = memory.ReadBytes(4, BitConverter.IsLittleEndian);
-                pef.op_codes.Add(op);
+                if (BitConverter.ToUInt32(op, 0) != 0)
+                {
+                    pef.op_codes.Add(op);
+                }
+                else
+                {
+                    // end of function.
+                    break;
+                }
             }
             #endregion
             pef.end_address = end_addr;
 
             // Add first function to list.
-            pe_db.sections[text_idx].functions.Add(pef);
+            pe_db.sections[section_idx].functions.Add(pef);
 
             // Next Setup imports from rdata.
-            load_mainapp_imports_from_rdata(pe_db, memory);
+            load_imports_from_rdata(pe_db, memory);
 
             // First add the main out ops.
             List<byte[]> out_codes = pef.get_all_out_funcs();
@@ -172,7 +185,15 @@ namespace Xenious.Xecutable
             // Next loop through until no more can be found.
             while(true)
             {
-                // Loop throuhg each outcode the function gives us, find more and so on.
+                foreach(byte[] code in out_codes)
+                {
+                    if(BitConverter.IsLittleEndian)
+                    {
+                        Array.Reverse(code);
+                    }
+                    // Get Address of code.
+                    Int32 addr = (Int32)(BitConverter.ToUInt32(code, 0) & 0x3FFFFFC);
+                }
                 break;
             }
 
