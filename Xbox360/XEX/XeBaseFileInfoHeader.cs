@@ -18,7 +18,43 @@ namespace Xbox360.XEX
     public class XeBaseFileInfoHeader
     {
         public Int32 info_size;
-        public XeEncryptionType enc_type;
-        public XeCompressionType comp_type;
+        public byte[] data;
+
+        public XeEncryptionType enc_type
+        {
+            get
+            {
+                byte[] buf = new byte[2]
+                {
+                    data[5],
+                    data[6]
+                };
+
+                if(BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(buf);
+                }
+
+                return (XeEncryptionType)BitConverter.ToUInt16(buf, 0);
+            }
+        }
+        public XeCompressionType comp_type
+        {
+            get
+            {
+                byte[] buf = new byte[2]
+                {
+                    data[7],
+                    data[8]
+                };
+
+                if (BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(buf);
+                }
+
+                return (XeCompressionType)BitConverter.ToUInt16(buf, 0);
+            }
+        }
     }
 }

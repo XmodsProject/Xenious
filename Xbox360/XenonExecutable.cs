@@ -42,8 +42,9 @@ namespace Xbox360
         public XeGame_Ratings ratings;
         public XeExecutionInfo xeinfo;
         public XeBaseFileInfoHeader base_file_info_h;
-        public XeRawBaseFileInfo raw_file_info_h;
-        public XeCompBaseFileInfo comp_file_info_h;
+        public string orig_import_kernels; // Holds original string with padding, this is used to until I figure out the padding.
+        public byte[] orig_imports; // Holds original imports header.
+        public byte[] orig_static_imps; // Holds original static libs header.
         public List<XeImportLibary> import_libs;
         public XeDeltaPatch delta_patch;
         public XeTLSInfo tls_info;
@@ -222,8 +223,7 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             base_file_info_h = new XeBaseFileInfoHeader();
                             base_file_info_h.info_size = IO.read_int32(Endian.High);
-                            base_file_info_h.enc_type = (XeEncryptionType)IO.read_uint16(Endian.High);
-                            base_file_info_h.comp_type = (XeCompressionType)IO.read_uint16(Endian.High);
+                            base_file_info_h.data = IO.read_bytes(base_file_info_h.info_size - 4);
                         }
                         catch
                         {
@@ -300,20 +300,23 @@ namespace Xbox360
                         {
                             IO.position = opt_headers[i].pos;
                             uint ils = IO.read_uint32(Endian.High);
+                            orig_imports = IO.read_bytes((int)ils - 4);
+                            IO.position -= ils - 4;
                             uint libs_len = IO.read_uint32(Endian.High);
                             uint num_libs = IO.read_uint32(Endian.High);
                             import_libs = new List<XeImportLibary>();
                             if (num_libs == 1)
                             {
-                                string buf = IO.read_string((int)libs_len);
+                                orig_import_kernels = IO.read_string((int)libs_len);
                                 XeImportLibary impl = new XeImportLibary();
-                                impl.name = buf;
+                                impl.name = orig_import_kernels;
                                 impl.read(IO);
                                 import_libs.Add(impl);
                             }
                             else
                             {
-                                string[] buf = IO.read_string((int)libs_len).Split('\0');
+                                orig_import_kernels = IO.read_string((int)libs_len);
+                                string[] buf = orig_import_kernels.Split('\0');
                                 string[] kernals = new string[num_libs];
                                 int g = 0;
                                 // Get Import libary names.
@@ -375,7 +378,11 @@ namespace Xbox360
                         try
                         {
                             IO.position = opt_headers[i].pos;
-                            len = ((IO.read_uint32(Endian.High) - 4) / 16);
+                            uint num = (IO.read_uint32(Endian.High));
+                            orig_static_imps = IO.read_bytes((int)num - 4);
+                            IO.position -= (num - 4);
+
+                            len = ((num - 4) / 16);
                             static_libs = new List<XeStaticLib>();
 
                             for (int x = 0; x < len; x++)
@@ -550,7 +557,17 @@ namespace Xbox360
             }
             return false;
         }
-
+        public void remove_header_key(XeHeaderKeys key)
+        {
+            foreach(XeOptHeader opt in opt_headers)
+            {
+                if(opt.key == key)
+                {
+                    opt_headers.Remove(opt);
+                    break;
+                }
+            }
+        }
         // Will return true only if there is a pe on the end of it. NO XUIZ etc.
         public bool load_pe()
         {
@@ -886,6 +903,8 @@ namespace Xbox360
             // Output Headers.
             #region Out opt_headers
             // Write out opt headers.
+            long ptr = outio.position;
+
             for (int i = 0; i < opt_headers.Count; i++)
             {
                 switch ((uint)opt_headers[i].key)
@@ -893,7 +912,8 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.RESOURCE_INFO:
                         #region Writeout Resources
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out size + 4.
                         outio.write((UInt32)(16 * resources.Count) + 4, Endian.High);
@@ -907,43 +927,20 @@ namespace Xbox360
                             outio.write(resources[x].address, Endian.High);
                             outio.write(resources[x].size, Endian.High);
                         }
+                        ptr += ((16 * resources.Count) + 4);
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.FILE_FORMAT_INFO:
                         #region Writeout FileFormat
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out BaseFileInfo.
                         outio.write(base_file_info_h.info_size, Endian.High);
-                        outio.write((UInt16)base_file_info_h.enc_type, Endian.High);
-                        outio.write((UInt16)base_file_info_h.comp_type, Endian.High);
+                        outio.write(base_file_info_h.data);
+                        ptr += base_file_info_h.info_size;
 
-                        // Now output compression header.
-                        #region XeCompression
-                        switch (base_file_info_h.comp_type)
-                        {
-                            case XeCompressionType.Raw:
-                                // Write out RawBaseFileInfo.
-                                outio.write(base_file_info_h.info_size, Endian.High);
-                                outio.write(raw_file_info_h.info_size,Endian.High);
-                                outio.write((UInt16)raw_file_info_h.enc_type, Endian.High);
-                                outio.write((UInt16)raw_file_info_h.comp_type, Endian.High);
-
-                                foreach (XeRawBaseFileBlock block in raw_file_info_h.block)
-                                {
-                                    outio.write(block.data_size, Endian.High);
-                                    outio.write(block.zero_size, Endian.High);
-                                }
-                                
-                                break;
-                            case XeCompressionType.Compressed:
-                                
-                                break;
-                            case XeCompressionType.DeltaCompressed:
-                                break;
-                        }
-                        #endregion
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DELTA_PATCH_DESCRIPTOR: break;
@@ -951,31 +948,37 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.XGD3_MEDIA_KEY:
                         #region Writeout XGD3MediaID
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
-
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
                         // Write out XGD3 Media ID.
                         outio.write(xgd3_media_id);
+
+                        ptr += 16;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.BOUNDING_PATH:
                         #region Writeout BoundingPath
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out length.
                         outio.write((UInt32)bound_path.Length, Endian.High);
 
                         // Write out bounding path.
                         outio.write(Encoding.ASCII.GetBytes(bound_path));
+                        ptr += bound_path.Length + 4;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DEVICE_ID:
                         #region Writeout DeviceID
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out DeviceID (No length, header has length.
                         outio.write(device_id);
+                        ptr += device_id.Length;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ORIGINAL_BASE_ADDRESS:
@@ -999,99 +1002,76 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.IMPORT_LIBRARIES:
                         #region Writeout ImportLibarys
                         long pos = outio.position;
-                        opt_headers[i].data = (uint)pos;
-                        string kernals = "";
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
-                        foreach (XeImportLibary lib in import_libs)
-                        {
-                            kernals += (lib.name + "\0");
-                        }
-                        
-                        outio.write((UInt32)0, Endian.High); // Write this later. (Header Size)
-                        outio.write((UInt32)kernals.Length, Endian.High);
-                        outio.write((UInt32)import_libs.Count, Endian.High);
-                        outio.write(Encoding.ASCII.GetBytes(kernals));
-
-                        UInt32 size = (UInt32)(kernals.Length + 12);
-                        for(int x = 0; x < import_libs.Count; x++)
-                        {
-                            import_libs[x].write(outio);
-                            size += (UInt32)(import_libs[x].data.Length + 4);
-                        }
-
-                        outio.position = pos;
-                        outio.write(size, Endian.High); // Write size to start.
+                        outio.write((UInt32)orig_imports.Length + 4, Endian.High);
+                        outio.write(orig_imports);
+                        ptr += orig_imports.Length + 4;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.CHECKSUM_TIMESTAMP:
                         #region Writeout ChecksumTimestamp
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out ChecksumTimestamp (No length, header has length.
                         outio.write(checksum);
                         outio.write(timestamp, Endian.High);
+                        ptr += 8;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_CALLCAP:
                         #region Writeout Callcap
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out Callcap
                         outio.write(callcap_start, Endian.High);
                         outio.write(callcap_end, Endian.High);
+                        ptr += 8;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_FASTCAP: break;
                     case (uint)XeHeaderKeys.ORIGINAL_PE_NAME:
                         #region Writeout OriginalPEName
                         // Set opt headers offset.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out length
                         outio.write((UInt32)orig_pe_name.Length, Endian.High);
 
                         // Writeout PE Original Name
                         outio.write(Encoding.ASCII.GetBytes(orig_pe_name));
+                        ptr += orig_pe_name.Length + 4;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.STATIC_LIBRARIES:
-                        opt_headers[i].data = (UInt32)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Write out size.
-                        outio.write((UInt32)4 + (16 * static_libs.Count), Endian.High);
+                        outio.write((UInt32)(4 + orig_static_imps.Length), Endian.High);
+                        outio.write(orig_static_imps);
 
-                        foreach(XeStaticLib lib in static_libs)
-                        {
-                            if(lib.name.Length < 8)
-                            {
-                                for (int x = lib.name.Length; x < 8; x++)
-                                {
-                                    lib.name += "\0";
-                                }
-                            }
-                            else if(lib.name.Length > 8)
-                            {
-                                lib.name = lib.name.Substring(0, 8);
-                            }
-                            outio.write(Encoding.ASCII.GetBytes(lib.name));
-                            outio.write(lib.major, Endian.High);
-                            outio.write(lib.minor, Endian.High);
-                            outio.write(lib.build, Endian.High);
-                            outio.write(lib.qfe, Endian.High);
-                        }
+                        ptr += (4 + orig_static_imps.Length);
+                        
                         break;
                     case (uint)XeHeaderKeys.TLS_INFO:
                         #region Writeout TLSInfo
                         // Set headers position.
-                        opt_headers[i].data = (UInt32)outio.position;
-                       
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
+
                         // Writeout TLS Info.
                         outio.write(tls_info.slot_count, Endian.High);
                         outio.write(tls_info.raw_data_addr, Endian.High);
                         outio.write(tls_info.data_size, Endian.High);
                         outio.write(tls_info.raw_data_size, Endian.High);
+                        ptr += 16;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DEFAULT_STACK_SIZE:
@@ -1113,7 +1093,8 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.EXECUTION_INFO:
                         #region Writeout ExecutionInfo
                         // Set headers position.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Writeout Execution Info
                         outio.write(xeinfo.media_id, Endian.High);
@@ -1125,6 +1106,8 @@ namespace Xbox360
                         outio.write(xeinfo.disc_number);
                         outio.write(xeinfo.disc_count);
                         outio.write(xeinfo.savegame_id, Endian.High);
+
+                        ptr += 24;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.TITLE_WORKSPACE_SIZE:
@@ -1133,7 +1116,8 @@ namespace Xbox360
                     case (uint)XeHeaderKeys.GAME_RATINGS:
                         #region Writeout RatingData
                         // Set headers position.
-                        opt_headers[i].data = (uint)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Writeout Rating Data.
                         outio.write((byte)ratings.esrb);
@@ -1149,37 +1133,56 @@ namespace Xbox360
                         outio.write((byte)ratings.brazil);
                         outio.write((byte)ratings.fpb);
                         outio.write(ratings.reserved);
+                        ptr += 64;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.LAN_KEY:
                         #region Writeout LanKey
                         // Set headers position.
-                        opt_headers[i].data = (UInt32)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Writeout Lan Key.
                         outio.write(lan_key);
+                        ptr += 16;
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.XBOX360_LOGO:
                         #region Writeout Xbox360Logo
                         // Set headers position.
-                        opt_headers[i].data = (UInt32)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
 
                         // Writeout Length.
                         outio.write((UInt32)xbox_360_logo.Length, Endian.High);
 
                         // Writeout logo.
                         outio.write(xbox_360_logo);
+                        ptr += xbox_360_logo.Length + 4;
                         #endregion
                         break;
-                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS: break;
+                    case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
+
+                        // Writeout size.
+                        outio.write((UInt32)(4 + (16 * multidisc_media_ids.Count)), Endian.High);
+
+                        for(int x = 0; x < multidisc_media_ids.Count; x++)
+                        {
+                            outio.write(multidisc_media_ids[x]);
+                        }
+                        ptr += (4 + (16 * multidisc_media_ids.Count));
+                        break;
                     case (uint)XeHeaderKeys.ALTERNATE_TITLE_IDS: break;
                     case (uint)XeHeaderKeys.ADDITIONAL_TITLE_MEMORY: break;
                     case (uint)XeHeaderKeys.EXPORTS_BY_NAME:
-                        opt_headers[i].data = (UInt32)outio.position;
+                        opt_headers[i].data = (UInt32)ptr;
+                        outio.position = ptr;
                         // Header contains the length.
                         outio.write(exports_named.raw_size, Endian.High);
                         outio.write(exports_named.num_exports, Endian.High);
+                        ptr += 8;
                         break;
                 }
             }
@@ -1302,21 +1305,36 @@ namespace Xbox360
             }
             else // Else, just copy the original.
             {
-                outio.position = pe_offset;
                 IO.position = pe_data_offset;
                 int num = 0;
 
-                switch (base_file_info_h.comp_type)
+                num = (int)(IO.length - pe_data_offset); // Original length.
+
+                byte[] data = new byte[num];
+
+                int ptr2 = 0;
+                int size = num;
+
+                while(size > 0)
                 {
-                    case XeCompressionType.Raw:
-                        num = (int)(IO.length - pe_data_offset); // Original length.
-                        break;
-                    case XeCompressionType.Zeroed:
-                        num = (int)cert.image_size; // Zeroed length.
-                        break;
+                    if((size - 4096) > 0)
+                    {
+                        byte[] buf = IO.read_bytes(4096);
+                        Array.Copy(buf, 0, data, ptr2, buf.Length);
+                        size -= 4096;
+                        ptr2 += 4096;
+                    }
+                    else
+                    {
+                        byte[] buf = IO.read_bytes(size);
+                        Array.Copy(buf, 0, data, ptr2, buf.Length);
+                        size = 0;
+                        ptr2 = 0;
+                    }
                 }
 
-                byte[] data = IO.read_bytes(num);
+                // Write out RAW.
+                outio.position = pe_offset;
                 outio.write(data);
             }
 
@@ -1340,6 +1358,13 @@ namespace Xbox360
             outio.close();
             outio = null;
         }
+
+        /*
+         * Rebuild Meta
+         * This function rebuilds the xecutable meta header then
+         * copys the original pe data from the xecutable in the same
+         * format, it just rebuilds the header.
+         */
 
         public void extract_pe(string output_file, bool make_full_size = false)
         {

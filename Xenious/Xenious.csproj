@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crypto\CRC32.cs" />
     <Compile Include="Database\PEFile.cs" />
     <Compile Include="Database\XEXReportFile.cs" />
     <Compile Include="Forms\Dialogs\About.cs">
@@ -273,6 +274,7 @@
     <Compile Include="Startup\Tasks.cs" />
     <Compile Include="Startup\Update.cs" />
     <Compile Include="Xecutable\Database.cs" />
+    <Compile Include="Xecutable\Misc.cs" />
     <Compile Include="Xecutable\XboxMemory.cs" />
     <Compile Include="Xecutable\XEXLoader.cs" />
     <Compile Include="Xecutable\xextool.cs" />

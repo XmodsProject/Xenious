@@ -539,9 +539,27 @@ namespace Xenious.Forms
         private void systemFlagsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Xenious.Forms.Dialogs.SystemFlags sf = new Xenious.Forms.Dialogs.SystemFlags();
-            sf.set_flags(in_xex.system_flags);
+            if (in_xex.has_header_key(XeHeaderKeys.SYSTEM_FLAGS))
+            {
+                sf.set_flags(in_xex.system_flags);
+            }
+            else
+            {
+                sf.set_flags(0);
+            }
             sf.ShowDialog();
-            in_xex.system_flags = sf.get_flags();
+
+            if ((int)sf.get_flags() > 0)
+            {
+                in_xex.system_flags = sf.get_flags();
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.SYSTEM_FLAGS))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.SYSTEM_FLAGS);
+                }
+            }
         }
         private void moduleFlagsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -663,16 +681,8 @@ namespace Xenious.Forms
         private void ratingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Xenious.Forms.Dialogs.RatingsData rdata = new Xenious.Forms.Dialogs.RatingsData();
-            bool has_rating_header = false;
-            for (int i = 0; i < in_xex.opt_headers.Count; i++)
-            {
-                if (in_xex.opt_headers[i].key == XeHeaderKeys.GAME_RATINGS)
-                {
-                    has_rating_header = true;
-                }
-            }
 
-            if (has_rating_header == true)
+            if (in_xex.has_header_key(XeHeaderKeys.GAME_RATINGS))
             {
                 rdata.has_ratings_header = true;
                 rdata.set_ratings_data(in_xex.ratings);
@@ -683,40 +693,12 @@ namespace Xenious.Forms
             }
             rdata.ShowDialog();
 
-            if (rdata.add_ratings == true)
+            if(Xecutable.Misc.ratings_data_is_null(rdata.get_ratings()))
             {
-                if (has_rating_header == true)
+                if(in_xex.has_header_key(XeHeaderKeys.GAME_RATINGS))
                 {
-                    // Then just replace them.
-                    in_xex.ratings = rdata.get_ratings();
+                    in_xex.remove_header_key(XeHeaderKeys.GAME_RATINGS);
                 }
-                else
-                {
-                    // add them.
-                    in_xex.ratings = rdata.get_ratings();
-
-                    XeOptHeader opt = new XeOptHeader();
-                    opt.key = XeHeaderKeys.GAME_RATINGS;
-                    in_xex.opt_headers.Add(opt);
-                }
-
-                rebuild_xex = true;
-            }
-            else if (rdata.delete_ratings == true)
-            {
-                List<XeOptHeader> headers = new List<XeOptHeader>();
-                // Recompile optheaders.
-                for (int i = 0; i < in_xex.opt_headers.Count; i++)
-                {
-                    if (in_xex.opt_headers[i].key != XeHeaderKeys.GAME_RATINGS)
-                    {
-                        headers.Add(in_xex.opt_headers[i]);
-                    }
-                }
-
-                in_xex.opt_headers = headers;
-
-                rebuild_xex = true;
             }
             else
             {
@@ -743,30 +725,37 @@ namespace Xenious.Forms
         {
             List<byte[]> listoftids = new List<byte[]>();
             Forms.Dialogs.AlternativeTitleIDs atids = new Forms.Dialogs.AlternativeTitleIDs(listoftids);
-            bool has_header = false;
-            foreach (XeOptHeader opt in in_xex.opt_headers)
+            if (in_xex.has_header_key(XeHeaderKeys.ALTERNATE_TITLE_IDS))
             {
-                if((UInt32)opt.key == (UInt32)XeHeaderKeys.ALTERNATE_TITLE_IDS)
-                {
-                    has_header = true;
-                    atids = new Forms.Dialogs.AlternativeTitleIDs(in_xex.alternative_title_ids);
-                }
+                atids = new Forms.Dialogs.AlternativeTitleIDs(in_xex.alternative_title_ids);
+            }
+            else
+            {
+                atids = new Dialogs.AlternativeTitleIDs(listoftids);
             }
 
             atids.Show();
 
             listoftids = atids.title_ids;
 
-            if(listoftids.Count == 0)
+            if (listoftids.Count == 0)
             {
+                // Delete, as sign of remove.
+                if (in_xex.has_header_key(XeHeaderKeys.ALTERNATE_TITLE_IDS))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.ALTERNATE_TITLE_IDS);
+                }
                 return;
             }
 
-            if(has_header == false)
+            // Add header if not there.
+            if (in_xex.has_header_key(XeHeaderKeys.ALTERNATE_TITLE_IDS) == false)
             {
-                XeOptHeader nopt = new XeOptHeader();
-                nopt.key = XeHeaderKeys.ALTERNATE_TITLE_IDS;
-                in_xex.opt_headers.Add(nopt);
+                in_xex.opt_headers.Add(new XeOptHeader()
+                {
+                    key = XeHeaderKeys.ALTERNATE_TITLE_IDS
+                });
+
             }
             in_xex.alternative_title_ids = listoftids;
         }
@@ -776,7 +765,13 @@ namespace Xenious.Forms
             sfd.Title = "Save rebuilt xex as...";
             if(sfd.ShowDialog() == DialogResult.OK)
             {
-                in_xex.rebuild_xex(sfd.FileName, true);
+                // Since we can only rebuild xex's with xextool support with encrypted / compressed xecutables...
+                // Rebuild pe only if xextool support is enabled | xecutable is raw/zeroed and decrypted.
+                // 
+                in_xex.rebuild_xex(sfd.FileName, 
+                    (has_xextool || 
+                    in_xex.base_file_info_h.comp_type == XeCompressionType.Raw && in_xex.base_file_info_h.enc_type == XeEncryptionType.NotEncrypted || 
+                    in_xex.base_file_info_h.comp_type == XeCompressionType.Zeroed && in_xex.base_file_info_h.enc_type == XeEncryptionType.NotEncrypted));
                 __log("Rebuilt executable " + sfd.FileName + "...");
             }
         }
@@ -784,98 +779,347 @@ namespace Xenious.Forms
         {
             hebox = new Forms.Dialogs.HexEditBox();
             hebox.set_max_len(16);
-            hebox.set_value(in_xex.xgd3_media_id);
+            byte[] blank = new byte[16]
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            };
+
+            if (in_xex.has_header_key(XeHeaderKeys.XGD3_MEDIA_KEY))
+            {
+                hebox.set_value(in_xex.xgd3_media_id);
+            }
+            else
+            {
+                hebox.set_value(blank);
+            }
             hebox.ShowDialog();
-            in_xex.xgd3_media_id = hebox.value;
+
+            if (hebox.value == blank)
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.XGD3_MEDIA_KEY))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.XGD3_MEDIA_KEY);
+                }
+            }
+            else {
+                in_xex.xgd3_media_id = hebox.value;
+            }
         }
         private void lanKeyToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             hebox = new Forms.Dialogs.HexEditBox();
             hebox.set_max_len(16);
-            hebox.set_value(in_xex.lan_key);
+            byte[] blank = new byte[16]
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            };
+
+            if (in_xex.has_header_key(XeHeaderKeys.LAN_KEY))
+            {
+                hebox.set_value(in_xex.lan_key);
+            }
+            else
+            {
+                hebox.set_value(blank);
+            }
             hebox.ShowDialog();
-            in_xex.lan_key = hebox.value;
+
+            if(hebox.value != blank)
+            {
+                in_xex.lan_key = hebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.LAN_KEY))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.LAN_KEY);
+                }
+            }
         }
         private void deviceIDToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             hebox = new Forms.Dialogs.HexEditBox();
             hebox.set_max_len(16);
-            hebox.set_value(in_xex.device_id);
+            byte[] blank = new byte[16]
+            {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            };
+
+            if (in_xex.has_header_key(XeHeaderKeys.DEVICE_ID))
+            {
+                hebox.set_value(in_xex.device_id);
+            }
+            else
+            {
+                hebox.set_value(blank);
+            }
             hebox.ShowDialog();
-            in_xex.device_id = hebox.value;
+
+            if (hebox.value != blank)
+            {
+                in_xex.device_id = hebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.DEVICE_ID))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.DEVICE_ID);
+                }
+            }
         }
         private void boundingPathToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             tebox = new Forms.Dialogs.TextEditBox();
-            tebox.set_value(in_xex.bound_path);
-            tebox.set_max_len(in_xex.bound_path.Length);
+            tebox.set_max_len(255);
+
+            if(in_xex.has_header_key(XeHeaderKeys.BOUNDING_PATH))
+            {
+                tebox.set_value(in_xex.bound_path);
+            }
+            else
+            {
+                tebox.set_value("");
+            }
             tebox.ShowDialog();
-            in_xex.bound_path = tebox.value;
+
+            if (tebox.value != "")
+            {
+                in_xex.bound_path = tebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.BOUNDING_PATH))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.BOUNDING_PATH);
+                }
+            }
         }
         private void originalPENameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tebox = new Forms.Dialogs.TextEditBox();
-            tebox.set_value(in_xex.orig_pe_name);
-            tebox.set_max_len(in_xex.orig_pe_name.Length);
+            if (in_xex.has_header_key(XeHeaderKeys.ORIGINAL_PE_NAME))
+            {
+                tebox.set_value(in_xex.orig_pe_name);
+                
+            }
+            else
+            {
+                tebox.set_value("");
+            }
+            tebox.set_max_len(255);
+
             tebox.ShowDialog();
-            in_xex.orig_pe_name = tebox.value;
-            treeView1.Nodes[0].Text = tebox.value;
+            
+            if(tebox.value != "")
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.ORIGINAL_PE_NAME) == false)
+                {
+                    in_xex.opt_headers.Add(new XeOptHeader()
+                    {
+                        key = XeHeaderKeys.ORIGINAL_PE_NAME
+                    });
+                }
+                in_xex.orig_pe_name = tebox.value;
+                treeView1.Nodes[0].Text = tebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.ORIGINAL_PE_NAME))
+                {
+                    // Remove Header.
+                    in_xex.remove_header_key(XeHeaderKeys.ORIGINAL_PE_NAME);
+                }
+            }
+            
         }
         private void imageBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.img_base_addr);
+            if (in_xex.has_header_key(XeHeaderKeys.IMAGE_BASE_ADDRESS))
+            {
+                nebox.set_value(in_xex.img_base_addr);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.img_base_addr = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.img_base_addr = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.IMAGE_BASE_ADDRESS))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.IMAGE_BASE_ADDRESS);
+                }
+            }
         }
         private void originalBaseAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.orig_base_addr);
+
+            if (in_xex.has_header_key(XeHeaderKeys.ORIGINAL_BASE_ADDRESS))
+            {
+                nebox.set_value(in_xex.orig_base_addr);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.orig_base_addr = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.orig_base_addr = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.ORIGINAL_BASE_ADDRESS))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.ORIGINAL_BASE_ADDRESS);
+                }
+            }
         }
         private void entryPointToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.exe_entry_point);
+
+            if (in_xex.has_header_key(XeHeaderKeys.ENTRY_POINT))
+            {
+                nebox.set_value(in_xex.exe_entry_point);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.exe_entry_point = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.exe_entry_point = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.ENTRY_POINT))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.ENTRY_POINT);
+                }
+            }
         }
         private void titleWorkspaceSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.title_workspace_size);
+
+            if (in_xex.has_header_key(XeHeaderKeys.TITLE_WORKSPACE_SIZE))
+            {
+                nebox.set_value(in_xex.title_workspace_size);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.title_workspace_size = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.title_workspace_size = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.TITLE_WORKSPACE_SIZE))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.TITLE_WORKSPACE_SIZE);
+                }
+            }
         }
         private void stackSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.default_stack_size);
+            if (in_xex.has_header_key(XeHeaderKeys.DEFAULT_STACK_SIZE))
+            {
+                nebox.set_value(in_xex.default_stack_size);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.default_stack_size = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.default_stack_size = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.DEFAULT_STACK_SIZE))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.DEFAULT_STACK_SIZE);
+                }
+            }
         }
         private void filesystemCacheSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.default_fs_cache_size);
+            if (in_xex.has_header_key(XeHeaderKeys.DEFAULT_FILESYSTEM_CACHE_SIZE))
+            {
+                nebox.set_value(in_xex.default_fs_cache_size);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.default_fs_cache_size = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.default_fs_cache_size = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.DEFAULT_FILESYSTEM_CACHE_SIZE))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.DEFAULT_FILESYSTEM_CACHE_SIZE);
+                }
+            }
         }
         private void heapSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nebox = new Forms.Dialogs.NumericEditBox();
             nebox.set_max(UInt32.MaxValue);
-            nebox.set_value(in_xex.default_heap_size);
+
+            if (in_xex.has_header_key(XeHeaderKeys.DEFAULT_HEAP_SIZE))
+            {
+                nebox.set_value(in_xex.default_heap_size);
+            }
+            else
+            {
+                nebox.set_value(0);
+            }
             nebox.ShowDialog();
-            in_xex.default_heap_size = nebox.value;
+
+            if (nebox.value > 0)
+            {
+                in_xex.default_heap_size = nebox.value;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.DEFAULT_HEAP_SIZE))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.DEFAULT_HEAP_SIZE);
+                }
+            }
         }
         private void MainEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -886,13 +1130,38 @@ namespace Xenious.Forms
         private void callcapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Forms.Dialogs.CallcapData callcap = new Dialogs.CallcapData();
-            callcap.start = in_xex.callcap_start;
-            callcap.end = in_xex.callcap_end;
+            if (in_xex.has_header_key(XeHeaderKeys.ENABLED_FOR_CALLCAP))
+            {
+                callcap.start = in_xex.callcap_start;
+                callcap.end = in_xex.callcap_end;
+            }
+            else
+            {
+                callcap.start = 0;
+                callcap.end = 0;
+            }
             callcap.ShowDialog();
 
-            // Save edits.
-            in_xex.callcap_start = callcap.start;
-            in_xex.callcap_end = callcap.end;
+
+            if (callcap.start > 0 && callcap.end > 0)
+            {
+                // Add new Header.
+                in_xex.opt_headers.Add(new XeOptHeader()
+                {
+                    key = XeHeaderKeys.ENABLED_FOR_CALLCAP
+                });
+
+                // Save edits.
+                in_xex.callcap_start = callcap.start;
+                in_xex.callcap_end = callcap.end;
+            }
+            else
+            {
+                if(in_xex.has_header_key(XeHeaderKeys.ENABLED_FOR_CALLCAP))
+                {
+                    in_xex.remove_header_key(XeHeaderKeys.ENABLED_FOR_CALLCAP);
+                }
+            }
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
