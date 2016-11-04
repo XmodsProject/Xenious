@@ -19,7 +19,7 @@ namespace Xenious.Forms
     public partial class MetaEditor : Form
     {
         /* Version for Launcher. */
-        public static string tool_version = "0.0.600.0";
+        public static string tool_version = "0.0.1000.0";
 
         /* Input / Output */
         XenonExecutable in_xex;
@@ -1126,7 +1126,6 @@ namespace Xenious.Forms
             close_xex();
             clear_cache();
         }
-
         private void callcapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Forms.Dialogs.CallcapData callcap = new Dialogs.CallcapData();
@@ -1163,7 +1162,6 @@ namespace Xenious.Forms
                 }
             }
         }
-
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
 

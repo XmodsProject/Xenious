@@ -917,8 +917,8 @@ namespace Xbox360
 
                         // Write out size + 4.
                         outio.write((UInt32)(16 * resources.Count) + 4, Endian.High);
-                        
-                        for(int x = 0; x < resources.Count; x++) 
+
+                        for (int x = 0; x < resources.Count; x++)
                         {
                             string name = resources[x].name;
                             // Filepadding.
@@ -1058,7 +1058,7 @@ namespace Xbox360
                         outio.write(orig_static_imps);
 
                         ptr += (4 + orig_static_imps.Length);
-                        
+
                         break;
                     case (uint)XeHeaderKeys.TLS_INFO:
                         #region Writeout TLSInfo
@@ -1168,7 +1168,7 @@ namespace Xbox360
                         // Writeout size.
                         outio.write((UInt32)(4 + (16 * multidisc_media_ids.Count)), Endian.High);
 
-                        for(int x = 0; x < multidisc_media_ids.Count; x++)
+                        for (int x = 0; x < multidisc_media_ids.Count; x++)
                         {
                             outio.write(multidisc_media_ids[x]);
                         }
@@ -1274,7 +1274,7 @@ namespace Xbox360
 
                 for (int i = 0; i < img_file_h.NumberOfSections; i++)
                 {
-                    for(int x = img_sections[i].Name.Length; x < 8; x++)
+                    for (int x = img_sections[i].Name.Length; x < 8; x++)
                     {
                         img_sections[i].Name += "\0";
                     }
@@ -1309,35 +1309,30 @@ namespace Xbox360
                 int num = 0;
 
                 num = (int)(IO.length - pe_data_offset); // Original length.
-
-                byte[] data = new byte[num];
-
                 int ptr2 = 0;
                 int size = num;
+                byte[] buf;
 
-                while(size > 0)
+                // Write out RAW.
+                while (size > 0)
                 {
-                    if((size - 4096) > 0)
+                    outio.position = pe_data_offset + ptr2;
+                    if ((size - 4096) > 0)
                     {
-                        byte[] buf = IO.read_bytes(4096);
-                        Array.Copy(buf, 0, data, ptr2, buf.Length);
+                        buf = IO.read_bytes(4096);
+                        outio.write(buf);
                         size -= 4096;
                         ptr2 += 4096;
                     }
                     else
                     {
-                        byte[] buf = IO.read_bytes(size);
-                        Array.Copy(buf, 0, data, ptr2, buf.Length);
+                        buf = IO.read_bytes(size);
+                        outio.write(buf);
                         size = 0;
                         ptr2 = 0;
                     }
                 }
-
-                // Write out RAW.
-                outio.position = pe_offset;
-                outio.write(data);
             }
-
             // Writeout PE Offset.
             outio.position = 8;
             outio.write(pe_offset, Endian.High);

@@ -26,8 +26,8 @@ namespace Xbox360.XEX
             {
                 byte[] buf = new byte[2]
                 {
-                    data[5],
-                    data[6]
+                    data[0],
+                    data[1]
                 };
 
                 if(BitConverter.IsLittleEndian)
@@ -44,8 +44,8 @@ namespace Xbox360.XEX
             {
                 byte[] buf = new byte[2]
                 {
-                    data[7],
-                    data[8]
+                    data[2],
+                    data[3]
                 };
 
                 if (BitConverter.IsLittleEndian)
