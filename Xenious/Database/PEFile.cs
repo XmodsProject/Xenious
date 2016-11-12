@@ -106,7 +106,7 @@ namespace Xenious.Database
             IO.close();
             IO = null;
         }
-        public bool load_from_db_file(Xenious.IO.FileIO IO)
+        public bool load_from_db_file(IO.FileIO IO)
         {
             IO.position = 0;
             

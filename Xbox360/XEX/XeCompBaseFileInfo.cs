@@ -13,8 +13,6 @@ namespace Xbox360.XEX
     public class XeCompBaseFileInfo
     {
         public Int32 info_size;
-        public XeEncryptionType enc_type;
-        public XeCompressionType comp_type;
         public UInt32 compression_window;
         public XeCompBaseFileBlock block;
     }

@@ -30,9 +30,10 @@
         {
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView1
@@ -41,6 +42,7 @@
             this.columnHeader1,
             this.columnHeader4,
             this.columnHeader2,
+            this.columnHeader5,
             this.columnHeader3});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Location = new System.Drawing.Point(0, 0);
@@ -56,21 +58,24 @@
             this.columnHeader1.Text = "Page Size";
             this.columnHeader1.Width = 177;
             // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Page Count";
+            this.columnHeader4.Width = 133;
+            // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Hash";
-            this.columnHeader2.Width = 571;
+            this.columnHeader2.Width = 269;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Valid";
-            this.columnHeader3.Width = 105;
+            this.columnHeader3.Width = 132;
             // 
-            // columnHeader4
+            // columnHeader5
             // 
-            this.columnHeader4.DisplayIndex = 3;
-            this.columnHeader4.Text = "Page Count";
-            this.columnHeader4.Width = 133;
+            this.columnHeader5.Text = "Type";
             // 
             // Sections
             // 
@@ -91,5 +96,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
     }
 }

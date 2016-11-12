@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Xbox360.XEX
 {
-    public enum XeEncryptionType : uint
+    public enum XeEncryptionType : UInt16
     {
         NotEncrypted = 0,
         Encrypted = 1

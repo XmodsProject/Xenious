@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Xenios.Crypto;
 
 namespace Xbox360.XEX
 {
@@ -24,6 +25,7 @@ namespace Xbox360.XEX
         public byte[] import_table_digest;
         public byte[] xgd2_media_id;
         public byte[] seed_key;
+        public byte[] dencrypt_key;
         public UInt32 export_table_pos;
         public byte[] header_digest;
         public UInt32 game_regions;

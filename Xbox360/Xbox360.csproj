@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compression\XCompress.cs" />
     <Compile Include="Crypto\rijndael.cs" />
     <Compile Include="IO\EndianType.cs" />
     <Compile Include="IO\FileIO.cs" />

@@ -123,11 +123,10 @@ namespace Xenious.Forms
                         break;
                 }
             }
-            if (in_xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
-                in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
+            if (in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
                 in_xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
             {
-                extractToolStripMenuItem.Enabled = false;
+                //extractToolStripMenuItem.Enabled = false;
             }
 
 
@@ -348,6 +347,7 @@ namespace Xenious.Forms
                             MessageBox.Show("");
                         }*/
                         #endregion
+
                     }
                 }
                 else

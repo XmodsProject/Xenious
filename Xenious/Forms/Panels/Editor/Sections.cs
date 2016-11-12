@@ -34,6 +34,7 @@ namespace Xenious.Forms.Panels.Editor
                 item.Text = sec.page_size.ToString();
                 item.SubItems.Add(sec.page_count.ToString());
                 item.SubItems.Add(BitConverter.ToString(sec.digest).Replace("-", ""));
+                item.SubItems.Add(sec.type.ToString());
                 item.SubItems.Add("Unknown"); // Todo
                 listView1.Items.Add(item);
             }

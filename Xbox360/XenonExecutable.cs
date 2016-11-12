@@ -13,6 +13,7 @@ using Xbox360.PE;
 using Xbox360.XEX;
 using Xbox360.XUIZ;
 using Xbox360.IO;
+using Xenios.Crypto;
 
 namespace Xbox360
 {
@@ -72,6 +73,11 @@ namespace Xbox360
         public byte[] base_file_format_header;
         public List<byte[]> alternative_title_ids;
         public List<byte[]> multidisc_media_ids;
+
+        /* Encryption Context */
+        Rijndael128 rjndl;
+        UInt32[] rj_rk;
+        int rj_nr;
 
         /* PE Stuff */
         public ImageDosHeader img_dos_h;
@@ -149,6 +155,7 @@ namespace Xbox360
                 cert.import_table_digest = IO.read_bytes(20);
                 cert.xgd2_media_id = IO.read_bytes(16);
                 cert.seed_key = IO.read_bytes(16);
+                cert.dencrypt_key = decrypt_session_key(false);
                 cert.export_table_pos = IO.read_uint32(Endian.High);
                 cert.header_digest = IO.read_bytes(20);
                 cert.game_regions = IO.read_uint32(Endian.High);
@@ -691,6 +698,47 @@ namespace Xbox360
             }
         }
 
+        public byte[] decrypt_session_key(bool devkit)
+        {
+            this.rjndl = new Rijndael128();
+            this.rj_nr = 0;
+
+            if(devkit)
+            {
+                this.rj_nr = this.rjndl.key_setup_dec(out this.rj_rk, new byte[16] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+            }
+            else
+            {
+                this.rj_nr = this.rjndl.key_setup_dec(out this.rj_rk, new byte[16] { 0x20, 0xB1, 0x85, 0xA5, 0x9D, 0x28, 0xFD, 0xC3, 0x40, 0x58, 0x3F, 0xBB, 0x08, 0x96, 0xBF, 0x91});
+            }
+            return this.rjndl.decrypt(this.rj_rk, this.rj_nr, cert.seed_key);
+        }
+        
+        public byte[] decrypt_pe(int length)
+        {
+            byte[] data = new byte[length];
+            byte[] buf, enc_buf;
+            byte[] ivec = new byte[16];
+            IO.position = pe_data_offset;
+            int pos = 0;
+            for (int i = 0; i < length; i += 16, pos += 16)
+            {
+                // decrypt buffer.
+                enc_buf = IO.read_bytes(16);
+                buf = this.rjndl.decrypt(rj_rk, rj_nr, enc_buf);
+
+                for(int x = 0; x < 16; x++)
+                {
+                    // xor with previous.
+                    data[pos + x] ^= ivec[x];
+
+                    // set previous.
+                    ivec[x] = enc_buf[x];
+                }
+            }
+
+            return data;
+        }
         public void read_xuiz_header()
         {
             IO.position = pe_data_offset;
@@ -1354,23 +1402,45 @@ namespace Xbox360
             outio = null;
         }
 
-        /*
-         * Rebuild Meta
-         * This function rebuilds the xecutable meta header then
-         * copys the original pe data from the xecutable in the same
-         * format, it just rebuilds the header.
-         */
-
         public void extract_pe(string output_file, bool make_full_size = false)
         {
-            // TODO Decrypt.
-
-            // TODO Decompress.
-
             IO.position = pe_data_offset;
 
-            byte[] exe = IO.read_bytes((int)(IO.length - pe_data_offset)); //(int)cert.image_size);
+            byte[] exe = new byte[(int)(IO.length - pe_data_offset)];
 
+            if (base_file_info_h.comp_type == XeCompressionType.Compressed)
+            {
+                if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
+                {
+                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                }
+
+                // Test For PE Header, is MZ exists then its just a compressed raw image.
+                // else it is compressed with lzx.
+                if(exe[0] != 0x4d && exe[1] != 0x5a)
+                {
+                    return;
+                }
+            }
+            else if(base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
+            {
+                if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
+                {
+                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                }
+            }
+            else if(base_file_info_h.comp_type == XeCompressionType.Raw ||
+                    base_file_info_h.comp_type == XeCompressionType.Zeroed)
+            {
+                if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
+                {
+                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                }
+                else
+                {
+                    exe = IO.read_bytes((int)(IO.length - pe_data_offset));
+                }
+            }
             System.IO.FileStream outio = new System.IO.FileStream(output_file, System.IO.FileMode.Create);
             if (make_full_size == true)
             {
