@@ -9,7 +9,7 @@
  * @author Vincent Rijmen <vincent.rijmen@esat.kuleuven.ac.be>
  * @author Antoon Bosselaers <antoon.bosselaers@esat.kuleuven.ac.be>
  * @author Paulo Barreto <paulo.barreto@terra.com.br>
- * @author Hect0r <sysop@static.pi.net>
+ * @author Hect0r <sysop@staticpi.net>
  *
  * This code is hereby placed in the public domain.
  *
