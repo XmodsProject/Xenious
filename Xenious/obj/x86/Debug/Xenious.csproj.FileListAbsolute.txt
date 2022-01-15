@@ -40,3 +40,45 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\De
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.ExeEditor.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Debugger.OperationPanel.resources
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Updater.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.AssemblyReference.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.SuggestedBindingRedirects.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.About.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.AlternativeTitleIDs.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.CallcapData.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.Certificate.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.ExecutionInfo.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.HexEditBox.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.ImageFlags.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.LoadFileDialog.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.LoadProgressDialog.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.MediaFlags.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.ModuleFlags.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.NumericEditBox.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.RatingsData.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.RegionFlags.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.SettingsDialog.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.SystemFlags.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.TextEditBox.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Dialogs.XboxMemoryLoader.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.ExeDebugger.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Debugger.OperationPanel.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.Imports.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.OptHeaders.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.Resources.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.Sections.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.Editor.StaticLibs.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Panels.PE_Editor.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Forms.Editor.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.Properties.Resources.resources
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.GenerateResource.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.CoreCompileInputs.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\Xenious.exe.config
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\Xenious.exe
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\Xenious.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\Xbox360.dll
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\XenonPowerPC.dll
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\Xbox360.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\bin\Debug\XenonPowerPC.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.csproj.CopyComplete
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.exe
+C:\Users\pablo\Documents\GitHub\Xenious\Xenious\obj\x86\Debug\Xenious.pdb

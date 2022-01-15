@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "8b933efa-ff05-40cd-9c9f-03c052e8d160": {
+      "ProjectGuid": "8b933efa-ff05-40cd-9c9f-03c052e8d160",
+      "DisplayName": "Xenious",
+      "ColorIndex": 0
+    },
+    "49483a47-b2b2-40d9-8586-2251ce0c98d7": {
+      "ProjectGuid": "49483a47-b2b2-40d9-8586-2251ce0c98d7",
+      "DisplayName": "Xbox360",
+      "ColorIndex": 1
+    },
+    "cc33337e-2914-4111-b7b9-6ddc66b794c9": {
+      "ProjectGuid": "cc33337e-2914-4111-b7b9-6ddc66b794c9",
+      "DisplayName": "XenonPowerPC",
+      "ColorIndex": 2
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 3
+}

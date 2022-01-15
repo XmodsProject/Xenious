@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xenios.Crypto;
+using Xbox360.Crypto;
 
 namespace Xbox360.XEX
 {

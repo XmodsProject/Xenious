@@ -3,3 +3,8 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\bin\R
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.dll
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.pdb
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.csprojResolveAssemblyReference.cache
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\bin\Release\XenonPowerPC.dll
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\bin\Release\XenonPowerPC.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.csproj.CoreCompileInputs.cache
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.dll
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\XenonPowerPC.pdb

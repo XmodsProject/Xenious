@@ -13,7 +13,7 @@ using Xbox360.PE;
 using Xbox360.XEX;
 using Xbox360.XUIZ;
 using Xbox360.IO;
-using Xenios.Crypto;
+using Xbox360.Crypto;
 
 namespace Xbox360
 {
@@ -22,7 +22,15 @@ namespace Xbox360
         public FileIO IO;
 
         public bool is_xex {
-            get { return (bool)(magic == "XEX2"); }
+            get { return (bool)(
+                    // Thanks MATTRiCK and Emoose (Maybe Anthony too ?):)
+                    (magic == "XEX2") || // Kernel Must Be >= 2.0.1861.0
+                    (magic == "XEX1") || // Kernel Must Be >= 2.0.1838.0
+                    (magic == "XEX%") || // Kernel Must Be >= 2.0.1746.0
+                    (magic == "XEX-") || // Kernel Must Be >= 2.0.1640.0
+                    (magic == "XEX?") || // Kernel Must Be >= 2.0.1529.0
+                    (magic == "XEX0"));   // Kernel Must Be >= 2.0.1332.0
+            }
         }
 
         /* Header info */
@@ -75,16 +83,7 @@ namespace Xbox360
         public List<byte[]> multidisc_media_ids;
 
         /* Encryption Context */
-        Rijndael128 rjndl;
-        UInt32[] rj_rk;
-        int rj_nr;
-
-        /* PE Stuff */
-        public ImageDosHeader img_dos_h;
-        public ImageFileHeader img_file_h;
-        public ImageOptHeader img_opt_h;
-        public List<ImageSectionHeader> img_sections;
-        public SectionImportData pe_sec_idata;
+        Rijndael rjndl;
 
         public XenonExecutable(string file)
         {
@@ -189,7 +188,7 @@ namespace Xbox360
                 throw exp;
             }
         }
-        public int parse_optional_headers()
+        public void parse_optional_headers()
         {
             uint len;
             unk_headers = new List<XeOptHeader>();
@@ -219,7 +218,7 @@ namespace Xbox360
                         }
                         catch
                         {
-                            return -1;
+                            throw new Exception("Failed Loading Optional Header (Resources).");
                         }
                         #endregion
                         break;
@@ -234,7 +233,7 @@ namespace Xbox360
                         }
                         catch
                         {
-                            return -2;
+                            throw new Exception("Failed Loading Optional Header (File FOrmat Info).");
                         }
                         #endregion
                         break;
@@ -261,7 +260,7 @@ namespace Xbox360
                         }
                         catch
                         {
-                            return -3;
+                            throw new Exception("Failed Loading Optional Header (Delta Patch Descriptor).");
                         }
                         #endregion
                         break;
@@ -271,7 +270,7 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             xgd3_media_id = IO.read_bytes((int)opt_headers[i].len);
                         }
-                        catch { return -4; }
+                        catch { throw new Exception("Failed Loading Optional Header (XGD3 Media ID)."); }
                         break;
                     case (uint)XeHeaderKeys.BOUNDING_PATH:
                         try
@@ -280,7 +279,7 @@ namespace Xbox360
                             len = IO.read_uint32(Endian.High);
                             bound_path = IO.read_string((int)len);
                         }
-                        catch { return -5; }
+                        catch { throw new Exception("Failed Loading Optional Header (Bounding Path)."); }
                         break;
                     case (uint)XeHeaderKeys.DEVICE_ID:
                         #region DeviceID
@@ -289,7 +288,7 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             device_id = IO.read_bytes((int)opt_headers[i].len);
                         }
-                        catch { return -6; }
+                        catch { throw new Exception("Failed Loading Optional Header (Device ID)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ORIGINAL_BASE_ADDRESS:
@@ -346,7 +345,7 @@ namespace Xbox360
                                 }
                             }
                         }
-                        catch { return -7; }
+                        catch { throw new Exception("Failed Loading Optional Header (Import Librarys)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.CHECKSUM_TIMESTAMP:
@@ -357,7 +356,7 @@ namespace Xbox360
                             checksum = IO.read_bytes(4);
                             timestamp = IO.read_uint32(Endian.High);
                         }
-                        catch { return -8; }
+                        catch { throw new Exception("Failed Loading Optional Header (Checksum and Timestamp)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.ENABLED_FOR_CALLCAP:
@@ -367,7 +366,7 @@ namespace Xbox360
                             callcap_start = IO.read_uint32(Endian.High);
                             callcap_end = IO.read_uint32(Endian.High);
                         }
-                        catch { return -9; }
+                        catch { throw new Exception("Failed Loading Optional Header (Callcap)."); }
                         break;
                     case (uint)XeHeaderKeys.ORIGINAL_PE_NAME:
                         #region OriginalPEName
@@ -377,7 +376,7 @@ namespace Xbox360
                             len = IO.read_uint32(Endian.High);
                             orig_pe_name = IO.read_string((int)len);
                         }
-                        catch { return -10; }
+                        catch { throw new Exception("Failed Loading Optional Header (Original Pe Name)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.STATIC_LIBRARIES:
@@ -404,7 +403,7 @@ namespace Xbox360
                                 static_libs.Add(sl);
                             }
                         }
-                        catch { return -11; }
+                        catch { throw new Exception("Failed Loading Optional Header (Static Librarys)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.TLS_INFO:
@@ -418,7 +417,7 @@ namespace Xbox360
                             tls_info.data_size = IO.read_uint32(Endian.High);
                             tls_info.raw_data_size = IO.read_uint32(Endian.High);
                         }
-                        catch { return -12; }
+                        catch { throw new Exception("Failed Loading Optional Header (TLS Info)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.DEFAULT_STACK_SIZE:
@@ -456,7 +455,7 @@ namespace Xbox360
                             xeinfo.disc_count = IO.read_byte();
                             xeinfo.savegame_id = IO.read_uint32(Endian.High);
                         }
-                        catch { return -13; }
+                        catch { throw new Exception("Failed Loading Optional Header (Execution info)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.TITLE_WORKSPACE_SIZE:
@@ -482,7 +481,7 @@ namespace Xbox360
                             ratings.fpb = (XeRating_fpb)IO.read_byte();
                             ratings.reserved = IO.read_bytes(52);
                         }
-                        catch { return -14; }
+                        catch { throw new Exception("Failed Loading Optional Header (Game Ratings)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.LAN_KEY:
@@ -492,7 +491,7 @@ namespace Xbox360
                             IO.position = opt_headers[i].pos;
                             lan_key = IO.read_bytes((int)opt_headers[i].len);
                         }
-                        catch { return -15; }
+                        catch { throw new Exception("Failed Loading Optional Header (Lan key)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.XBOX360_LOGO:
@@ -503,17 +502,24 @@ namespace Xbox360
                             uint x360l_len = IO.read_uint32(Endian.High);
                             xbox_360_logo = IO.read_bytes((int)x360l_len);
                         }
-                        catch { return -16; }
+                        catch { throw new Exception("Failed Loading Optional Header (Xbox 360 Logo)."); }
                         #endregion
                         break;
                     case (uint)XeHeaderKeys.MULTIDISC_MEDIA_IDS:
-                        IO.position = opt_headers[i].pos;
-                        uint size = IO.read_uint32(Endian.High);
-                        multidisc_media_ids = new List<byte[]>();
-
-                        for(uint x = 0; x < (size - 4) / 16; x++)
+                        try
                         {
-                            multidisc_media_ids.Add(IO.read_bytes(16));
+                            IO.position = opt_headers[i].pos;
+                            uint size = IO.read_uint32(Endian.High);
+                            multidisc_media_ids = new List<byte[]>();
+
+                            for (uint x = 0; x < (size - 4) / 16; x++)
+                            {
+                                multidisc_media_ids.Add(IO.read_bytes(16));
+                            }
+                        }
+                        catch
+                        {
+                            throw new Exception("Failed Loading Optional Header (MultiDisc media IDs).");
                         }
                         break;
                     case (uint)XeHeaderKeys.ALTERNATE_TITLE_IDS:
@@ -527,7 +533,7 @@ namespace Xbox360
                                 alternative_title_ids.Add(IO.read_bytes(4));
                             }
                         }
-                        catch { return -17; }
+                        catch { throw new Exception("Failed Loading Optional Header (Alternate Title IDs)."); }
                         break;
                     case (uint)XeHeaderKeys.EXPORTS_BY_NAME:
                         try
@@ -537,7 +543,7 @@ namespace Xbox360
                             exports_named.raw_size = IO.read_uint32(Endian.High);
                             exports_named.num_exports = IO.read_uint32(Endian.High);
                         }
-                        catch { return -18; }
+                        catch { throw new Exception("Failed Loading Optional Header (Exports By Name)."); }
                         break;
 
                     case (uint)XeHeaderKeys.BASE_REFERENCE:
@@ -550,7 +556,6 @@ namespace Xbox360
                         break;
                 }
             }
-            return 0;
         }
 
         public bool has_header_key(XeHeaderKeys key)
@@ -575,168 +580,31 @@ namespace Xbox360
                 }
             }
         }
-        // Will return true only if there is a pe on the end of it. NO XUIZ etc.
-        public bool load_pe()
+
+        public byte[] decrypt_session_key(bool devkit = false)
         {
-            IO.position = pe_data_offset;
-
-            string magic = IO.read_string(2);
-
-            if(magic == "MZ")
-            {
-                this.read_dos_header();
-                this.read_file_header();
-                this.read_image_opt_header();
-                this.read_image_sections();
-            }
-            else { return false; }
-
-            return true;
-        }
-        public void read_dos_header()
-        {
-            IO.position = pe_data_offset;
-            img_dos_h = new ImageDosHeader();
-            img_dos_h.e_magic = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cblp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_crlc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cparhdr = IO.read_uint16(Endian.Low);
-            img_dos_h.e_minalloc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_maxalloc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ss = IO.read_uint16(Endian.Low);
-            img_dos_h.e_sp = IO.read_uint16(Endian.Low);
-            img_dos_h.e_csum = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ip = IO.read_uint16(Endian.Low);
-            img_dos_h.e_cs = IO.read_uint16(Endian.Low);
-            img_dos_h.e_lfarlc = IO.read_uint16(Endian.Low);
-            img_dos_h.e_ovno = IO.read_uint16(Endian.Low);
-            img_dos_h.e_res = new List<UInt16>();
-            for (int i = 0; i < 4; i++)
-            {
-                img_dos_h.e_res.Add(IO.read_uint16(Endian.Low));
-            }
-
-            img_dos_h.e_oemid = IO.read_uint16(Endian.Low);
-            img_dos_h.e_oeminfo = IO.read_uint16(Endian.Low);
-
-            img_dos_h.e_res2 = new List<UInt16>();
-            for (int i = 0; i < 10; i++)
-            {
-                img_dos_h.e_res2.Add(IO.read_uint16(Endian.Low));
-            }
-            img_dos_h.e_lfanew = IO.read_int32(Endian.Low);
-            img_dos_h.e_rstub = IO.read_bytes(img_dos_h.e_lfanew - 64);
-        }
-        public void read_file_header()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew;
-            img_file_h = new ImageFileHeader();
-            img_file_h.magic = IO.read_uint32(Endian.Low);
-            img_file_h.Machine = IO.read_uint16(Endian.Low);
-            img_file_h.NumberOfSections = IO.read_uint16(Endian.Low);
-            img_file_h.TimeDateStamp = IO.read_uint32(Endian.Low);
-            img_file_h.PointerToSymbolTable = IO.read_uint32(Endian.Low);
-            img_file_h.NumberOfSymbols = IO.read_uint32(Endian.Low);
-            img_file_h.SizeOfOptionalHeader = IO.read_uint16(Endian.Low);
-            img_file_h.Characteristics = IO.read_uint16(Endian.Low);
-        }
-        public void read_image_opt_header()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew + 24;
-            ImageOptHeader opt = new ImageOptHeader();
-            opt.Magic = IO.read_uint16(Endian.Low);
-            opt.MajorLinkerVersion = IO.read_byte();
-            opt.MinorLinkerVersion = IO.read_byte();
-            opt.SizeOfCode = IO.read_uint32(Endian.Low);
-            opt.SizeOfInitializedData = IO.read_uint32(Endian.Low);
-            opt.SizeOfUninitializedData = IO.read_uint32(Endian.Low);
-            opt.AddressOfEntryPoint = IO.read_uint32(Endian.Low);
-            opt.BaseOfCode = IO.read_uint32(Endian.Low);
-            opt.BaseOfData = IO.read_uint32(Endian.Low);
-            opt.ImageBase = IO.read_uint32(Endian.Low);
-            opt.SectionAlignment = IO.read_uint32(Endian.Low);
-            opt.FileAlignment = IO.read_uint32(Endian.Low);
-            opt.MajorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.MinorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.MajorImageVersion = IO.read_uint16(Endian.Low);
-            opt.MinorImageVersion = IO.read_uint16(Endian.Low);
-            opt.MajorSubsystemVersion = IO.read_uint16(Endian.Low);
-            opt.MinorOperatingSystemVersion = IO.read_uint16(Endian.Low);
-            opt.Reserved1 = IO.read_uint32(Endian.Low);
-            opt.SizeOfImage = IO.read_uint32(Endian.Low);
-            opt.CheckSum = IO.read_uint32(Endian.Low);
-            opt.Subsystem = IO.read_uint16(Endian.Low);
-            opt.DllCharacteristics = IO.read_uint16(Endian.Low);
-            opt.SizeOfStackReserve = IO.read_uint32(Endian.Low);
-            opt.SizeOfStackCommit = IO.read_uint32(Endian.Low);
-            opt.SizeOfHeapReserve = IO.read_uint32(Endian.Low);
-            opt.SizeOfHeapCommit = IO.read_uint32(Endian.Low);
-            opt.LoaderFlags = IO.read_uint32(Endian.Low);
-            opt.NumberOfRvaAndSizes = IO.read_uint32(Endian.Low);
-            img_opt_h = opt;
-        }
-        public void read_image_sections()
-        {
-            IO.position = pe_data_offset + img_dos_h.e_lfanew + 248;
-            img_sections = new List<ImageSectionHeader>();
-
-            for (int i = 0; i < img_file_h.NumberOfSections; i++)
-            {
-                ImageSectionHeader sec = new ImageSectionHeader();
-                sec.Name = IO.read_string(8);
-                sec.Misc = IO.read_uint32(Endian.Low);
-                sec.VirtualAddress = IO.read_uint32(Endian.Low);
-                sec.SizeOfRawData = IO.read_uint32(Endian.Low);
-                sec.RawDataPtr = IO.read_uint32(Endian.Low);
-                sec.RelocationsPtr = IO.read_uint32(Endian.Low);
-                sec.LineNumsPtr = IO.read_uint32(Endian.Low);
-                sec.NumRelocations = IO.read_uint16(Endian.Low);
-                sec.NUmLineNumbers = IO.read_uint16(Endian.Low);
-                sec.Characteristics = IO.read_uint32(Endian.Low);
-                img_sections.Add(sec);
-            }
-        }
-
-        public byte[] decrypt_session_key(bool devkit)
-        {
-            this.rjndl = new Rijndael128();
-            this.rj_nr = 0;
-
             if(devkit)
             {
-                this.rj_nr = this.rjndl.key_setup_dec(out this.rj_rk, new byte[16] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                this.rjndl = new Rijndael(new byte[16] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 128);
             }
             else
             {
-                this.rj_nr = this.rjndl.key_setup_dec(out this.rj_rk, new byte[16] { 0x20, 0xB1, 0x85, 0xA5, 0x9D, 0x28, 0xFD, 0xC3, 0x40, 0x58, 0x3F, 0xBB, 0x08, 0x96, 0xBF, 0x91});
+                this.rjndl = new Rijndael(new byte[16] { 0x20, 0xB1, 0x85, 0xA5, 0x9D, 0x28, 0xFD, 0xC3, 0x40, 0x58, 0x3F, 0xBB, 0x08, 0x96, 0xBF, 0x91 }, 128);
             }
-            return this.rjndl.decrypt(this.rj_rk, this.rj_nr, cert.seed_key);
+            byte[] data = this.rjndl.Decrypt(this.cert.seed_key);
+            return data;
+
         }
         
-        public byte[] decrypt_pe(int length)
+        public byte[] decrypt_pe()
         {
-            byte[] data = new byte[length];
-            byte[] buf, enc_buf;
-            byte[] ivec = new byte[16];
+            byte[] data;
             IO.position = pe_data_offset;
-            int pos = 0;
-            for (int i = 0; i < length; i += 16, pos += 16)
-            {
-                // decrypt buffer.
-                enc_buf = IO.read_bytes(16);
-                buf = this.rjndl.decrypt(rj_rk, rj_nr, enc_buf);
+            data = IO.read_bytes((int)this.cert.image_size);
 
-                for(int x = 0; x < 16; x++)
-                {
-                    // xor with previous.
-                    data[pos + x] ^= ivec[x];
+            this.rjndl = new Rijndael(this.decrypt_session_key(false), 128);
 
-                    // set previous.
-                    ivec[x] = enc_buf[x];
-                }
-            }
-
+            data = this.rjndl.Decrypt(data);
             return data;
         }
         public void read_xuiz_header()
@@ -1239,146 +1107,31 @@ namespace Xbox360
             // Output PE.
             UInt32 pe_offset = (UInt32)outio.position;
 
-            if (rebuild_pe == true)
+            IO.position = pe_data_offset;
+            int num = 0;
+
+            num = (int)(IO.length - pe_data_offset); // Original length.
+            int ptr2 = 0;
+            int size = num;
+            byte[] buf;
+
+            // Write out RAW.
+            while (size > 0)
             {
-
-                // Writeout the ImageDosHeader.
-                outio.position = pe_offset;
-
-                #region ImageDosHeader
-                outio.write(img_dos_h.e_magic, Endian.Low);
-                outio.write(img_dos_h.e_cblp, Endian.Low);
-                outio.write(img_dos_h.e_cp, Endian.Low);
-                outio.write(img_dos_h.e_crlc, Endian.Low);
-                outio.write(img_dos_h.e_cparhdr, Endian.Low);
-                outio.write(img_dos_h.e_minalloc, Endian.Low);
-                outio.write(img_dos_h.e_maxalloc, Endian.Low);
-                outio.write(img_dos_h.e_ss, Endian.Low);
-                outio.write(img_dos_h.e_sp, Endian.Low);
-                outio.write(img_dos_h.e_csum, Endian.Low);
-                outio.write(img_dos_h.e_ip, Endian.Low);
-                outio.write(img_dos_h.e_cs, Endian.Low);
-                outio.write(img_dos_h.e_lfarlc, Endian.Low);
-                outio.write(img_dos_h.e_ovno, Endian.Low);
-
-                for (int i = 0; i < 4; i++)
+                outio.position = pe_data_offset + ptr2;
+                if ((size - 4096) > 0)
                 {
-                    outio.write(img_dos_h.e_res[i], Endian.Low);
+                    buf = IO.read_bytes(4096);
+                    outio.write(buf);
+                    size -= 4096;
+                    ptr2 += 4096;
                 }
-
-                outio.write(img_dos_h.e_oemid, Endian.Low);
-                outio.write(img_dos_h.e_oeminfo, Endian.Low);
-
-                for (int i = 0; i < 10; i++)
+                else
                 {
-                    outio.write(img_dos_h.e_res2[i], Endian.Low);
-                }
-                outio.write(img_dos_h.e_lfanew, Endian.Low);
-                outio.write(img_dos_h.e_rstub);
-                #endregion
-                #region ImageFileHeader
-                outio.write(img_file_h.magic, Endian.Low);
-                outio.write(img_file_h.Machine, Endian.Low);
-                outio.write(img_file_h.NumberOfSections, Endian.Low);
-                outio.write(img_file_h.TimeDateStamp, Endian.Low);
-                outio.write(img_file_h.PointerToSymbolTable, Endian.Low);
-                outio.write(img_file_h.NumberOfSymbols, Endian.Low);
-                outio.write(img_file_h.SizeOfOptionalHeader, Endian.Low);
-                outio.write(img_file_h.Characteristics, Endian.Low);
-                #endregion
-                #region ImageOptionalHeader
-                outio.write(img_opt_h.Magic, Endian.Low);
-                outio.write(img_opt_h.MajorLinkerVersion);
-                outio.write(img_opt_h.MinorLinkerVersion);
-                outio.write(img_opt_h.SizeOfCode, Endian.Low);
-                outio.write(img_opt_h.SizeOfInitializedData, Endian.Low);
-                outio.write(img_opt_h.SizeOfUninitializedData, Endian.Low);
-                outio.write(img_opt_h.AddressOfEntryPoint, Endian.Low);
-                outio.write(img_opt_h.BaseOfCode, Endian.Low);
-                outio.write(img_opt_h.BaseOfData, Endian.Low);
-                outio.write(img_opt_h.ImageBase, Endian.Low);
-                outio.write(img_opt_h.SectionAlignment, Endian.Low);
-                outio.write(img_opt_h.FileAlignment, Endian.Low);
-                outio.write(img_opt_h.MajorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.MinorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.MajorImageVersion, Endian.Low);
-                outio.write(img_opt_h.MinorImageVersion, Endian.Low);
-                outio.write(img_opt_h.MajorSubsystemVersion, Endian.Low);
-                outio.write(img_opt_h.MinorOperatingSystemVersion, Endian.Low);
-                outio.write(img_opt_h.Reserved1, Endian.Low);
-                outio.write(img_opt_h.SizeOfImage, Endian.Low);
-                outio.write(img_opt_h.CheckSum, Endian.Low);
-                outio.write(img_opt_h.Subsystem, Endian.Low);
-                outio.write(img_opt_h.DllCharacteristics, Endian.Low);
-                outio.write(img_opt_h.SizeOfStackReserve, Endian.Low);
-                outio.write(img_opt_h.SizeOfStackCommit, Endian.Low);
-                outio.write(img_opt_h.SizeOfHeapReserve, Endian.Low);
-                outio.write(img_opt_h.SizeOfHeapCommit, Endian.Low);
-                outio.write(img_opt_h.LoaderFlags, Endian.Low);
-                outio.write(img_opt_h.NumberOfRvaAndSizes, Endian.Low);
-                #endregion
-                #region ImageSections
-                outio.position = pe_offset + img_dos_h.e_lfanew + 248;
-
-                for (int i = 0; i < img_file_h.NumberOfSections; i++)
-                {
-                    for (int x = img_sections[i].Name.Length; x < 8; x++)
-                    {
-                        img_sections[i].Name += "\0";
-                    }
-                    outio.write(Encoding.ASCII.GetBytes(img_sections[i].Name));
-                    outio.write(img_sections[i].Misc, Endian.Low);
-                    outio.write(img_sections[i].VirtualAddress, Endian.Low);
-                    outio.write(img_sections[i].SizeOfRawData, Endian.Low);
-                    outio.write(img_sections[i].RawDataPtr, Endian.Low);
-                    outio.write(img_sections[i].RelocationsPtr, Endian.Low);
-                    outio.write(img_sections[i].LineNumsPtr, Endian.Low);
-                    outio.write(img_sections[i].NumRelocations, Endian.Low);
-                    outio.write(img_sections[i].NUmLineNumbers, Endian.Low);
-                    outio.write(img_sections[i].Characteristics, Endian.Low);
-
-                    long pos = outio.position;
-
-                    // read -> write section data.
-                    IO.position = pe_data_offset + img_sections[i].RawDataPtr;
-                    byte[] data = IO.read_bytes((int)img_sections[i].SizeOfRawData);
-
-                    outio.position = pe_offset + img_sections[i].RawDataPtr;
-                    outio.write(data);
-
-                    // Go back to writing sections table.
-                    outio.position = pos;
-                }
-                #endregion
-            }
-            else // Else, just copy the original.
-            {
-                IO.position = pe_data_offset;
-                int num = 0;
-
-                num = (int)(IO.length - pe_data_offset); // Original length.
-                int ptr2 = 0;
-                int size = num;
-                byte[] buf;
-
-                // Write out RAW.
-                while (size > 0)
-                {
-                    outio.position = pe_data_offset + ptr2;
-                    if ((size - 4096) > 0)
-                    {
-                        buf = IO.read_bytes(4096);
-                        outio.write(buf);
-                        size -= 4096;
-                        ptr2 += 4096;
-                    }
-                    else
-                    {
-                        buf = IO.read_bytes(size);
-                        outio.write(buf);
-                        size = 0;
-                        ptr2 = 0;
-                    }
+                    buf = IO.read_bytes(size);
+                    outio.write(buf);
+                    size = 0;
+                    ptr2 = 0;
                 }
             }
             // Writeout PE Offset.
@@ -1412,7 +1165,7 @@ namespace Xbox360
             {
                 if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
                 {
-                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                    exe = this.decrypt_pe();
                 }
 
                 // Test For PE Header, is MZ exists then its just a compressed raw image.
@@ -1426,7 +1179,7 @@ namespace Xbox360
             {
                 if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
                 {
-                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                    exe = this.decrypt_pe();
                 }
             }
             else if(base_file_info_h.comp_type == XeCompressionType.Raw ||
@@ -1434,7 +1187,7 @@ namespace Xbox360
             {
                 if (base_file_info_h.enc_type == XeEncryptionType.Encrypted)
                 {
-                    exe = this.decrypt_pe((int)(IO.length - pe_data_offset));
+                    exe = this.decrypt_pe();
                 }
                 else
                 {

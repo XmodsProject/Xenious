@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Xbox360</RootNamespace>
     <AssemblyName>Xbox360</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,11 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compression\XCompress.cs" />
-    <Compile Include="Crypto\rijndael.cs" />
+    <Compile Include="Crypto\Rijndael.cs" />
     <Compile Include="IO\EndianType.cs" />
     <Compile Include="IO\FileIO.cs" />
     <Compile Include="IO\IOFuncs.cs" />
-    <Compile Include="IO\MemoryIO.cs" />
     <Compile Include="Kernel\Memory\KernelImport.cs" />
     <Compile Include="Kernel\Memory\XboxMemory.cs" />
     <Compile Include="PDB\GUID.cs" />
@@ -59,6 +59,7 @@
     <Compile Include="PE\ImageSectionHeader.cs" />
     <Compile Include="PE\SectionImportData.cs" />
     <Compile Include="PE\SectionRData.cs" />
+    <Compile Include="PortableExecutable.cs" />
     <Compile Include="ProgramDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XDBF.cs" />

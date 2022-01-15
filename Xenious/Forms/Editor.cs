@@ -16,14 +16,12 @@ using Xbox360.PE;
 
 namespace Xenious.Forms
 {
-    public partial class MetaEditor : Form
+    public partial class Editor : Form
     {
-        /* Version for Launcher. */
-        public static string tool_version = "0.0.1000.0";
-
         /* Input / Output */
         XenonExecutable in_xex;
-
+        PortableExecutable in_pe;
+        
         /* Form Options and Settings */
         bool rebuild_xex = false;
         bool has_xextool = false;
@@ -55,6 +53,7 @@ namespace Xenious.Forms
             treeView1.Update();
             toolsToolStripMenuItem.Enabled = false;
             saveToolStripMenuItem.Enabled = false;
+            rebuildToolStripMenuItem.Enabled = false;
             closeToolStripMenuItem.Enabled = false;
         }
         public void enable_ui()
@@ -62,6 +61,8 @@ namespace Xenious.Forms
             toolsToolStripMenuItem.Enabled = true;
             saveToolStripMenuItem.Enabled = true;
             closeToolStripMenuItem.Enabled = true;
+            // temp until its fixed.
+            rebuildToolStripMenuItem.Enabled = false;
             treeView1.Enabled = true;
             treeView1.Nodes[0].Expand();
             treeView1.Update();
@@ -195,12 +196,12 @@ namespace Xenious.Forms
             }
             #endregion
             // Add PE Sections.
-            if (in_xex.img_opt_h != null && in_xex.img_opt_h.Magic == 267)
+            if (in_pe.img_opt_h != null && in_pe.img_opt_h.Magic == 267)
             {
                 TreeNode sections_node = new TreeNode();
                 sections_node.Text = "PE Sections";
 
-                foreach (ImageSectionHeader sec in in_xex.img_sections)
+                foreach (ImageSectionHeader sec in in_pe.img_sections)
                 {
                     TreeNode nodesec = new TreeNode();
                     nodesec.Text = sec.Name;
@@ -222,69 +223,34 @@ namespace Xenious.Forms
             {
                 in_xex.parse_certificate();
                 in_xex.parse_sections();
-
-                int x = in_xex.parse_optional_headers();
-                if (x != 0)
-                {
-                    throw new Exception("Unable to parse optional headers, error code : " + x.ToString());
-                }
+                in_xex.parse_optional_headers();
                 // Debug - MessageBox.Show(x.ToString());
             }
-            catch
+            catch(Exception ex)
             {
-                throw new Exception("Unable to parse the xenon executable meta...");
+                this.__log(ex.ToString());
+                return;
             }
 
-            if (in_xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted ||
-                in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
+            // CHeck if compressed.
+            if(in_xex.base_file_info_h.comp_type == XeCompressionType.Compressed ||
                 in_xex.base_file_info_h.comp_type == XeCompressionType.DeltaCompressed)
             {
-                if (has_xextool == false)
-                {
-                    init_gui();
-                    __log("Executable is encrypted, only edits are available...");
-                    return;
-                }
-                else
-                {
-                    // Dump a zero'ed xex to cache.
-                    if(Xecutable.xextool.xextool_to_raw_xextool(in_xex.IO.file, Application.StartupPath + "/cache/original.xex"))
-                    {
-                        // Parse all xex meta info.
-                        try
-                        {
-                            in_xex.IO.close();
-                            in_xex = null;
-                            in_xex = new XenonExecutable(Application.StartupPath + "/cache/original.xex");
-                            in_xex.read_header();
-                            in_xex.parse_certificate();
-                            in_xex.parse_sections();
-                            int x = in_xex.parse_optional_headers();
-                            if (x != 0)
-                            {
-                                throw new Exception("Unable to parse optional headers, error code : " + x.ToString());
-                            }
-                            // Debug - MessageBox.Show(x.ToString());
-                        }
-                        catch
-                        {
-                            throw new Exception("Unable to parse the xenon executable meta...");
-                        }
-                    }
-                    else
-                    {
-                        __log("Unable to open decompressed and decrypted cache file...");
-                        disable_ui();
-                        in_xex = null;
-                        return;
-                    }
-                }
+                disable_ui();
+                in_xex = null;
+                __log("Cannot decompress inner contents of this executable package.");
+                return;
+            }
+
+            if (in_xex.base_file_info_h.enc_type == XeEncryptionType.Encrypted)
+            {
+
             }
 
             // Check for unknown headers.
             if (in_xex.unk_headers.Count > 0)
             {
-                MessageBox.Show("This executable has option header data that is currently unsupported by this editor, please consider emailing me this xex (compress it with winrar) to sysop@staticpi.net, thanks !");
+                MessageBox.Show("This executable has option header data that is currently unsupported by this editor, please consider emailing me this xex (compress it with winrar) to sysop@xenious.net, thanks !");
                 close_xex();
                 return;
             }
@@ -298,15 +264,20 @@ namespace Xenious.Forms
             }
             else
             {
+
+                // Extract PE.
+                in_xex.extract_pe(AppDomain.CurrentDomain.BaseDirectory + "/cache/pe.exe", true);
+
                 // Load PE.
-                in_xex.read_dos_header();
-                if (in_xex.img_dos_h.e_magic == 23117)
+                in_pe = new PortableExecutable(AppDomain.CurrentDomain.BaseDirectory + "/cache/pe.exe");
+                in_pe.read_dos_header();
+                if (in_pe.img_dos_h.e_magic == 23117)
                 {
-                    in_xex.read_file_header();
-                    in_xex.read_image_opt_header();
-                    in_xex.read_image_sections();
-                    
-                    if(in_xex.img_file_h.Machine != 498)
+                    in_pe.read_file_header();
+                    in_pe.read_image_opt_header();
+                    in_pe.read_image_sections();
+
+                    if (in_pe.img_file_h.Machine != 498)
                     {
                         MessageBox.Show("This executable has a unknown machine id, cannot continue, the xex is currupt !", "Ohhh noooo");
                         close_xex();
@@ -315,14 +286,11 @@ namespace Xenious.Forms
 
                     // Extract PE Sections.
                     // HudUISkin.xex freaks here with a currupt section o.0 - TODO.
-                    foreach (ImageSectionHeader ish in in_xex.img_sections)
+                    foreach (ImageSectionHeader ish in in_pe.img_sections)
                     {
                         in_xex.extract_pe_section(Application.StartupPath + "/cache/" + ish.Name.Replace("\0", "").Replace(".", "") + ".bin", ish);
                     }
                     __log("Extracted PE Image Sections to cache...");
-
-                    in_xex.parse_image_sections();
-                    __log("Parsed PE Image Sections...");
 
                     // Extract Resources.
                     if (in_xex.resources.Count > 0)
@@ -347,9 +315,9 @@ namespace Xenious.Forms
                             MessageBox.Show("");
                         }*/
                         #endregion
-
                     }
                 }
+                
                 else
                 {
                     // Investigate pe.
@@ -432,6 +400,11 @@ namespace Xenious.Forms
                 in_xex.IO.close();
                 in_xex = null;
             }
+            if (in_pe != null)
+            {
+                in_pe.IO.close();
+                in_pe = null;
+            }
             clear_cache();
             disable_ui();
         }
@@ -449,7 +422,7 @@ namespace Xenious.Forms
         }
 
         /* Form Funcs and Events */
-        public MetaEditor()
+        public Editor()
         {
             InitializeComponent();
         }
@@ -467,41 +440,9 @@ namespace Xenious.Forms
             {
                 clear_cache();
             }
-
-            if(Xecutable.xextool.check_xextool_exists())
-            {
-                has_xextool = true;
-                __log("xextool Tool Support Enabled...");
-            }
-            else
-            {
-                has_xextool = false;
-                __log("xextool Tool Support Disabled...");
-            }
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*lfd = new Forms.Dialogs.LoadFileDialog(has_xextool);
-            lfd.ShowDialog();
-            if(lfd.load_file == true)
-            {
-                // Close original.
-                if(in_xex != null)
-                {
-                    in_xex.IO.close();
-                    in_xex = null;
-                }
-
-                // Load new.
-                output_file = lfd.output_file;
-                if(has_xextool == true)
-                {
-                    output_enc_type = lfd.output_enc_type;
-                    output_comp_type = lfd.output_comp_type;
-                }
-                load_xex(lfd.input_file);
-            } */
-
+        { 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Open a Xenon Executable File...";
             if(ofd.ShowDialog() == DialogResult.OK)
@@ -1165,6 +1106,18 @@ namespace Xenious.Forms
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Forms.Dialogs.About about = new Dialogs.About();
+            about.ShowDialog();
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/XenProject/Xenious/wiki");
+            this.Close();
         }
     }
 }

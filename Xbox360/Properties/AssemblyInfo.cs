@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Xbox360")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("The Xbox 360 Library for Xbox 360 XEXs and PEs")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Xbox360")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.1600.0")]
-[assembly: AssemblyFileVersion("0.0.1600.0")]
+[assembly: AssemblyVersion("0.0.1750.0")]
+[assembly: AssemblyFileVersion("0.0.1750.0")]

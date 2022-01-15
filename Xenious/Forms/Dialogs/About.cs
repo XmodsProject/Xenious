@@ -18,10 +18,20 @@ namespace Xenious.Forms.Dialogs
 
         private void About_Load(object sender, EventArgs e)
         {
+            // Get Version.
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            label3.Text = string.Format("Version : {0} - [BETA]", fvi.FileVersion);
+            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 
+            // Get Xbox 360 Version
+            assembly = Assembly.LoadFrom("Xbox360.dll");
+            Version ver = assembly.GetName().Version;
+
+            // Get XenonPowerPC version.
+            assembly = Assembly.LoadFrom("XenonPowerPC.dll");
+            Version ver2 = assembly.GetName().Version;
+
+            label3.Text = string.Format("Version : [Xenious : {0}] - [Xbox360 : {1}] - [PowerPC : {2}]", fvi.FileVersion.ToString(), ver.ToString(), ver2.ToString());
+            return;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -31,7 +41,7 @@ namespace Xenious.Forms.Dialogs
 
         private void button1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.staticpi.net/?page_id=5");
+            System.Diagnostics.Process.Start("https://hect0r.com/donate");
             this.Close();
         }
     }

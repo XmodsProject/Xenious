@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xbox360;
 namespace Xenious.Database
 { 
     public enum PEEntityType
@@ -55,17 +55,7 @@ namespace Xenious.Database
                     Array.Reverse(op);
                 }
 
-                switch((XenonPowerPC.PowerPC.op_codes)XenonPowerPC.PowerPC.Functions.find_func(BitConverter.ToUInt32(op, 0)).id)
-                {
-                    case XenonPowerPC.PowerPC.op_codes.bne:
-                    case XenonPowerPC.PowerPC.op_codes.beq:
-                    case XenonPowerPC.PowerPC.op_codes.b:
-                    case XenonPowerPC.PowerPC.op_codes.bl:
-                    case XenonPowerPC.PowerPC.op_codes.ba:
-                    case XenonPowerPC.PowerPC.op_codes.bla:
-                        result.Add(op);
-                        break;
-                }
+                
             }
             return result;
         }

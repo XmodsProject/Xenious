@@ -48,18 +48,6 @@ namespace Xenious.Startup
                         // Load as a xex.
                         try
                         {
-                            if(Xecutable.XEXLoader.xex_is_encrypted_or_compressed(file))
-                            {
-                                // Decrypt and decomrpess.
-                                if(Xecutable.xextool.xextool_to_raw_xextool_original(file, "-c u -e u"))
-                                {
-                                    Xenious.Program.imports_available.Add(file);
-                                }
-                            }
-                            else
-                            {
-                                Xenious.Program.imports_available.Add(file);
-                            }
                         }
                         catch
                         {
@@ -81,30 +69,6 @@ namespace Xenious.Startup
         {
             Xenious.Program.wapi = new Network.WebAPI();
             Xenious.Program.wapi.init();
-        }
-
-        /*
-         * Do Update
-         * This function launches the updater dialog,
-         * then the updater dialog downloads the update,
-         * extracts it then deletes the old installation.
-         * jumps back to this function and restarts.
-         */
-        public static bool do_update()
-        {
-            Forms.Updater updtr = new Forms.Updater();
-            updtr.ShowDialog();
-
-            if(updtr.updated == true)
-            {
-                System.Diagnostics.Process.Start(Application.StartupPath + "/Xenious.exe");
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Could not update the executable...", "Error : ");
-            }
-            return false;
         }
     }
 }
