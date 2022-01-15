@@ -5,7 +5,6 @@ C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\obj\Releas
 C:\Users\Hect0r\Documents\Visual Studio 2010\Projects\Xenious\Xbox360\obj\Release\Xbox360.csprojResolveAssemblyReference.cache
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\bin\Release\Xbox360.dll
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\bin\Release\Xbox360.pdb
-C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.csproj.AssemblyReference.cache
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.csproj.CoreCompileInputs.cache
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.dll
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.pdb

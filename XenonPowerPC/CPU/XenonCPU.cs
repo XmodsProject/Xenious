@@ -12,22 +12,26 @@ namespace XenonPowerPC.CPU
 {
     // This class attempts to emulate locally a cpu.
     // Needs some work haha.
-
+    public class VMX128Register
+    {
+        public ulong Lower;
+        public ulong Upper;
+    }
     public class XenonCPU
     {
-        public List<UInt32> GPRS; // General Purpose Registers.
-        public List<float> FPRS; // Floating Point Registers.
-        public List<UInt32> SPRs; // Special Purpose Registers.
-        public List<UInt32> SRs; // Segment Reigsters.
-
-        // Missing TODO Vector Registers.
+        public List<ulong> GPRS; // General Purpose Registers.
+        public List<double> FPRS; // Floating Point Registers.
+        public List<ulong> SPRs; // Special Purpose Registers.
+        public List<ulong> SRs; // Segment Reigsters.
+        public List<VMX128Register> VMXs;
 
         public XenonCPU()
         {
-            GPRS = new List<uint>(32);
-            FPRS = new List<float>(32);
-            SPRs = new List<UInt32>(1024);
-            SRs = new List<uint>(16);
+            GPRS = new List<ulong>(32);
+            FPRS = new List<double>(32);
+            SPRs = new List<ulong>(1024);
+            SRs = new List<ulong>(16);
+            VMXs = new List<VMX128Register>(128);
         }
 
         // Altivec PowerPC Instructions.
