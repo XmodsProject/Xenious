@@ -8,25 +8,20 @@
 | |____     /so`     `+s+`  -+syyyys+-  /s+     +s:   os/    :shhhhs/`    /yhhhs+os:  -syhhhhs/`      ____| |
 |______|                                                        ``          ``           ```         |______|
  
-                                    The Xbox 360 Xenon Executable Editor
-					By [ Hect0r ] / staticpi.net
+                                    	The Xbox Executable Editor
+					By [ Hect0r ] / hect0r.com
 
-				Contact : staticpi.net / sysop@staticpi.net
+					Contact : sysop@xenious.net
 
 					   [ Basic Overview ]
 
-		The project ahead is to create a fully working editor for the Xenon Executable
-		file, That includes a pe editor, right now the tool lacks some research.
+		The project ahead is to create a fully working editor for the XBox executable ecosystem, 
+			That includes a pe editor, right now the tool lacks some research.
 
 				           [ * PLEASE NOTE * ]
 
-		This tool uses xextool by xorloser to decompress/decrypt the executable,
-		just create a folder in the applications directory called "bin", then place
-		xextool.exe in there.
-
-		Which you can grab at (http://xorloser.com/)
-		
-		This is only for full browsing, like pe sections, extracting resources.
+		This tool will decrypt and decompress the embedded PE/DLL and read it.
+			we no dont need xextool, thanks xenia and system.cryptography :)
 
 				       [ What can you do to help ]
 
