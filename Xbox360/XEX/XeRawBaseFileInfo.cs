@@ -12,7 +12,6 @@ namespace Xbox360.XEX
 {
     public class XeRawBaseFileInfo
     {
-        public Int32 info_size;
         public List<XeRawBaseFileBlock> block;
     }
 }

@@ -1,0 +1,6 @@
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\bin\Release\Xenon.PowerPC.dll
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\bin\Release\Xenon.PowerPC.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\Xenon.PowerPC.csproj.AssemblyReference.cache
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\Xenon.PowerPC.csproj.CoreCompileInputs.cache
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\Xenon.PowerPC.dll
+C:\Users\pablo\Documents\GitHub\Xenious\XenonPowerPC\obj\Release\Xenon.PowerPC.pdb

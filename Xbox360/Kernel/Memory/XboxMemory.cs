@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xbox360.IO;
-using Xenious.IO;
+using Hect0rs.IO;
 
 namespace Xbox360.Kernal.Memory
 {
     public class XboxMemory 
     {
         private System.IO.FileStream input;
-        private FileIO handle;
+        private IOH Handle;
         private Int64 start_address = 0x80000000;
         private XenonExecutable main_app;
         private List<XenonExecutable> main_app_imports;
@@ -22,19 +21,19 @@ namespace Xbox360.Kernal.Memory
         {
             get
             {
-                return (start_address + handle.position);
+                return (start_address + Handle.Position);
             }
             set
             {
                 Int64 val = (value - start_address);
-                handle.position = val;
+                Handle.Position = val;
             }
         }
         public Int64 Length
         {
             get
             {
-                return (Int64)handle.length;
+                return (Int64)Handle.Length;
             }
         }
         public XenonExecutable MainApp
@@ -46,7 +45,7 @@ namespace Xbox360.Kernal.Memory
             get { return main_app_imports; }
         }
 
-        public void set_length(int length)
+        public void set_Length(int Length)
         {
             /*byte[] blank = new byte[16]
             {
@@ -54,27 +53,27 @@ namespace Xbox360.Kernal.Memory
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            for(int i = 0; i < (length / 16); i++)
+            for(int i = 0; i < (Length / 16); i++)
             {
-                this.input.Position = (i == 0 ? 0 : (16 * i));
+                this.inputPosition = (i == 0 ? 0 : (16 * i));
                 this.input.Write(blank, 0, 16);
             }*/
-            this.input.SetLength(length);
+            this.input.SetLength(Length);
         }
-        public XboxMemory(int length)
+        public XboxMemory(int Length)
         {
             this.input = new System.IO.FileStream(AppDomain.CurrentDomain.BaseDirectory + "/cache/xbox_memory.bin", System.IO.FileMode.Create);
-            this.set_length(length);
-            this.handle = new FileIO(input);
+            this.set_Length(Length);
+            this.Handle = new IOH(input);
         }
 
         public void Write(byte[] input)
         {
-            handle.write(input);
+            Handle.Write(input);
         }
         public byte[] ReadBytes(int count, bool reverse)
         {
-            return handle.read_bytes(count, reverse);
+            return Handle.ReadBytes(count, reverse);
         }
 
         public void LoadApp(XenonExecutable in_xex, List<XenonExecutable> imports)
@@ -85,8 +84,8 @@ namespace Xbox360.Kernal.Memory
             // Next Extract PE.
             // The code previous should check for a XUIZ or other, 
             // Make sure it is a XEX package with pe only.
-            main_app.IO.position = main_app.pe_data_offset;
-            byte[] pe = main_app.IO.read_bytes((int)main_app.cert.image_size);
+            main_app.IO.Position = main_app.pe_data_offset;
+            byte[] pe = main_app.IO.ReadBytes((int)main_app.cert.image_size);
 
             // Write PE to its resulting load address.
             this.Position = main_app.cert.load_address;
@@ -99,8 +98,8 @@ namespace Xbox360.Kernal.Memory
                 foreach(XenonExecutable import in imports)
                 {
                     // Read its PE or Resource.
-                    import.IO.position = import.pe_data_offset;
-                    byte[] bin = import.IO.read_bytes((int)import.cert.image_size);
+                    import.IO.Position = import.pe_data_offset;
+                    byte[] bin = import.IO.ReadBytes((int)import.cert.image_size);
 
                     // Write it to the memory.
                     this.Position = import.cert.load_address;
@@ -124,7 +123,7 @@ namespace Xbox360.Kernal.Memory
                 }
             }
 
-            this.handle.close();
+            this.Handle.close();
         }
     }
 }

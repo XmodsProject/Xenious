@@ -1,0 +1,5 @@
+C:\Users\pablo\Documents\GitHub\Xenious\Hect0rs.IO\bin\Debug\Hect0rs.IO.dll
+C:\Users\pablo\Documents\GitHub\Xenious\Hect0rs.IO\bin\Debug\Hect0rs.IO.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Hect0rs.IO\obj\Debug\Hect0rs.IO.csproj.CoreCompileInputs.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Hect0rs.IO\obj\Debug\Hect0rs.IO.dll
+C:\Users\pablo\Documents\GitHub\Xenious\Hect0rs.IO\obj\Debug\Hect0rs.IO.pdb

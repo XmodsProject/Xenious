@@ -61,24 +61,12 @@ namespace Xbox360.XEX
             get
             {
                 XeRawBaseFileInfo info = new XeRawBaseFileInfo();
-                #region Read Info Size
-                byte[] buf = new byte[4] {
-                    data[4], data[5], data[6], data[7]
-                };
-
-                if(BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(buf);
-                }
-                #endregion
-                info.info_size = BitConverter.ToInt32(buf, 0);
-                int block_count = (info.info_size - 8) / 8;
                 info.block = new List<XeRawBaseFileBlock>();
-                for(int i = 0; i < block_count; i++)
+                for(int i = 0; i < (info_size - 8) / 8; i++)
                 {
                     #region Read Datasize.
-                    buf = new byte[4] {
-                        data[8 + (8 * i)], data[9 + (8 * i)], data[10 + (8 * i)], data[11 + (8 * i)]
+                    byte[] buf = new byte[4] {
+                        data[4], data[5], data[6], data[7]
                     };
 
                     if (BitConverter.IsLittleEndian)
@@ -90,7 +78,7 @@ namespace Xbox360.XEX
 
                     #region Read Zerosize.
                     buf = new byte[4] {
-                        data[12 + (8 * i)], data[13 + (8 * i)], data[14 + (8 * i)], data[15 + (8 * i)]
+                        data[8], data[9], data[10], data[11]
                     };
 
                     if (BitConverter.IsLittleEndian)
@@ -113,21 +101,12 @@ namespace Xbox360.XEX
             get
             {
                 XeCompBaseFileInfo info = new XeCompBaseFileInfo();
-                #region Read InfoSize.
-                byte[] buf = new byte[4] {
-                        data[8], data[9], data[10], data[11]
-                    };
 
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(buf);
-                }
-                #endregion
-                info.info_size = BitConverter.ToInt32(buf, 0);
+                byte[] buf = null;
                 #region Read Window Size
                 buf = new byte[4] {
-                        data[12], data[13], data[14], data[15]
-                    };
+                    data[4], data[5], data[6], data[7]     
+                };
 
                 if (BitConverter.IsLittleEndian)
                 {
@@ -137,7 +116,7 @@ namespace Xbox360.XEX
                 info.compression_window = BitConverter.ToUInt32(buf, 0);
                 #region Read Block Size
                 buf = new byte[4] {
-                        data[16], data[17], data[18], data[19]
+                        data[8], data[9], data[10], data[11]
                     };
 
                 if (BitConverter.IsLittleEndian)
@@ -146,8 +125,9 @@ namespace Xbox360.XEX
                 }
                 #endregion
                 info.block = new XeCompBaseFileBlock();
-                info.block.data_size = BitConverter.ToInt32(buf, 0);
-                Array.Copy(data, 20, info.block.hash, 0, 20);
+                info.block.block_size = BitConverter.ToUInt32(buf, 0);
+                info.block.hash = new byte[20];
+                Array.Copy(data, 12, info.block.hash, 0, 20);
                 return info;
             }
         }

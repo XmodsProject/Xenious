@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Xenious.IO;
-using Xbox360.IO;
+using Hect0rs.IO;
 
 namespace Xbox360
 {
@@ -69,7 +68,7 @@ namespace Xbox360
 
     public class XDBF
     {
-        FileIO IO;
+        IOH IO;
         XDBFHeader xdbf_h;
         List<XDBFEntry> xdbf_entrys;
         List<XDBFFileLoc> xdbf_free_entrys;
@@ -82,20 +81,20 @@ namespace Xbox360
         }
         public XDBF(string file)
         {
-            IO = new FileIO(file, FileMode.Open);
+            IO = new IOH(file, FileMode.Open);
         }
         public bool read_header()
         {
             if (IO != null)
             {
-                IO.position = 0;
+                IO.Position = 0;
                 xdbf_h = new XDBFHeader();
-                xdbf_h.magic = IO.read_string(4);
-                xdbf_h.version = IO.read_uint32(Endian.High);
-                xdbf_h.entry_count = IO.read_uint32(Endian.High);
-                xdbf_h.entry_used = IO.read_uint32(Endian.High);
-                xdbf_h.free_count = IO.read_uint32(Endian.High);
-                xdbf_h.free_used = IO.read_uint32(Endian.High);
+                xdbf_h.magic = IO.ReadString(4);
+                xdbf_h.version = IO.ReadUInt32(Endian.High);
+                xdbf_h.entry_count = IO.ReadUInt32(Endian.High);
+                xdbf_h.entry_used = IO.ReadUInt32(Endian.High);
+                xdbf_h.free_count = IO.ReadUInt32(Endian.High);
+                xdbf_h.free_used = IO.ReadUInt32(Endian.High);
                 if(xdbf_h.magic != "XDBF") { return false; }
                 return true;
             }
@@ -109,17 +108,17 @@ namespace Xbox360
                 try
                 {
                     
-                    IO.position = 24;
+                    IO.Position = 24;
                     error = -1;
                     xdbf_entrys = new List<XDBFEntry>();
                     error = -2;
                     for (int i = 0; i < (int)xdbf_h.entry_count; i++)
                     {
                         XDBFEntry entry = new XDBFEntry();
-                        entry.section = IO.read_uint16(Endian.High);
-                        entry.id = IO.read_uint64(Endian.High);
-                        entry.offset = (uint)get_offset(IO.read_uint32(Endian.High));
-                        entry.size = IO.read_uint32(Endian.High);
+                        entry.section = IO.ReadUInt16(Endian.High);
+                        entry.id = IO.ReadUInt64(Endian.High);
+                        entry.offset = (uint)get_offset(IO.ReadUInt32(Endian.High));
+                        entry.size = IO.ReadUInt32(Endian.High);
                         xdbf_entrys.Add(entry);
                         error = -3;
                     }
@@ -136,16 +135,16 @@ namespace Xbox360
         {
             if (IO != null)
             {
-                IO.position = (xdbf_h.entry_count * 0x12) + 0x18;
+                IO.Position = (xdbf_h.entry_count * 0x12) + 0x18;
                 xdbf_free_entrys = new List<XDBFFileLoc>();
                 for (int i = 0; i < xdbf_h.free_count; i++)
                 {
                     XDBFFileLoc loc = new XDBFFileLoc();
-                    loc.offset = IO.read_uint32(Endian.High);
-                    loc.size = IO.read_uint32(Endian.High);
+                    loc.offset = IO.ReadUInt32(Endian.High);
+                    loc.size = IO.ReadUInt32(Endian.High);
                     xdbf_free_entrys.Add(loc);
                 }
-                entry_start = IO.position;
+                entry_start = IO.Position;
                 return true;
             }
             return false;

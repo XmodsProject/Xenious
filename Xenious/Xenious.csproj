@@ -80,115 +80,120 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crypto\CRC32.cs" />
     <Compile Include="Database\PEFile.cs" />
     <Compile Include="Database\XEXReportFile.cs" />
-    <Compile Include="Forms\Dialogs\About.cs">
+    <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\About.Designer.cs">
+    <Compile Include="Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\AlternativeTitleIDs.cs">
+    <Compile Include="Forms\X360\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\AlternativeTitleIDs.Designer.cs">
+    <Compile Include="Forms\X360\Debugger.Designer.cs">
+      <DependentUpon>Debugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\X360\Dialogs\AlternativeTitleIDs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\X360\Dialogs\AlternativeTitleIDs.Designer.cs">
       <DependentUpon>AlternativeTitleIDs.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\CallcapData.cs">
+    <Compile Include="Forms\X360\Dialogs\CallcapData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\CallcapData.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\CallcapData.Designer.cs">
       <DependentUpon>CallcapData.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\Certificate.cs">
+    <Compile Include="Forms\X360\Dialogs\Certificate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\Certificate.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\Certificate.Designer.cs">
       <DependentUpon>Certificate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\ExecutionInfo.cs">
+    <Compile Include="Forms\X360\Dialogs\ExecutionInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\ExecutionInfo.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\ExecutionInfo.Designer.cs">
       <DependentUpon>ExecutionInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\HexEditBox.cs">
+    <Compile Include="Forms\Tools\HexEditBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\HexEditBox.Designer.cs">
+    <Compile Include="Forms\Tools\HexEditBox.Designer.cs">
       <DependentUpon>HexEditBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\ImageFlags.cs">
+    <Compile Include="Forms\X360\Dialogs\ImageFlags.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\ImageFlags.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\ImageFlags.Designer.cs">
       <DependentUpon>ImageFlags.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\LoadFileDialog.cs">
+    <Compile Include="Forms\X360\Dialogs\LoadFileDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\LoadFileDialog.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\LoadFileDialog.Designer.cs">
       <DependentUpon>LoadFileDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\LoadProgressDialog.cs">
+    <Compile Include="Forms\X360\Dialogs\LoadProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\LoadProgressDialog.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\LoadProgressDialog.Designer.cs">
       <DependentUpon>LoadProgressDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\MediaFlags.cs">
+    <Compile Include="Forms\X360\Dialogs\MediaFlags.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\MediaFlags.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\MediaFlags.Designer.cs">
       <DependentUpon>MediaFlags.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\ModuleFlags.cs">
+    <Compile Include="Forms\X360\Dialogs\ModuleFlags.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\ModuleFlags.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\ModuleFlags.Designer.cs">
       <DependentUpon>ModuleFlags.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\NumericEditBox.cs">
+    <Compile Include="Forms\Tools\NumericEditBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\NumericEditBox.Designer.cs">
+    <Compile Include="Forms\Tools\NumericEditBox.Designer.cs">
       <DependentUpon>NumericEditBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\RatingsData.cs">
+    <Compile Include="Forms\X360\Dialogs\RatingsData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\RatingsData.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\RatingsData.Designer.cs">
       <DependentUpon>RatingsData.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\RegionFlags.cs">
+    <Compile Include="Forms\X360\Dialogs\RegionFlags.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\RegionFlags.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\RegionFlags.Designer.cs">
       <DependentUpon>RegionFlags.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\SettingsDialog.cs">
+    <Compile Include="Forms\X360\Dialogs\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\SettingsDialog.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\SystemFlags.cs">
+    <Compile Include="Forms\X360\Dialogs\SystemFlags.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\SystemFlags.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\SystemFlags.Designer.cs">
       <DependentUpon>SystemFlags.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\TextEditBox.cs">
+    <Compile Include="Forms\Tools\TextEditBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\TextEditBox.Designer.cs">
+    <Compile Include="Forms\Tools\TextEditBox.Designer.cs">
       <DependentUpon>TextEditBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dialogs\XboxMemoryLoader.cs">
+    <Compile Include="Forms\X360\Dialogs\XboxMemoryLoader.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dialogs\XboxMemoryLoader.Designer.cs">
+    <Compile Include="Forms\X360\Dialogs\XboxMemoryLoader.Designer.cs">
       <DependentUpon>XboxMemoryLoader.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ExeDebugger.cs">
@@ -197,52 +202,52 @@
     <Compile Include="Forms\ExeDebugger.Designer.cs">
       <DependentUpon>ExeDebugger.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\Debugger\OperationPanel.cs">
+    <Compile Include="Forms\X360\Panels\Debugger\OperationPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\Debugger\OperationPanel.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Debugger\OperationPanel.Designer.cs">
       <DependentUpon>OperationPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\Imports.cs">
+    <Compile Include="Forms\X360\Panels\Editor\Imports.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\Imports.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Editor\Imports.Designer.cs">
       <DependentUpon>Imports.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\OptHeaders.cs">
+    <Compile Include="Forms\X360\Panels\Editor\OptHeaders.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\OptHeaders.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Editor\OptHeaders.Designer.cs">
       <DependentUpon>OptHeaders.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\Resources.cs">
+    <Compile Include="Forms\X360\Panels\Editor\Sections.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\Resources.Designer.cs">
-      <DependentUpon>Resources.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Panels\Editor\Sections.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Panels\Editor\Sections.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Editor\Sections.Designer.cs">
       <DependentUpon>Sections.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\StaticLibs.cs">
+    <Compile Include="Forms\X360\Panels\Editor\StaticLibs.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\Editor\StaticLibs.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Editor\StaticLibs.Designer.cs">
       <DependentUpon>StaticLibs.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Panels\PE_Editor.cs">
+    <Compile Include="Forms\X360\Panels\Editor\XUIZEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Panels\PE_Editor.Designer.cs">
+    <Compile Include="Forms\X360\Panels\Editor\XUIZEditor.Designer.cs">
+      <DependentUpon>XUIZEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\X360\Panels\Editor\PE_Editor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\X360\Panels\Editor\PE_Editor.Designer.cs">
       <DependentUpon>PE_Editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Editor.cs">
+    <Compile Include="Forms\X360\Editor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Editor.Designer.cs">
+    <Compile Include="Forms\X360\Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Network\WebAPI.cs" />
@@ -253,85 +258,85 @@
     <Compile Include="Startup\Tasks.cs" />
     <Compile Include="Xecutable\Database.cs" />
     <Compile Include="Xecutable\Misc.cs" />
-    <EmbeddedResource Include="Forms\Dialogs\About.resx">
+    <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\AlternativeTitleIDs.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\AlternativeTitleIDs.resx">
       <DependentUpon>AlternativeTitleIDs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\CallcapData.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\CallcapData.resx">
       <DependentUpon>CallcapData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\Certificate.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\Certificate.resx">
       <DependentUpon>Certificate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\ExecutionInfo.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\ExecutionInfo.resx">
       <DependentUpon>ExecutionInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\HexEditBox.resx">
+    <EmbeddedResource Include="Forms\Tools\HexEditBox.resx">
       <DependentUpon>HexEditBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\ImageFlags.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\ImageFlags.resx">
       <DependentUpon>ImageFlags.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\LoadFileDialog.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\LoadFileDialog.resx">
       <DependentUpon>LoadFileDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\LoadProgressDialog.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\LoadProgressDialog.resx">
       <DependentUpon>LoadProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\MediaFlags.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\MediaFlags.resx">
       <DependentUpon>MediaFlags.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\ModuleFlags.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\ModuleFlags.resx">
       <DependentUpon>ModuleFlags.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\NumericEditBox.resx">
+    <EmbeddedResource Include="Forms\Tools\NumericEditBox.resx">
       <DependentUpon>NumericEditBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\RatingsData.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\RatingsData.resx">
       <DependentUpon>RatingsData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\RegionFlags.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\RegionFlags.resx">
       <DependentUpon>RegionFlags.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\SettingsDialog.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\SystemFlags.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\SystemFlags.resx">
       <DependentUpon>SystemFlags.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\TextEditBox.resx">
+    <EmbeddedResource Include="Forms\Tools\TextEditBox.resx">
       <DependentUpon>TextEditBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dialogs\XboxMemoryLoader.resx">
+    <EmbeddedResource Include="Forms\X360\Dialogs\XboxMemoryLoader.resx">
       <DependentUpon>XboxMemoryLoader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExeDebugger.resx">
       <DependentUpon>ExeDebugger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Debugger\OperationPanel.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Debugger\OperationPanel.resx">
       <DependentUpon>OperationPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Editor\Imports.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\Imports.resx">
       <DependentUpon>Imports.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Editor\OptHeaders.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\OptHeaders.resx">
       <DependentUpon>OptHeaders.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Editor\Resources.resx">
-      <DependentUpon>Resources.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Editor\Sections.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\Sections.resx">
       <DependentUpon>Sections.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\Editor\StaticLibs.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\StaticLibs.resx">
       <DependentUpon>StaticLibs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Panels\PE_Editor.resx">
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\XUIZEditor.resx">
+      <DependentUpon>XUIZEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\X360\Panels\Editor\PE_Editor.resx">
       <DependentUpon>PE_Editor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Editor.resx">
+    <EmbeddedResource Include="Forms\X360\Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -366,6 +371,10 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Hect0rs.IO\Hect0rs.IO.csproj">
+      <Project>{B43A80CC-9F26-4D8A-8F35-719E582C4136}</Project>
+      <Name>Hect0rs.IO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xbox360\Xbox360.csproj">
       <Project>{49483a47-b2b2-40d9-8586-2251ce0c98d7}</Project>
       <Name>Xbox360</Name>

@@ -41,7 +41,7 @@ namespace Xenious
 
             // Run Launcher.
             //Application.Run(new Launcher());
-            Application.Run(new Xenious.Forms.Editor());
+            Application.Run(new Xenious.Forms.X360.Editor());
 
             // Do shutdown tasks.
             shutdown_tasks();

@@ -29,7 +29,7 @@ namespace Xbox360.XEX
         {
             get
             {
-                if(BitConverter.IsLittleEndian)
+                if (BitConverter.IsLittleEndian)
                 {
                     return BitConverter.ToUInt16(new byte[2] { version[2], version[1] }, 0);
                 }
@@ -39,7 +39,7 @@ namespace Xbox360.XEX
             {
                 byte[] data = BitConverter.GetBytes(value);
 
-                if(BitConverter.IsLittleEndian)
+                if (BitConverter.IsLittleEndian)
                 {
                     Array.Reverse(data);
                 }
@@ -56,5 +56,21 @@ namespace Xbox360.XEX
         {
             get { return major + "." + minor + "." + build + "." + qfe; }
         }
-    }
+        public XeVersion(byte[] val)
+        {
+            Array.Reverse(val);
+            version = val;
+        }
+        public XeVersion() { }
+
+        public XeVersion(UInt32 val)
+        {
+            byte[] buf = BitConverter.GetBytes(val);
+            Array.Reverse(buf);
+
+            version = buf;
+
+            buf = null;
+        }
+}
 }

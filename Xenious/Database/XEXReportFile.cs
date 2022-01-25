@@ -15,7 +15,7 @@ namespace Xenious.Database
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-            string header = "[ Xenious - The Xenon Executable Editor ]\n" +
+            string header = "[ Xenious - The Xen Information Output User Interface System ]\n" +
                             "Version : " + fvi.FileVersion.ToString() + "\n" +
                             "Author : [Hect0r] - staticpi.net\n";
 
@@ -30,7 +30,6 @@ namespace Xenious.Database
         }
         public static void generate_report(string report_file, XenonExecutable xex)
         {
-            Crypto.Crc32 crc = new Crypto.Crc32();
             SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
 
         }

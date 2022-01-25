@@ -41,11 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compression\XCompress.cs" />
+    <Compile Include="Compression\LZX.cs" />
     <Compile Include="Crypto\Rijndael.cs" />
-    <Compile Include="IO\EndianType.cs" />
-    <Compile Include="IO\FileIO.cs" />
-    <Compile Include="IO\IOFuncs.cs" />
     <Compile Include="Kernel\Memory\KernelImport.cs" />
     <Compile Include="Kernel\Memory\XboxMemory.cs" />
     <Compile Include="PDB\GUID.cs" />
@@ -62,6 +59,8 @@
     <Compile Include="PortableExecutable.cs" />
     <Compile Include="ProgramDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XboxUnicodeInformationStorage.cs" />
+    <Compile Include="XboxUserInterfaceResource.cs" />
     <Compile Include="XDBF.cs" />
     <Compile Include="XenonExecutable.cs" />
     <Compile Include="XEX\XeApprovalType.cs" />
@@ -92,10 +91,18 @@
     <Compile Include="XEX\XeSystemFlags.cs" />
     <Compile Include="XEX\XeTLSInfo.cs" />
     <Compile Include="XEX\XeVersion.cs" />
-    <Compile Include="XUIZ\XUIZHeader.cs" />
+    <Compile Include="XUIS\Header.cs" />
+    <Compile Include="XUIZ\ContentEntry.cs" />
+    <Compile Include="XUIZ\Header.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Kernel\Network\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hect0rs.IO\Hect0rs.IO.csproj">
+      <Project>{b43a80cc-9f26-4d8a-8f35-719e582c4136}</Project>
+      <Name>Hect0rs.IO</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,3 +8,7 @@ C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\bin\Release\Xbox360.pdb
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.csproj.CoreCompileInputs.cache
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.dll
 C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\bin\Release\Hect0rs.IO.dll
+C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\bin\Release\Hect0rs.IO.pdb
+C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.csproj.AssemblyReference.cache
+C:\Users\pablo\Documents\GitHub\Xenious\Xbox360\obj\Release\Xbox360.csproj.CopyComplete

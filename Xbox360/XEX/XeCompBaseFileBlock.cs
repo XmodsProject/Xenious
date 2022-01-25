@@ -12,7 +12,7 @@ namespace Xbox360.XEX
 {
     public class XeCompBaseFileBlock
     {
-        public Int32 data_size;
+        public UInt32 block_size;
         public byte[] hash;
     }
 }

@@ -88,7 +88,7 @@ namespace Xenious.Database
         /* This function loads a .xedb file. */
         public PEFileDatabase(string in_file)
         {
-            Xenious.IO.FileIO IO = new Xenious.IO.FileIO(in_file, System.IO.FileMode.Open);
+            Hect0rs.IO.IOH IO = new Hect0rs.IO.IOH(in_file, System.IO.FileMode.Open);
             if(this.load_from_db_file(IO))
             {
 
@@ -96,16 +96,16 @@ namespace Xenious.Database
             IO.close();
             IO = null;
         }
-        public bool load_from_db_file(IO.FileIO IO)
+        public bool load_from_db_file(Hect0rs.IO.IOH IO)
         {
-            IO.position = 0;
+            IO.Position = 0;
             
-            if(IO.read_string(4) == "XEDB")
+            if(IO.ReadString(4) == "XEDB")
             {
                 // Read Header.
-                UInt32 cv = IO.read_uint32(Xbox360.IO.Endian.High);
-                UInt32 xsptr = IO.read_uint32(Xbox360.IO.Endian.High);
-                UInt32 sptr = IO.read_uint32(Xbox360.IO.Endian.High);
+                UInt32 cv = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                UInt32 xsptr = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                UInt32 sptr = IO.ReadUInt32(Hect0rs.IO.Endian.High);
 
                 // Check version.
                 if(cv < last_old_version_support)
@@ -114,51 +114,51 @@ namespace Xenious.Database
                 }
 
                 // Read Meta.
-                IO.position = 32;
-                byte len = IO.read_byte();
+                IO.Position = 32;
+                byte len = IO.ReadByte();
 
-                exe_name = IO.read_string(len);
-                start_address = IO.read_uint32(Xbox360.IO.Endian.High);
-                end_address = IO.read_uint32(Xbox360.IO.Endian.High);
+                exe_name = IO.ReadString(len);
+                start_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                end_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
 
                 // Read XeSections.
-                IO.position = xsptr;
+                IO.Position = xsptr;
 
-                UInt32 size = (IO.read_uint32(Xbox360.IO.Endian.High) / 28);
+                UInt32 size = (IO.ReadUInt32(Hect0rs.IO.Endian.High) / 28);
                 this.xesections = new List<Xbox360.XEX.XeSection>();
                 for(uint i = 0; i < size; i++)
                 {
                     Xbox360.XEX.XeSection sec = new Xbox360.XEX.XeSection();
-                    sec.value = IO.read_uint32(Xbox360.IO.Endian.High);
-                    sec.page_size = IO.read_uint32(Xbox360.IO.Endian.High);
-                    sec.digest = IO.read_bytes(20);
+                    sec.value = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                    sec.page_size = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                    sec.digest = IO.ReadBytes(20);
                     this.xesections.Add(sec);
                 }
 
                 // Read Sections.
-                IO.position = sptr;
+                IO.Position = sptr;
 
-                UInt32 num_sections = IO.read_uint32(Xbox360.IO.Endian.High);
+                UInt32 num_sections = IO.ReadUInt32(Hect0rs.IO.Endian.High);
                 this.sections = new List<PEFileSection>();
                 for(uint i = 0; i < num_sections; i++)
                 {
                     PEFileSection sec = new PEFileSection();
-                    byte len2 = IO.read_byte();
-                    sec.section_name = IO.read_string(len2);
-                    sec.start_address = IO.read_uint32(Xbox360.IO.Endian.High);
-                    sec.end_address = IO.read_uint32(Xbox360.IO.Endian.High);
+                    byte len2 = IO.ReadByte();
+                    sec.section_name = IO.ReadString(len2);
+                    sec.start_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                    sec.end_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
 
-                    UInt32 num_funcs = IO.read_uint32(Xbox360.IO.Endian.High);
+                    UInt32 num_funcs = IO.ReadUInt32(Hect0rs.IO.Endian.High);
                     sec.functions = new List<PEFunction>();
 
                     for(uint x = 0; x < num_funcs; x++)
                     {
                         PEFunction func = new PEFunction();
-                        byte len3 = IO.read_byte();
+                        byte len3 = IO.ReadByte();
 
-                        func.func_name = IO.read_string(len3);
-                        func.start_address = IO.read_uint32(Xbox360.IO.Endian.High);
-                        func.end_address = IO.read_uint32(Xbox360.IO.Endian.High);
+                        func.func_name = IO.ReadString(len3);
+                        func.start_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
+                        func.end_address = IO.ReadUInt32(Hect0rs.IO.Endian.High);
                     }
                 }
             }
@@ -183,81 +183,81 @@ namespace Xenious.Database
             }
 
             // Now create a new handle.
-            Xenious.IO.FileIO IO = new Xenious.IO.FileIO(db_dir + out_filename, System.IO.FileMode.Create);
+            Hect0rs.IO.IOH IO = new Hect0rs.IO.IOH(db_dir + out_filename, System.IO.FileMode.Create);
 
-            IO.position = 0;
+            IO.Position = 0;
 
             // Write out Header Info.
-            IO.write(Encoding.ASCII.GetBytes("XEDB")); // Magic.
-            IO.write(current_version, Xbox360.IO.Endian.High); // FileVersion.
-            IO.write((UInt32)4096, Xbox360.IO.Endian.High); // XeSections Pointer.
-            IO.write((UInt32)0, Xbox360.IO.Endian.High); // Leave Sections pointer blank for now.
-            IO.write((UInt32)0, Xbox360.IO.Endian.High); // Reserved.
-            IO.write((UInt32)0, Xbox360.IO.Endian.High); // Reserved.
-            IO.write((UInt32)0, Xbox360.IO.Endian.High); // Reserved.
-            IO.write((UInt32)0, Xbox360.IO.Endian.High); // Reserved.
+            IO.Write(Encoding.ASCII.GetBytes("XEDB")); // Magic.
+            IO.Write(current_version, Hect0rs.IO.Endian.High); // FileVersion.
+            IO.Write((UInt32)4096, Hect0rs.IO.Endian.High); // XeSections Pointer.
+            IO.Write((UInt32)0, Hect0rs.IO.Endian.High); // Leave Sections pointer blank for now.
+            IO.Write((UInt32)0, Hect0rs.IO.Endian.High); // Reserved.
+            IO.Write((UInt32)0, Hect0rs.IO.Endian.High); // Reserved.
+            IO.Write((UInt32)0, Hect0rs.IO.Endian.High); // Reserved.
+            IO.Write((UInt32)0, Hect0rs.IO.Endian.High); // Reserved.
 
             // Write Meta
-            IO.write((byte)exe_name.Length);
-            IO.write(Encoding.ASCII.GetBytes(exe_name));
-            IO.write(start_address, Xbox360.IO.Endian.High);
-            IO.write(end_address, Xbox360.IO.Endian.High);
+            IO.Write((byte)exe_name.Length);
+            IO.Write(Encoding.ASCII.GetBytes(exe_name));
+            IO.Write(start_address, Hect0rs.IO.Endian.High);
+            IO.Write(end_address, Hect0rs.IO.Endian.High);
 
             // Write out XeSections.
-            IO.position = 4096;
-            IO.write(0, Xbox360.IO.Endian.High); // Leave Blank for now.
+            IO.Position = 4096;
+            IO.Write(0, Hect0rs.IO.Endian.High); // Leave Blank for now.
 
             UInt32 size = 0;
             foreach(Xbox360.XEX.XeSection section in this.xesections)
             {
-                IO.write(section.value, Xbox360.IO.Endian.High);
-                IO.write(section.page_size, Xbox360.IO.Endian.High);
-                IO.write(section.digest);
+                IO.Write(section.value, Hect0rs.IO.Endian.High);
+                IO.Write(section.page_size, Hect0rs.IO.Endian.High);
+                IO.Write(section.digest);
                 size += 28;
             }
 
-            long pos = IO.position; // Save Position for sections.
-            IO.position = 4096;
-            IO.write(size, Xbox360.IO.Endian.High); // Write out XeSections Size.
+            long pos = IO.Position; // Save Position for sections.
+            IO.Position = 4096;
+            IO.Write(size, Hect0rs.IO.Endian.High); // Write out XeSections Size.
 
             // Write out sections Pointer.
-            IO.position = 12;
-            IO.write((UInt32)pos, Xbox360.IO.Endian.High);
+            IO.Position = 12;
+            IO.Write((UInt32)pos, Hect0rs.IO.Endian.High);
 
             // Now Write out sections.
-            IO.position = pos;
+            IO.Position = pos;
 
             // Write out number of sections.
-            IO.write((UInt32)this.sections.Count, Xbox360.IO.Endian.High);
+            IO.Write((UInt32)this.sections.Count, Hect0rs.IO.Endian.High);
 
             // Write out sections.
             foreach(PEFileSection section in this.sections)
             {
                 // Write out name length.
-                IO.write((byte)section.section_name.Length);
+                IO.Write((byte)section.section_name.Length);
 
                 // Write out name.
-                IO.write(Encoding.ASCII.GetBytes(section.section_name));
+                IO.Write(Encoding.ASCII.GetBytes(section.section_name));
 
                 // Write out start and end address of section.
-                IO.write(section.start_address, Xbox360.IO.Endian.High);
-                IO.write(section.end_address, Xbox360.IO.Endian.High);
+                IO.Write(section.start_address, Hect0rs.IO.Endian.High);
+                IO.Write(section.end_address, Hect0rs.IO.Endian.High);
 
                 // Write out number of funcs.
-                IO.write((UInt32)section.functions.Count, Xbox360.IO.Endian.High);
+                IO.Write((UInt32)section.functions.Count, Hect0rs.IO.Endian.High);
 
                 // Write out functions.
                 foreach(PEFunction func in section.functions)
                 {
                     // Write out function name length.
-                    IO.write((byte)func.func_name.Length);
+                    IO.Write((byte)func.func_name.Length);
 
                     // Write out Function Name.
-                    IO.write(Encoding.ASCII.GetBytes(func.func_name));
+                    IO.Write(Encoding.ASCII.GetBytes(func.func_name));
 
                     // Write out start and end address of the function.
-                    IO.write(func.start_address, Xbox360.IO.Endian.High);
-                    IO.write(func.end_address, Xbox360.IO.Endian.High);
+                    IO.Write(func.start_address, Hect0rs.IO.Endian.High);
+                    IO.Write(func.end_address, Hect0rs.IO.Endian.High);
                 }
             }
 

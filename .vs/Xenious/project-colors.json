@@ -13,14 +13,29 @@
     },
     "cc33337e-2914-4111-b7b9-6ddc66b794c9": {
       "ProjectGuid": "cc33337e-2914-4111-b7b9-6ddc66b794c9",
-      "DisplayName": "XenonPowerPC",
+      "DisplayName": "Xenon.PowerPC",
       "ColorIndex": 2
     },
     "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
       "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
       "DisplayName": "Miscellaneous Files",
       "ColorIndex": -1
+    },
+    "722242ad-9cbf-46fe-bd37-afa1c923cf05": {
+      "ProjectGuid": "722242ad-9cbf-46fe-bd37-afa1c923cf05",
+      "DisplayName": "XenConnect",
+      "ColorIndex": 3
+    },
+    "b43a80cc-9f26-4d8a-8f35-719e582c4136": {
+      "ProjectGuid": "b43a80cc-9f26-4d8a-8f35-719e582c4136",
+      "DisplayName": "Hect0rs.IO",
+      "ColorIndex": 4
+    },
+    "f38a7db4-8b3d-4f31-9dd1-bab3c0faee82": {
+      "ProjectGuid": "f38a7db4-8b3d-4f31-9dd1-bab3c0faee82",
+      "DisplayName": "XboxOriginal",
+      "ColorIndex": 5
     }
   },
-  "NextColorIndex": 3
+  "NextColorIndex": 6
 }

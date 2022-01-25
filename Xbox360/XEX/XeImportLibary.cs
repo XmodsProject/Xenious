@@ -4,12 +4,11 @@
  * For inital stuff :)
  */
 
+using Hect0rs.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xbox360.IO;
-using Xenious.IO;
 
 namespace Xbox360.XEX
 {
@@ -132,15 +131,15 @@ namespace Xbox360.XEX
             get { return (bool)(record_count > 65536); }
         }
 
-        public void read(FileIO IO)
+        public void read(IOH IO)
         {
-            UInt32 size = IO.read_uint32(Endian.High) - 4;
-            data = IO.read_bytes((int)size);
+            UInt32 size = IO.ReadUInt32(Endian.High) - 4;
+            data = IO.ReadBytes((int)size);
         }
-        public void write(FileIO IO)
+        public void write(IOH IO)
         {
-            IO.write((UInt32)(data.Length + 4), Endian.High);
-            IO.write(data);
+            IO.Write((UInt32)(data.Length + 4), Endian.High);
+            IO.Write(data);
         }
         public bool table_scrambled
         {

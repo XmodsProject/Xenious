@@ -8,14 +8,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XenonPowerPC.CPU
+namespace Xenon.PowerPC.CPU
 {
     // This class attempts to emulate locally a cpu.
     // Needs some work haha.
     public class VMX128Register
     {
-        public ulong Lower;
-        public ulong Upper;
+        public UInt64 Lower;
+        public UInt64 Upper;
+
+        public VMX128Register(UInt64 Upper, UInt64 Lower)
+        {
+            this.Upper = Upper;
+            this.Lower = Lower;
+        }
+        public VMX128Register(byte[] RegisterData)
+        {
+            // Extract Upper in LittleEndian.
+            byte[] UpBuf = new byte[8]
+            {
+                RegisterData[15],
+                RegisterData[14],
+                RegisterData[13],
+                RegisterData[12],
+                RegisterData[11],
+                RegisterData[10],
+                RegisterData[9],
+                RegisterData[8],
+            };
+
+            // Extract Lower in LittleEndian.
+            byte[] LowBuf = new byte[8]
+            {
+                RegisterData[7],
+                RegisterData[6],
+                RegisterData[5],
+                RegisterData[4],
+                RegisterData[3],
+                RegisterData[2],
+                RegisterData[1],
+                RegisterData[0]
+            };
+
+            // Reverse if is Big Endian.
+            if (!BitConverter.IsLittleEndian) { Array.Reverse(UpBuf); Array.Reverse(LowBuf); }
+
+            // Now convert from byte[] to UInt64.
+            this.Upper = BitConverter.ToUInt64(UpBuf, 0);
+            this.Lower = BitConverter.ToUInt64(LowBuf, 0);
+        }
+
+         
     }
     public class XenonCPU
     {

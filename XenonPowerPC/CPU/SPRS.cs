@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XenonPowerPC.CPU
+namespace Xenon.PowerPC.CPU
 {
-    public enum sprs : int
+    public enum SpecialPurposeRegister : int
     {
         esr = 62,
         ivpr = 63,
