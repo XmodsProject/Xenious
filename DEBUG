@@ -1,40 +1,18 @@
 So how to build and debug,
 
-Download this repoistory as a zip or if you have the github app then clone it.
-Open "Xenious.sln" in Microsoft Visual Studio C# 2015 (Free Edition) or other.
+Download this repoistory as a zip or if you have the github app then clone it or git on cli just clone it, if you dont know how to use git then learn :)
+Open "Xenious.sln" in Microsoft Visual Studio C# 2022 (Any Editon, I used Community Edition) or other.
 
-MSVS2015 Update 3 : https://msdn.microsoft.com/en-us/library/dd831853.aspx
-You will need .NET Framwork 4 : https://www.microsoft.com/en-gb/download/details.aspx?id=17851
+You will need .NET Framwork 4.8 : https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-web-installer
 
-Then Set to debug, it will show the current break points.
+Then Set to debug, it will show the current break points that hvave been left through debugging, the current build is x64 only, you can work on a 32bit one if you know how to and edit the code.
 
-The code has now been split, it has a launcher that launches currently a meta editor
-and the xex local debugger, I still dont have a RGH console to check whats in the memory,
-but when I get my hands on one I will map the memory out for the kernel and the other stuff,
-like 1bl, hypervisor and xboxkernal.
+I have only built a editor which will be in Xenious.Forms.X360, the plan is to add more eco system types,..
+in future the editor will support x86 and amd64 including the xenon powerpc. 
 
-The editor is now able to decode some instructions, more work needs to be done on things like mixups (addi should be li etc)
-Extracting the various variables from the opcodes to determine format, then We will be able to start finding other
-code other than the main function, then fixup any bugs or mixups.
+The editor is will be able to parse and compile powerpc at somepoint, debugging is needed and 
+I have the kit but a lack of time so if people could submit solutions to problems they find and help me find dodgy code...
+that would be great, more work needs to be done on things like mixups (addi should be li etc).
 
-The onto XenonCPU emulation on the cpu, thatll happen as soon as I get my hands on the rgh's I ordered !
-
-I will be able to test alot of things, that really badly need testing, When they arive, 
-I still do not know if saving any of the edits work, so a little wait for myself but worth it
-to see where I can get this tool to compile its own power pc.
-
-So the list for improvements, To be Written and worked on is :
-
-PowerPC - Map out all known altivec codes.
-XenonCPU - get working.
-
-Map out Xbox kernal memory for Xbox Memory.
-Code a Memory extracter or bootloaders compiler (from nand) to grab HV, XboxKrnl other Xecutables from fs
-(Ill probably go with the memory extracter from the xdk first)
-
-Grab the 1BL from linux on RGH.
-Then link together so XenonCPU can be used to run them.
-Remove xextool and code in Decryption, Decompression (Skip Encryption and Compression, for the future maybe)
-
-And Much More :)
+If you cannot debug, learn how to... its visual studio, the left hand side bar is where you place break points, you hover over the script to see info thats fucked and needs fixing...
 
